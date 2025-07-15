@@ -1,0 +1,5 @@
+# Không push thư mục node_modules
+node_modules/
+
+# Không push file .env
+.env
