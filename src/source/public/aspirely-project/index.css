@@ -1,0 +1,53 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f7f7e8;
+    color: #2d4a1d;
+}
+
+.main-container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    background-color: #3b5c45;
+    color: #fff;
+    width: 200px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.nav-item {
+    cursor: pointer;
+}
+
+.nav-item.active {
+    color: #ffa500;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
+
+.suggestions {
+    background-color: #e8e8d8;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.calendar {
+    background-color: #d2e3c8;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.reminders {
+    width: 200px;
+    padding: 20px;
+    background-color: #e8e8d8;
+}

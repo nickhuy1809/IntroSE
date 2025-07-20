@@ -1,0 +1,200 @@
+body {
+  background: #f5f6ef;
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+  background: #f5f6ef;
+}
+
+.sidebar {
+  width: 220px;
+  background: #5b7c5b;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 24px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  min-width: 220px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.sidebar .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  padding: 16px 32px;
+  margin: 8px 0;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar .nav-item.active, .sidebar .nav-item:hover {
+  background: #e9e9d7;
+  color: #5b7c5b;
+}
+
+.sidebar .nav-item svg {
+  font-size: 1.5rem;
+}
+
+.sidebar .settings {
+  margin-top: auto;
+  margin-bottom: 24px;
+  font-size: 1.1rem;
+  color: #f5f6ef;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 32px 40px 32px 40px;
+  background: #f5f6ef;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Segoe UI', sans-serif;
+  margin-right: 428px; /* Chừa chỗ cho reminders */
+}
+
+.suggestions {
+  background: #dbe5d1;
+  border-radius: 18px;
+  padding: 24px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(91,124,91,0.07);
+  font-size: 1.2rem;
+  color: #2d3a2d;
+  width: 1073px;
+  height: 283px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.suggestions h2 {
+  font-family: 'Georgia', serif;
+  font-size: 2rem;
+  color: #3d5a3d;
+  margin-bottom: 12px;
+}
+
+.calendar {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 24px;
+  box-shadow: 0 2px 8px rgba(91,124,91,0.07);
+  margin-bottom: 24px;
+}
+
+.calendar h3 {
+  color: #5b7c5b;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.reminders {
+  position: fixed;
+  right: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 428px;
+  height: 742px;
+  background: #e9e9d7;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(91,124,91,0.07);
+  color: #2d3a2d;
+  font-size: 1.1rem;
+  padding: 32px 24px;
+  display: flex;
+flex-direction: column;
+  justify-content: flex-start; /* Sửa lại dòng này */
+  gap: 18px; /* Thêm khoảng cách giữa các box */
+}
+@media (max-width: 1200px) {
+  .main-content {
+    margin-right: 0;
+    padding: 24px 8px 24px 8px;
+  }
+  .suggestions {
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    padding: 16px;
+  }
+  .reminders {
+    position: static;
+    width: 100%;
+    height: auto;
+    right: unset;
+    top: unset;
+    transform: none;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: none;
+    padding: 16px 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+  }
+  .sidebar {
+    position: static;
+    flex-direction: row;
+    width: 100%;
+    min-width: unset;
+    border-radius: 0;
+    padding: 8px 0;
+    height: auto;
+    box-shadow: none;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .main-content {
+    margin-right: 0;
+    padding: 16px 4px;
+    gap: 16px;
+  }
+  .suggestions {
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    padding: 12px;
+    font-size: 1rem;
+  }
+  .reminders {
+    position: static;
+    width: 100%;
+    height: auto;
+    right: unset;
+    top: unset;
+    transform: none;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 12px 4px;
+    gap: 12px;
+  }
+}
+.corner-shapes {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  z-index: 1;
+  pointer-events: none;
+}
+.corner-shapes svg:not(:first-child) {
+  margin-left: -130px;
+}
