@@ -1,0 +1,20 @@
+/* Schedule.css */
+.schedule-page {
+  padding: 24px;
+  height: 100%;
+}
+
+.schedule-header {
+  margin-bottom: 24px;
+}
+
+.schedule-header h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.schedule-header p {
+  margin: 8px 0 0;
+  color: #666;
+}

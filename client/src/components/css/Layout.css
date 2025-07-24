@@ -1,0 +1,219 @@
+body {
+  background: #f5f6ef;
+}
+
+.dashboard {
+  display: flex;
+  height: 100vh;
+  background: #f5f6ef;
+}
+
+.sidebar {
+  position: fixed;
+  width: 220px;
+  background: #5b7c5b;
+  color: #f5f6ef;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 16px;
+  min-width: 220px;
+  font-family: 'Segoe UI', sans-serif;
+  height: 100vh;
+  z-index: 1000;
+}
+
+.sidebar .nav-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 1.8rem;
+  padding: 30px 20px;
+  margin: 40px 0;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: #e0e0e0;
+  width: 100%;
+}
+
+.sidebar .nav-item svg {
+  width: 44px;
+  height: 44px;
+}
+
+.sidebar .nav-item svg path {
+  stroke: currentColor;
+  transition: stroke 0.3s ease;
+}
+
+.sidebar .nav-item:hover {
+  background: rgba(233, 233, 215, 0.1);
+  color: #fff;
+}
+
+.sidebar .nav-item.active {
+  background: #f5f6ef;
+  color: #ff6b35;
+  font-weight: 500;
+}
+
+.sidebar .nav-item.active svg path {
+  stroke: #ff6b35;
+}
+
+.sidebar .nav-item span {
+  white-space: nowrap;
+}
+
+.sidebar .settings {
+  margin-top: auto;
+  margin-bottom: 24px;
+  font-size: 1.1rem;
+  color: #f5f6ef;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.main-content {
+  flex: 1;
+  padding: 32px 40px 32px 40px;
+  background: #f5f6ef;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Segoe UI', sans-serif;
+  margin-left: 220px; /* Match sidebar width */
+  margin-right: 458px; /* reminder width (428px) + right padding (30px) */
+  min-height: 100vh;
+  width: calc(100% - 678px); /* sidebar (220px) + reminder (428px) + padding (30px) */
+}
+
+.suggestions {
+  background: #dbe5d1;
+  border-radius: 18px;
+  padding: 24px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(91,124,91,0.07);
+  font-size: 1.2rem;
+  color: #2d3a2d;
+  width: 1073px;
+  height: 283px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.suggestions h2 {
+  font-family: 'Georgia', serif;
+  font-size: 2rem;
+  color: #3d5a3d;
+  margin-bottom: 12px;
+}
+
+.reminders {
+  position: fixed;
+  right: 30px;
+  top: 500px;
+  width: 428px;
+  height: auto;
+  background: #e9e9d7;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(91,124,91,0.07);
+  color: #2d3a2d;
+  font-size: 1.1rem;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 18px;
+  overflow-y: auto;
+}
+@media (max-width: 1200px) {
+  .main-content {
+    margin-right: 0;
+    padding: 24px 8px 24px 8px;
+  }
+  .suggestions {
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    padding: 16px;
+  }
+  .reminders {
+    position: static;
+    width: 100%;
+    height: auto;
+    right: unset;
+    top: unset;
+    transform: none;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    box-shadow: none;
+    padding: 16px 8px;
+  }
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+  }
+  .sidebar {
+    position: static;
+    flex-direction: row;
+    width: 100%;
+    min-width: unset;
+    border-radius: 0;
+    padding: 8px 0;
+    height: auto;
+    box-shadow: none;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .main-content {
+    margin-right: 0;
+    padding: 16px 4px;
+    gap: 16px;
+  }
+  .suggestions {
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    padding: 12px;
+    font-size: 1rem;
+  }
+  .reminders {
+    position: static;
+    width: 100%;
+    height: auto;
+    right: unset;
+    top: unset;
+    transform: none;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    box-shadow: none;
+    padding: 12px 4px;
+    gap: 12px;
+  }
+}
+.corner-shapes {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  z-index: 1;
+  pointer-events: none;
+}
+.corner-shapes svg:not(:first-child) {
+  margin-left: -130px;
+}
+
+.sidebar .GroupItem {
+  margin-top: 300px; /* 👈 Increase or decrease this to move nav items lower */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
