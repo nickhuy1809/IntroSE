@@ -1,0 +1,272 @@
+/* CalendarSidePopup.css */
+.calendar-side-popup {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  width: 350px;
+  height: auto;
+  max-height: 80vh;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.2s ease-in-out;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.calendar-side-popup.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popup-header {
+  padding: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.close-button {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 4px;
+  line-height: 1;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.tab {
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 14px;
+  position: relative;
+}
+
+.tab.active {
+  color: #5b7c5b;
+  font-weight: 500;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #5b7c5b;
+}
+
+.popup-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.time-info {
+  margin-bottom: 24px;
+}
+
+.time-info .date {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.time-info .time-range {
+  font-size: 14px;
+  color: #666;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #5b7c5b;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.popup-actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 16px 0;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.delete-button {
+  padding: 8px 16px;
+  background: #ff6b35;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.delete-button:hover {
+  background: #e55a2b;
+}
+
+.save-button {
+  padding: 8px 24px;
+  background: #5b7c5b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.save-button:hover {
+  background: #4a6b4a;
+}
+
+.tasks-section {
+  margin-top: 20px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 20px;
+}
+
+.tasks-section h3 {
+  margin: 0 0 16px;
+  color: #333;
+  font-size: 16px;
+}
+
+.task-item {
+  background: #f8f8f8;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.priority-tag {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.priority-tag.high {
+  background: rgba(255, 107, 53, 0.1);
+  color: #ff6b35;
+}
+
+.priority-tag.medium {
+  background: rgba(79, 121, 66, 0.1);
+  color: #4F7942;
+}
+
+.priority-tag.low {
+  background: rgba(91, 124, 91, 0.1);
+  color: #5b7c5b;
+}
+
+.task-name {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+}
+
+.task-description {
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #666;
+}
+
+.delete-task {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 0 4px;
+}
+
+.delete-task:hover {
+  color: #666;
+}
+
+.add-task-form {
+  margin-top: 16px;
+  padding: 16px;
+  background: #f8f8f8;
+  border-radius: 8px;
+}
+
+.add-task-button {
+  background: #5b7c5b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.add-task-button:hover {
+  background: #4a6b4a;
+}
+
+.focus-time {
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.focus-time p {
+  margin: 0;
+  color: #333;
+}
+
+.focus-time .focus-description {
+  color: #666;
+  font-size: 14px;
+  margin-top: 8px;
+}
