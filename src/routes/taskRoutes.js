@@ -2,11 +2,13 @@ const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/taskController');
 
-// Map endpoint tới controller
-router.get('/', controller.getAllTasks);
+router.get('/:userID', controller.getAllTasks);
+router.get('/:userID/status/:status', controller.getTasksByStatus);
+router.get('/reminders/:userID', controller.getReminders);
+router.get('/due/:userID', controller.getDueTasks);
 router.post('/', controller.createTask);
-router.get('/:id', controller.getTaskById);
-router.put('/:id', controller.updateTask);
-router.delete('/:id', controller.deleteTask);
+router.put('/:taskID', controller.updateTask);
+router.put('/:taskID/complete', controller.markComplete);
+router.delete('/:taskID', controller.deleteTask);
 
 module.exports = router;
