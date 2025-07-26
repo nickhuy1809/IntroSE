@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const accountRoutes = require('./Routes/accountRoutes.js');
+const accountRoutes = require('./routes/accountRoutes.js');
 
 const app = express();
 
@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 // Mọi request đến /api/accounts sẽ được xử lý bởi accountRoutes
-app.use('/api/accounts', accountRoutes);
+app.use('/accounts', accountRoutes);
 
 // Route cơ bản để kiểm tra server có hoạt động không
 app.get('/', (req, res) => {

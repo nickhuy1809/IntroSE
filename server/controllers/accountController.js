@@ -15,7 +15,7 @@ const getOrCreateAccount = async (req, res) => {
 
   try {
     // 1. Kiểm tra xem tài khoản đã tồn tại trong DB chưa
-    let account = await Account.findById(id);
+    let account = await Account.findOne({ _id: id });
 
     // 2. Nếu tài khoản tồn tại, trả về thông tin tài khoản
     if (account) {
