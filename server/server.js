@@ -1,21 +1,15 @@
-// server.js
-require('dotenv').config;
-// const mongoose = require('mongoose');
-const app = require('./app');
+const app = require('./app.js');
+const dotenv = require('dotenv');
+const connectDB = require('./Config/db.js');
 
-const PORT = process.env.PORT || 3000;
-// const MONGO_URI = process.env.MONGO_URI;
+// Nạp các biến môi trường từ file .env
+dotenv.config();
 
-// mongoose.connect(MONGO_URI)
-//     .then(() => {
-//         console.log('Connected to MongoDB');
-//         app.listen(PORT, () => {
-//             console.log('Server running at http://localhost:${PORT}');
-//         });
-//     })
-//     .catch(err => console.error('MongoDB connection error:', err));
+// Kết nối tới MongoDB
+connectDB();
 
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(` Server running at http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
