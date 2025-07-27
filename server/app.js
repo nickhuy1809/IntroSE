@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Định tuyến API
-app.use('/accounts', accountRoutes); 
+app.use('/api/accounts', accountRoutes); 
 
 // Route mặc định để kiểm tra server
 app.get('/', (req, res) => {
