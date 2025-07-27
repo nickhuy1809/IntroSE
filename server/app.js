@@ -2,37 +2,34 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-// Import các file routes
-const accountRoutes = require('./Routes/account.routes.js');
-const folderRoutes = require('./Routes/folder.routes.js');
-const courseRoutes = require('./Routes/course.routes.js');
-const gradeRoutes = require('./Routes/grade.routes.js');
-const analysisRoutes = require('./Routes/analysis.routes.js');
+const accountRoutes = require('./Routes/accountRoutes.js');
 
-// Cấu hình CORS linh hoạt cho development
+// Cấu hình các tùy chọn
 const corsOptions = {
-  // Biểu thức này có nghĩa là: "Cho phép bất kỳ nguồn nào bắt đầu bằng http://localhost:"
-  // Ví dụ: http://localhost:3000, http://localhost:3001, http://localhost:8080 đều được chấp nhận.
-  origin: /localhost:\d+$/,
-  
+  // Cho phép các nguồn gốc này
+  origin: /localhost:\d+$/, 
+
+  // Cho phép các phương thức này
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  
+  // Cho phép các header này
   allowedHeaders: ['Content-Type', 'x-account-id'],
-  credentials: true
+  
+  // Xử lý preflight request cho tất cả các route
+  preflightContinue: false,
+  optionsSuccessStatus: 204 // Một số trình duyệt cũ yêu cầu 204
 };
 
+// Middleware này sẽ tự động xử lý các request OPTIONS
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+
 
 // Middleware cơ bản
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Định tuyến API
-app.use('/api/accounts', accountRoutes);
-// app.use('/api/folders', folderRoutes);
-// app.use('/api/courses', courseRoutes);
-// app.use('/api/grades', gradeRoutes);
-// app.use('/api/analysis', analysisRoutes);
+app.use('/accounts', accountRoutes); 
 
 // Route mặc định để kiểm tra server
 app.get('/', (req, res) => {
