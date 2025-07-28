@@ -3,9 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { ReactComponent as HomeIcon } from '../img/Home.svg';
 import { ReactComponent as ScheduleIcon } from '../img/Schedule.svg';
 import { ReactComponent as TaskIcon } from '../img/Task.svg';
-import { ReactComponent as SectionIcon } from '../img/Section.svg';
+import { ReactComponent as GradeIcon } from '../img/Grade.svg';
 import { ReactComponent as PomodoroIcon } from '../img/Pomodoro.svg';
-import { ReactComponent as SettingIcon } from '../img/Setting.svg';
 
 export default function Sidebar() {
   return (
@@ -37,8 +36,8 @@ export default function Sidebar() {
         to="/section"
         className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
       >
-        <SectionIcon />
-        <span>Section</span>
+        <GradeIcon />
+        <span>Grade</span>
       </NavLink>
       <NavLink
         to="/pomodoro"
@@ -46,16 +45,6 @@ export default function Sidebar() {
       >
         <PomodoroIcon />
         <span>Pomodoro</span>
-      </NavLink>
-      </div>
-
-      <div className ="settings">
-      <NavLink
-        to="/settings"
-        className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-      >
-        <SettingIcon />
-        <span>Setting</span>
       </NavLink>
       </div>
     </div>
