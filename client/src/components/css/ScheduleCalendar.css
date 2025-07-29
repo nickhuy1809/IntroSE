@@ -4,11 +4,57 @@
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  min-height: 600px;
+  overflow-x: auto;
+  margin-left: 30px;
 }
 
 /* Calendar Customization */
 .schedule-calendar .rbc-calendar {
   background: #FFFAF0;
+  min-width: 800px;
+}
+
+/* Make the calendar wider and more readable */
+.rbc-time-view {
+  min-width: 800px;
+}
+
+.rbc-time-content {
+  min-width: 800px;
+}
+
+/* Calendar header styling */
+.rbc-toolbar {
+  margin-bottom: 20px !important;
+  padding: 10px 0;
+}
+
+.rbc-toolbar button {
+  padding: 8px 16px !important;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1439px) {
+  .schedule-calendar .rbc-calendar,
+  .rbc-time-view,
+  .rbc-time-content {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .schedule-calendar .rbc-calendar,
+  .rbc-time-view,
+  .rbc-time-content {
+    min-width: 100%;
+  }
+  
+  .schedule-calendar {
+    padding: 15px;
+  }
 }
 
 .schedule-calendar .rbc-header {

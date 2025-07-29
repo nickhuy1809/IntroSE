@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import { format, parse, startOfWeek, getDay, setHours, setMinutes } from 'date-fns';
 import CalendarSidePopup from './CalendarSidePopup';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -18,13 +19,30 @@ const localizer = dateFnsLocalizer({
 });
 
 export default function ScheduleCalendar({ defaultView = 'week', availableViews = ['week', 'month'] }) {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useLocalStorage('calendar_events', []);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [previewEvent, setPreviewEvent] = useState(null);
   const [popupPosition, setPopupPosition] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const handleNavigate = (action) => {
+    const newDate = new Date(currentDate);
+    switch (action) {
+      case 'PREV':
+        newDate.setDate(newDate.getDate() - 7);
+        break;
+      case 'NEXT':
+        newDate.setDate(newDate.getDate() + 7);
+        break;
+      case 'TODAY':
+        newDate.setTime(new Date().getTime());
+        break;
+    }
+    setCurrentDate(newDate);
+  };
 
   // Check if a time slot overlaps with existing events
   const checkOverlap = (start, end) => {
@@ -58,10 +76,18 @@ export default function ScheduleCalendar({ defaultView = 'week', availableViews 
     if (bounds) {
       const calendarElement = document.querySelector('.schedule-calendar');
       const calendarRect = calendarElement.getBoundingClientRect();
+      const scrollTop = calendarElement.scrollTop;
+      const scrollLeft = calendarElement.scrollLeft;
 
-      // Calculate popup position relative to the calendar container
-      const left = bounds.right + 10; // 10px gap between event and popup
-      const top = bounds.top - calendarRect.top;
+      // Calculate popup position relative to the calendar container, accounting for scroll
+      const left = Math.min(
+        bounds.right - scrollLeft + 10, // 10px gap between event and popup
+        calendarRect.width - 300 // ensure popup doesn't overflow horizontally
+      );
+      const top = Math.min(
+        bounds.top + scrollTop - calendarRect.top,
+        calendarRect.height - 400 // ensure popup doesn't overflow vertically
+      );
 
       setPopupPosition({ top, left });
     }
@@ -80,16 +106,23 @@ export default function ScheduleCalendar({ defaultView = 'week', availableViews 
   };
 
   const handleSaveEvent = (eventDetails) => {
+    // Ensure start and end are Date objects
+    const processedEventDetails = {
+      ...eventDetails,
+      start: new Date(eventDetails.start),
+      end: new Date(eventDetails.end)
+    };
+
     // Handle editing existing event
     if (isEditing && selectedEvent) {
       const updatedEvents = events.map(event =>
-        event === selectedEvent ? { ...eventDetails, allDay: false } : event
+        event === selectedEvent ? { ...processedEventDetails, allDay: false } : event
       );
       setEvents(updatedEvents);
     } else {
       // Create new event
       const newEvent = {
-        ...eventDetails,
+        ...processedEventDetails,
         allDay: false
       };
 
@@ -207,6 +240,8 @@ export default function ScheduleCalendar({ defaultView = 'week', availableViews 
           week: true,
         }}
         toolbar={true}
+        date={currentDate}
+        onNavigate={handleNavigate}
         eventPropGetter={eventStyleGetter}
         formats={{
           timeGutterFormat: (date) => format(date, 'h:mm a'),

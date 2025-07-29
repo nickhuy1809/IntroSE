@@ -1,0 +1,348 @@
+.pomodoro-container {
+    display: flex;
+    flex: 1;
+    position: relative;
+    height: 100%;
+    gap: 32px;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.timer-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 800px;
+}
+
+.timer-container {
+    text-align: center;
+}
+
+.position-controls {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.adjust-button {
+    background: #5b7c5b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.adjust-button:hover {
+    background: #4a6b4a;
+    transform: scale(1.1);
+}
+
+.timer-display {
+    font-family: 'Segoe UI', monospace;
+    font-size: clamp(3rem, 10vw, 8rem); /* Responsive font size */
+    font-weight: 300;
+    color: #5b7c5b;
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+    letter-spacing: clamp(4px, 1vw, 8px);
+    text-shadow: 2px 2px 4px rgba(91, 124, 91, 0.1);
+    width: 100%;
+    text-align: center;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    scale: 1.2; /* Make controls bigger */
+}
+
+.timer-button {
+    width: 64px;
+    height: 64px;
+    border: none;
+    border-radius: 25px;
+    background-color: #5b7c5b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.timer-button:hover {
+    background-color: #4a6b4a;
+    transform: scale(1.05);
+}
+
+.timer-button.active {
+    background-color: #ff6b35;
+}
+
+.square-icon {
+    width: 24px;
+    height: 24px;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.triangle-icon {
+    width: 0;
+    height: 0;
+    border-left: 20px solid #fff;
+    border-top: 12px solid transparent;
+    border-bottom: 12px solid transparent;
+    margin-left: 4px;
+}
+
+/* Music Player Styles */
+.music-player-section {
+    width: min(428px, 100%);
+    background: #e9e9d7;
+    border-radius: 24px;
+    padding: clamp(16px, 4vw, 32px) clamp(12px, 3vw, 24px);
+    position: fixed;
+    right: 0;
+    top: 100px;
+    bottom: 100px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.music-player {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.now-playing {
+    padding: 16px;
+    background: rgba(91, 124, 91, 0.1);
+    border-radius: 16px;
+    text-align: center;
+}
+
+.now-playing h3 {
+    margin: 0 0 16px 0;
+    color: #5b7c5b;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.play-button {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background-color: #5b7c5b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.play-button:hover {
+    background-color: #4a6b4a;
+    transform: scale(1.05);
+}
+
+.play-button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+.play-icon {
+    width: 0;
+    height: 0;
+    border-left: 16px solid #fff;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    margin-left: 4px;
+}
+
+.song-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.song-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.song-item:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateX(-4px);
+}
+
+.song-item.active {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(91,124,91,0.15);
+}
+
+.song-thumbnail {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #dbe5d1;
+    position: relative;
+}
+
+.song-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This will maintain aspect ratio while filling the container */
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.thumbnail-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, #5b7c5b, #6b866b);
+}
+
+.song-title {
+    font-size: 1rem;
+    color: #2d3a2d;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (min-width: 1440px) {
+    .timer-section {
+        max-width: 1000px;
+    }
+    
+    .music-player-section {
+        width: 428px;
+    }
+}
+
+@media (max-width: 1439px) {
+    .timer-section {
+        max-width: 800px;
+    }
+    
+    .music-player-section {
+        width: 380px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .music-player-section {
+        position: static;
+        width: 100%;
+        max-width: 600px;
+        border-radius: 24px;
+        margin: 24px auto;
+        top: 0;
+        bottom: auto;
+    }
+
+    .pomodoro-container {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .timer-section {
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .timer-controls {
+        gap: 16px;
+        scale: 1;
+    }
+
+    .timer-button {
+        width: 56px;
+        height: 56px;
+    }
+
+    .music-player-section {
+        padding: 16px;
+        margin: 16px auto;
+    }
+}
+
+@media (max-width: 600px) {
+    .timer-button {
+        width: 48px;
+        height: 48px;
+    }
+
+    .square-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .triangle-icon {
+        border-left-width: 16px;
+        border-top-width: 10px;
+        border-bottom-width: 10px;
+    }
+
+    .music-player-section {
+        padding: 12px;
+        margin: 12px auto;
+    }
+
+    .song-item {
+        padding: 8px;
+        gap: 12px;
+    }
+
+    .song-thumbnail {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Additional responsive adjustments */
+@media (max-width: 480px) {
+    .timer-section {
+        padding: 10px;
+        margin-top: 1rem;
+    }
+
+    .timer-controls {
+        gap: 12px;
+    }
+
+    .play-button {
+        width: 40px;
+        height: 40px;
+    }
+}
