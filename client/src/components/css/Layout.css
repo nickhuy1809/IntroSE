@@ -1,98 +1,143 @@
-/* CSS Reset and Base Styles */
+/* Base styles with CSS variables for theming */
 :root {
-  --sidebar-width: 220px;
-  --primary-color: #5b7c5b;
-  --secondary-color: #2d3a2d;
-  --bg-color: #f5f6ef;
-  --text-color: #2d3a2d;
-  --light-green: #8fa88f;
-  --suggestion-green: #a4b4a4;
-  --font-base: 16px;
-  --font-scale-ratio: 1.2;
+  /* Color palette */
+  --bg-primary: #f5f6ef;
+  --bg-sidebar: #5b7c5b;
+  --bg-card-light: #dbe5d1;
+  --bg-card-dark: #e9e9d7;
+  --text-light: #f5f6ef;
+  --text-dark: #2d3a2d;
+  --text-accent: #ff6b35;
+  --hover-color: rgba(233, 233, 215, 0.1);
+
+  /* Spacing scale (in rem) - scaled down by ~70% to be visible at 100% zoom */
+  --space-xs: 0.1rem;
+  --space-sm: 0.2rem;
+  --space-md: 0.33rem;
+  --space-lg: 0.5rem;
+  --space-xl: 0.75rem;
+  --space-xxl: 1rem;
+
+  /* Sizing constants - reduced to fit 100% zoom */
+  --sidebar-width-xl: 150px;
+  --sidebar-width-lg: 120px;
+  --sidebar-width-md: 100px;
+  --reminders-width-xl: 150px;
+  --reminders-width-lg: 140px;
+
+  /* Border radius */
+  --border-radius-xs: 2px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+
+  /* Z-index layers */
+  --z-sidebar: 1000;
+  --z-decorative: 1;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-default: 0.3s ease;
 }
 
-/* Responsive font sizes */
-@media (min-width: 1440px) {
-  :root {
-    --font-base: 18px;
-  }
+/* Reset styles */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-  :root {
-    --font-base: 14px;
-  }
+html {
+  font-size: 16px; /* Restored to a more readable size */
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--bg-color);
-  font-size: var(--font-base);
+  background: var(--bg-primary);
+  font-family: 'Segoe UI', sans-serif;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', sans-serif;
+  line-height: 1.3;
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 1rem; /* Standard body font size */
+  zoom: 1; /* Ensure zoom is reset to 100% */
 }
 
+/* Fixed typography scaling that balances readability with layout size */
+html {
+  font-size: 14px; /* Better base size for component proportions */
+}
+
+/* Main layout components */
 .dashboard {
   display: flex;
   min-height: 100vh;
-  background: var(--bg-color);
+  background: var(--bg-primary);
   position: relative;
-  transition: all 0.3s ease;
+  overflow-x: hidden; /* Prevent horizontal scrollbar */
 }
 
+/* Sidebar - uses Flexbox for vertical layout */
 .sidebar {
   position: fixed;
-  width: var(--sidebar-width);
-  background: var(--primary-color);
-  color: var(--bg-color);
+  width: var(--sidebar-width-lg);
+  background: var(--bg-sidebar);
+  color: var(--text-light);
   display: flex;
   flex-direction: column;
-  padding: clamp(16px, 2vw, 24px);
-  min-width: var(--sidebar-width);
+  padding: 0.5rem 0.3rem;
   height: 100vh;
-  z-index: 1000;
-  transition: all 0.3s ease;
+  z-index: var(--z-sidebar);
+  transition: width var(--transition-default), transform var(--transition-default);
 }
 
-.sidebar .nav-item {
+/* Navigation items - flexbox alignment */
+.nav-item {
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
-  gap: clamp(12px, 2vw, 24px);
-  font-size: clamp(1.2rem, 2vw, 1.8rem);
-  padding: clamp(12px, 2vh, 18px);
-  margin: clamp(20px, 4vh, 40px) 0;
-  border-radius: clamp(16px, 2vw, 24px);
-  cursor: pointer;
-  transition: all 0.3s ease;
+  justify-content: flex-start; /* Left align content for better visual consistency */
+  padding: 0.5rem 0.75rem; /* Reduced horizontal padding */
+  border-radius: 0.5rem;
   text-decoration: none;
-  color: #e0e0e0;
-  width: 100%;
-  white-space: nowrap;
+  transition: all 0.3s ease;
+  width: 85%; /* Slightly narrower for better centering */
+  margin: 0 auto; /* Center the nav item within its container */
+  box-sizing: border-box;
+  gap: 0.75rem; /* Reduced gap between icon and text */
+  font-size: 1rem; /* Larger font size */
+}
+
+.nav-item span {
+  font-size: 1rem; /* Consistent text size */
+  font-weight: 500; /* Slightly bolder for better readability */
+  line-height: 1;
 }
 
 .sidebar .nav-item svg {
-  width: 44px;
-  height: 44px;
+  width: 24px; /* Consistent icon size that matches with text */
+  height: 24px;
+  flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
 .sidebar .nav-item svg path {
   stroke: currentColor;
-  transition: stroke 0.3s ease;
+  transition: stroke var(--transition-default);
 }
 
 .sidebar .nav-item:hover {
-  background: rgba(233, 233, 215, 0.1);
+  background: var(--hover-color);
   color: #fff;
 }
 
 .sidebar .nav-item.active {
-  background: #f5f6ef;
-  color: #ff6b35;
+  background: var(--bg-primary);
+  color: var(--text-accent);
   font-weight: 500;
 }
 
 .sidebar .nav-item.active svg path {
-  stroke: #ff6b35;
+  stroke: var(--text-accent);
 }
 
 .sidebar .nav-item span {
@@ -100,203 +145,306 @@ body {
 }
 
 
+/* Main content area with flexbox layout */
 .main-content {
   flex: 1;
-  padding: 20px;
-  background: var(--bg-color);
+  padding: var(--space-lg) var(--space-lg);
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  /* margin-left: 0; */
+  gap: var(--space-md);
+  font-family: 'Segoe UI', sans-serif;
+  margin-left: var(--sidebar-width-lg);
+  margin-right: calc(var(--reminders-width-lg) + var(--space-md));
   min-height: 100vh;
-  width: calc(100% - var(--sidebar-width) - 20px);
-  position: relative;
-  z-index: 1;
-  transition: all 0.3s ease;
+  width: calc(100% - var(--sidebar-width-lg) - var(--reminders-width-lg) - var(--space-md));
+  transition: margin var(--transition-default), width var(--transition-default);
 }
 
-.suggestion-container {
-  background: var(--suggestion-green);
-  border-radius: 12px;
-  padding: 24px;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+/* Card component styling */
+.suggestions {
+  background: var(--bg-card-light);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-md);
+  box-shadow: 0 1px 3px rgba(91,124,91,0.07);
+  font-size: 0.9rem; /* Increased font size for better readability */
+  color: var(--text-dark);
+  height: auto;
+  min-height: 80px;
+  max-width: 100%;
 }
 
-.calendar-container {
-  background: #fff;
-  border-radius: 12px;
-  width: 1000px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.suggestions h2 {
+  font-family: 'Georgia', serif;
+  font-size: 1.2rem; /* Larger heading */
+  color: #3d5a3d;
+  margin-bottom: var(--space-xs);
 }
 
-.reminder-container {
+/* Reminders sidebar */
+.reminders {
   position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 310px;
-  background: var(--light-green);
-  border-radius: 12px;
-  padding: 24px;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-}
-
-/* Main content area */
-.main-content {
-  flex: 1;
-  padding: 20px;
-  background: var(--bg-color);
+  right: var(--space-md);
+  top: 15%;
+  width: var(--reminders-width-lg);
+  height: auto;
+  max-height: 70vh;
+  background: var(--bg-card-dark);
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 1px 3px rgba(91,124,91,0.07);
+  color: var(--text-dark);
+  font-size: 0.85rem; /* More readable font size */
+  padding: var(--space-md) var(--space-sm);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  justify-content: flex-start;
+  gap: var(--space-xs);
+  overflow-y: auto;
+  transition: width var(--transition-default), right var(--transition-default);
 }
-/* Large Desktop (≥1440px) */
+/* Large desktop screens (≥1440px) - 2xl in Tailwind */
 @media (min-width: 1440px) {
-  .main-content {
-    max-width: calc(1440px - var(--sidebar-width));
-    margin-left: var(--sidebar-width);
+  .sidebar {
+    width: var(--sidebar-width-xl);
+    min-width: var(--sidebar-width-xl);
+    padding: 0.6rem 0.4rem;
   }
-  
-  .suggestions, .reminders {
-    font-size: 1.2rem;
-  }
-}
-
-/* Standard Desktop (1024px-1439px) */
-@media (max-width: 1439px) {
-  :root {
-    --sidebar-width: 200px;
-  }
-
-  .main-content {
-    width: calc(100% - var(--sidebar-width) - 300px);
-  }
-
-  .reminder-container {
-    width: 280px;
-  }
-}
-
-/* Tablet (768px-1023px) */
-@media (max-width: 1023px) {
-  :root {
-    --sidebar-width: 180px;
-  }
-
-  .main-content {
-    margin-left: calc(var(--sidebar-width) + 5px);
-    width: calc(100% - var(--sidebar-width) - 5px);
-    padding: 15px;
-  }
-
-  .reminder-container {
-    position: relative;
-    top: 0;
-    right: 0;
-    width: 100%;
-    margin: 20px 0;
-    height: auto;
-    max-height: none;
-  }
-
   .sidebar .nav-item {
-    padding: 12px;
-    margin: 16px 0;
-    font-size: 1.4rem;
+    font-size: 1rem; /* Larger font for desktop */
+    padding: 0.5rem 0.5rem;
   }
-
+  .sidebar .nav-item span {
+    font-size: 1rem; /* Consistent size */
+  }
   .sidebar .nav-item svg {
-    width: 32px;
-    height: 32px;
+    width: 24px; /* Consistent icon size */
+    height: 24px;
+  }
+  .main-content {
+    margin-left: var(--sidebar-width-xl);
+    margin-right: calc(var(--reminders-width-xl) + 0.5rem); /* adjusted for larger sidebar */
+    padding: 0.7rem 0.8rem;
+    width: calc(100% - var(--sidebar-width-xl) - var(--reminders-width-xl) - 0.5rem); 
+  }
+  .suggestions {
+    padding: 0.6rem 0.7rem;
+    font-size: 1rem; /* Larger font for desktop */
+  }
+  .reminders {
+    right: 0.7rem;
+    width: var(--reminders-width-xl);
+    padding: 0.6rem 0.5rem;
+    font-size: 0.9rem; /* Larger font for desktop */
   }
 }
 
-/* Large Phone (600px-767px) */
-@media (max-width: 767px) {
+/* Standard desktops/laptops (1024px–1439px) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .main-content {
+    margin-left: var(--sidebar-width-lg);
+    margin-right: calc(var(--reminders-width-lg) + var(--space-md));
+    width: calc(100% - var(--sidebar-width-lg) - var(--reminders-width-lg) - var(--space-md));
+  }
+}
+
+/* Tablets (768px–1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboard {
+    flex-wrap: wrap;
+  }
+  .sidebar {
+    width: var(--sidebar-width-md);
+    min-width: var(--sidebar-width-md);
+    padding: 0.4rem 0.3rem;
+  }
+  .sidebar .nav-item {
+    font-size: 0.9rem; /* Consistent font size */
+    padding: 0.35rem 0.4rem;
+    margin: 0.3rem 0;
+    gap: 0.5rem;
+  }
+  .sidebar .nav-item span {
+    font-size: 0.9rem; /* Matching text size */
+  }
+  .sidebar .nav-item svg {
+    width: 22px; /* Proportional icon size */
+    height: 22px;
+  }
+  .main-content {
+    margin-left: var(--sidebar-width-md);
+    margin-right: 0;
+    padding: 0.5rem 0.4rem;
+    width: calc(100% - var(--sidebar-width-md));
+  }
+  .suggestions {
+    width: 100%;
+    padding: 0.4rem;
+    height: auto;
+    min-width: 0;
+    font-size: 0.85rem; /* Adjusted font size */
+  }
+  .reminders {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 1px 3px rgba(91,124,91,0.07);
+    padding: 0.5rem 0.4rem;
+    font-size: 0.8rem; /* Adjusted font size */
+  }
+}
+
+/* Large phones (600px–767px) */
+@media (min-width: 600px) and (max-width: 767px) {
   .dashboard {
     flex-direction: column;
+    height: auto;
   }
+  .sidebar {
+    position: sticky;
+    top: 0;
+    flex-direction: row;
+    width: 100%;
+    min-width: unset;
+    border-radius: 0;
+    padding: 0.3rem 0.2rem;
+    height: auto;
+    box-shadow: 0 1px 3px rgba(91,124,91,0.07);
+    overflow-x: auto;
+    z-index: var(--z-sidebar);
+    justify-content: space-between;
+  }
+  .sidebar .GroupItem {
+    display: flex;
+    margin-top: 0;
+    flex-direction: row;
+    align-items: center;       /* horizontal centering */
+    gap: 1.5rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .sidebar .nav-item {
+    flex-direction: column;
+    font-size: 0.75rem; /* Consistent font size */
+    padding: 0.25rem 0.2rem;
+    margin: 0;
+    gap: 0.2rem;
+    width: auto;
+    align-items: center; /* Center align icon and text */
+    justify-content: center; /* Center contents in column layout */
+  }
+  .sidebar .nav-item span {
+    font-size: 0.75rem; /* Matching text size */
+    text-align: center; /* Ensure text is centered */
+  }
+  .sidebar .nav-item svg {
+    width: 18px; /* Proportional icon size */
+    height: 18px;
+  }
+  .main-content {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0.3rem 0.2rem;
+    width: 100%;
+    gap: 0.3rem;
+  }
+  .suggestions {
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    padding: 0.3rem;
+    font-size: 0.75rem; /* Increased font size */
+  }
+  .reminders {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-bottom: 0.4rem;
+    border-radius: var(--border-radius-xs);
+    box-shadow: 0 1px 2px rgba(91,124,91,0.07);
+    padding: 0.4rem 0.3rem;
+    font-size: 0.7rem; /* Increased font size */
+    gap: 0.3rem;
+  }
+}
 
+/* Small phones (≤599px) */
+@media (max-width: 599px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+  }
   .sidebar {
     position: sticky;
     top: 0;
     width: 100%;
+    min-width: unset;
+    border-radius: 0;
+    padding: 0.25rem 0.15rem;
     height: auto;
-    min-height: unset;
-    flex-direction: row;
-    justify-content: space-around;
-    padding: 8px;
-    overflow-x: auto;
+    box-shadow: 0 1px 2px rgba(91,124,91,0.07);
+    z-index: var(--z-sidebar);
+    background: var(--bg-sidebar);
   }
-
   .sidebar .GroupItem {
+    margin-top: 0;
+    display: flex;
     flex-direction: row;
-    margin: 0;
-    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.1rem;
   }
-
   .sidebar .nav-item {
-    flex: 0 0 auto;
-    margin: 4px;
-    padding: 8px 16px;
-    font-size: 1.2rem;
+    display: flex;
+    flex-direction: column;    /* icon on top, text below */
+    align-items: center;       /* center icon and text */
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 0.75rem 0;        /* vertical spacing */
+    gap: 0.5rem;
   }
-
-  .main-content,
-  .home-page .main-content {
+  .sidebar .nav-item svg {
+    width: 16px; /* Proportional icon size */
+    height: 16px;
+  }
+  .sidebar .nav-item span {
+    font-size: 0.65rem; /* Matching text size */
+    line-height: 1.1;
+  }
+  .main-content {
     margin-left: 0;
     margin-right: 0;
+    padding: 0.25rem 0.2rem;
     width: 100%;
-    padding: 16px;
+    gap: 0.25rem;
   }
-
-  .suggestions, .reminders {
-    border-radius: 12px;
-    margin: 12px 0;
+  .suggestions {
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    padding: 0.25rem;
+    font-size: 0.7rem; /* Increased font size */
+    border-radius: var(--border-radius-xs);
   }
-}
-
-/* Small Phone (≤599px) */
-@media (max-width: 599px) {
-  :root {
-    --font-base: 14px;
+  .suggestions h2 {
+    font-size: 0.9rem; /* Increased font size */
+    margin-bottom: 0.2rem;
   }
-
-  .sidebar {
-    padding: 4px;
+  .reminders {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-bottom: 0.25rem;
+    border-radius: var(--border-radius-xs);
+    box-shadow: none;
+    padding: 0.25rem 0.2rem;
+    font-size: 0.65rem; /* Increased font size */
+    gap: 0.2rem;
   }
-
-  .sidebar .nav-item {
-    padding: 8px;
-  }
-
-  .sidebar .nav-item span {
-    display: none;
-  }
-
-  .sidebar .nav-item svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .main-content {
-    padding: 12px 8px;
-  }
-
-  .suggestions, .reminders {
-    padding: 12px;
-    margin: 8px 0;
-  }
-
-  /* Adjust font sizes for better readability on small screens */
-  h1 { font-size: 1.8rem; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.2rem; }
-  p, .nav-item { font-size: 1rem; }
 }
 .corner-shapes {
   position: fixed;
@@ -305,98 +453,108 @@ body {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  z-index: 1;
+  z-index: var(--z-decorative);
   pointer-events: none;
 }
+.corner-shapes svg {
+  width: 60px;
+  height: 60px;
+}
 .corner-shapes svg:not(:first-child) {
-  margin-left: -130px;
+  margin-left: -40px;
+}
+
+/* Responsive corner shapes */
+@media (max-width: 1023px) {
+  .corner-shapes svg {
+    width: 50px;
+    height: 50px;
+    transform-origin: bottom right;
+  }
+  .corner-shapes svg:not(:first-child) {
+    margin-left: -35px;
+  }
+}
+
+@media (max-width: 767px) {
+  .corner-shapes svg {
+    width: 40px;
+    height: 40px;
+    transform-origin: bottom right;
+  }
+  .corner-shapes svg:not(:first-child) {
+    margin-left: -25px;
+  }
+}
+
+@media (max-width: 599px) {
+  .corner-shapes svg {
+    width: 30px;
+    height: 30px;
+    transform-origin: bottom right;
+  }
+  .corner-shapes svg:not(:first-child) {
+    margin-left: -15px;
+  }
 }
 
 .sidebar .GroupItem {
-  margin-top: 100px;
   display: flex;
   flex-direction: column;
-}
-
-/* Utility Classes */
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.flex-row { flex-direction: row; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-sm { gap: clamp(8px, 1vw, 12px); }
-.gap-md { gap: clamp(16px, 2vw, 24px); }
-.gap-lg { gap: clamp(24px, 3vw, 32px); }
-
-/* Container width utilities */
-.container {
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;              /* consistent spacing between items */
+  margin-top: 2rem;
+  padding: 0 0.5rem;
   width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: clamp(16px, 2vw, 40px);
-  padding-right: clamp(16px, 2vw, 40px);
 }
 
-@media (min-width: 640px) {
-  .container { max-width: 640px; }
-}
-@media (min-width: 768px) {
-  .container { max-width: 768px; }
-}
-@media (min-width: 1024px) {
-  .container { max-width: 1024px; }
-}
+
+/* Responsive layout for GroupItem */
 @media (min-width: 1440px) {
-  .container { max-width: 1440px; }
+  .sidebar .GroupItem {
+    margin-top: 60px;
+    gap: 0.3rem;
+  }
 }
 
-/* Modern CSS Features */
-.glass-effect {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .sidebar .GroupItem {
+    margin-top: 50px;
+    gap: 0.25rem;
+  }
 }
 
-.smooth-shadow {
-  box-shadow: 
-    0 1px 1px rgba(0,0,0,0.08),
-    0 2px 2px rgba(0,0,0,0.12),
-    0 4px 4px rgba(0,0,0,0.16);
+@media (min-width: 768px) and (max-width: 1023px) {
+  .sidebar .GroupItem {
+    margin-top: 40px;
+    gap: 0.2rem;
+  }
 }
 
-/* Animation utilities */
-.transition-all {
-  transition: all 0.3s cbic-bezier(0.4, 0, 0.2, 1);
+/* Override existing styles for mobile to ensure full visibility */
+@media (min-width: 600px) and (max-width: 767px) {
+  .sidebar .GroupItem {
+    margin-top: 0;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 0 var(--space-sm);
+    justify-content: space-around;
+  }
+  
+  .sidebar .GroupItem::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
 }
 
-.hover-scale {
-  transition: transform 0.2s ease;
-}
-
-.hover-scale:hover {
-  transform: scale(1.05);
-}
-
-/* Grid utilities */
-.grid {
-  display: grid;
-  gap: var(--grid-gap, 1rem);
-}
-
-.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
-.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-
-@media (min-width: 768px) {
-  .md\:grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-  .md\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-  .md\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-}
-
-@media (min-width: 1024px) {
-  .lg\:grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-  .lg\:grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
-  .lg\:grid-cols-5 { grid-template-columns: repeat(5, 1fr); }
+@media (max-width: 599px) {
+  .sidebar .GroupItem {
+    margin-top: 0;
+    padding: var(--space-xs);
+    gap: var(--space-xs);
+  }
 }
