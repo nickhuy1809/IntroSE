@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import PomodoroSettingsModal from './PomodoroSettingsModal';
 import { ReactComponent as SettingsIcon } from '../img/Settings.svg';
 

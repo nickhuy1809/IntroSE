@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Mainpage from './pages/Mainpage';
 import Schedule from './pages/Schedule';
-import Pomodoro from './pages/Pomodoro'; // Add this import
+import Pomodoro from './pages/Pomodoro';
+import Grade from './pages/Grade';
 import CornerShapes from './components/CornerShapes';
 import './components/css/Layout.css';
 import {v4 as uuidv4} from 'uuid';
@@ -49,6 +50,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Mainpage />} />
             <Route path="/schedule" element={<Schedule />} />
+            <Route path="/grade" element={<Grade />} />
             <Route path="/pomodoro" element={<Pomodoro />} /> {/* Add this route */}
           </Routes>
         </div>

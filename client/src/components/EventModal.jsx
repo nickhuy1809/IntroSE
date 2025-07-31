@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 
 export default function EventModal({ isOpen, onClose, onSave, selectedSlot }) {
