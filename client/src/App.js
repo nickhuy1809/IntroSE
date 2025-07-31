@@ -5,6 +5,7 @@ import Mainpage from './pages/Mainpage';
 import Schedule from './pages/Schedule';
 import CornerShapes from './components/CornerShapes';
 import './components/css/Layout.css';
+import Grade from './pages/Grade';
 import {v4 as uuidv4} from 'uuid';
 
 function App() {
@@ -48,6 +49,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Mainpage />} />
             <Route path="/schedule" element={<Schedule />} />
+            {/* <Route path="/task" element = {<div>Task Page</div>} /> */}
+            <Route path="/grade" element={<Grade />} />
           </Routes>
         </div>
         <CornerShapes />

@@ -33,7 +33,7 @@ export default function Sidebar() {
         <span>Task</span>
       </NavLink>
       <NavLink
-        to="/section"
+        to="/grade"
         className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
       >
         <GradeIcon />
