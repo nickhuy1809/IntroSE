@@ -59,13 +59,12 @@ body {
   color: var(--text-dark);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 1rem; /* Standard body font size */
-  zoom: 1; /* Ensure zoom is reset to 100% */
+  font-size: 1rem;
+  zoom: 1; 
 }
 
-/* Fixed typography scaling that balances readability with layout size */
 html {
-  font-size: 14px; /* Better base size for component proportions */
+  font-size: 14px; 
 }
 
 /* Main layout components */
@@ -74,10 +73,9 @@ html {
   min-height: 100vh;
   background: var(--bg-primary);
   position: relative;
-  overflow-x: hidden; /* Prevent horizontal scrollbar */
+  overflow-x: hidden; 
 }
 
-/* Sidebar - uses Flexbox for vertical layout */
 .sidebar {
   position: fixed;
   width: var(--sidebar-width-lg);
@@ -85,7 +83,7 @@ html {
   color: var(--text-light);
   display: flex;
   flex-direction: column;
-  padding: 0.5rem 0.3rem;
+  padding: 1rem 1rem;
   height: 100vh;
   z-index: var(--z-sidebar);
   transition: width var(--transition-default), transform var(--transition-default);
@@ -101,10 +99,10 @@ html {
   border-radius: 0.5rem;
   text-decoration: none;
   transition: all 0.3s ease;
-  width: 85%; /* Slightly narrower for better centering */
-  margin: 0 auto; /* Center the nav item within its container */
+  width: 150%; 
+  margin: auto auto; 
   box-sizing: border-box;
-  gap: 0.75rem; /* Reduced gap between icon and text */
+  gap: 0.75rem; 
   font-size: 1rem; /* Larger font size */
 }
 
@@ -114,9 +112,21 @@ html {
   line-height: 1;
 }
 
+.sidebar .GroupItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem !important;              /* consistent spacing between items */
+  margin-top: 25rem !important;
+  padding: 0 0.5rem;
+  width: 100%;
+}
+
+
 .sidebar .nav-item svg {
-  width: 24px; /* Consistent icon size that matches with text */
-  height: 24px;
+  width: 44px !important; /* Consistent icon size that matches with text */
+  height: 44px !important;
   flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
@@ -215,7 +225,7 @@ html {
     padding: 0.5rem 0.5rem;
   }
   .sidebar .nav-item span {
-    font-size: 1rem; /* Consistent size */
+    font-size: 1.1rem; 
   }
   .sidebar .nav-item svg {
     width: 24px; /* Consistent icon size */
@@ -322,7 +332,7 @@ html {
     margin-top: 0;
     flex-direction: row;
     align-items: center;       /* horizontal centering */
-    gap: 1.5rem;
+    gap: 1rem;
     width: 100%;
     justify-content: space-between;
   }
@@ -496,17 +506,6 @@ html {
   .corner-shapes svg:not(:first-child) {
     margin-left: -15px;
   }
-}
-
-.sidebar .GroupItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;              /* consistent spacing between items */
-  margin-top: 2rem;
-  padding: 0 0.5rem;
-  width: 100%;
 }
 
 
