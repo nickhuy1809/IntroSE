@@ -53,6 +53,13 @@ export default function MusicPlayer() {
     }, [audio]);
 
     const handleSongSelect = (song) => {
+        // If the same song is clicked again, toggle play/pause
+        if (currentSong && currentSong.id === song.id) {
+            togglePlayPause();
+            return;
+        }
+        
+        // Otherwise, play the new song
         if (audio) {
             audio.pause();
             audio.currentTime = 0;

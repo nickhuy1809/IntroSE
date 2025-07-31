@@ -7,22 +7,31 @@
   width: 100%;
   min-height: 600px;
   overflow-x: auto;
-  margin-left: 30px;
+  margin: 0;
+}
+
+/* Styles specific to the calendar when inside the calendar container on main page */
+.calendar-container .schedule-calendar {
+  min-height: 500px;
+  width: 100%;
 }
 
 /* Calendar Customization */
 .schedule-calendar .rbc-calendar {
   background: #FFFAF0;
-  min-width: 800px;
+  min-width: 100%;
+  width: 100%;
 }
 
 /* Make the calendar wider and more readable */
 .rbc-time-view {
-  min-width: 800px;
+  min-width: 100%;
+  width: 100%;
 }
 
 .rbc-time-content {
-  min-width: 800px;
+  min-width: 100%;
+  width: 100%;
 }
 
 /* Calendar header styling */

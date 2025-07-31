@@ -48,7 +48,163 @@
 
 .adjust-button:hover {
     background: #4a6b4a;
-    transform: scale(1.1);
+}
+
+/* Pomodoro Settings Modal Styling */
+.po-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.po-modal-content {
+    background-color: #f5f6ef;
+    border-radius: 16px;
+    padding: 30px;
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(91, 124, 91, 0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.po-modal-title {
+    color: #5b7c5b;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    font-family: 'Georgia', serif;
+}
+
+.po-settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.po-setting-row {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid rgba(91, 124, 91, 0.1);
+    padding-bottom: 16px;
+    align-items: center;
+}
+
+.po-setting-label {
+    color: #5b7c5b;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-right: auto;
+    width: 30%;
+}
+
+.po-option-group {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.po-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #2d3a2d;
+}
+
+.po-option input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.po-checkbox {
+    position: relative;
+    height: 24px;
+    width: 24px;
+    background-color: transparent;
+    border: 2px solid #5b7c5b;
+    border-radius: 4px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.po-option input:checked ~ .po-checkbox {
+    background-color: transparent;
+}
+
+.po-option input:checked ~ .po-checkbox::after {
+    content: "✓";
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #5b7c5b;
+    font-weight: bold;
+}
+
+.po-save-btn {
+    background-color: #5b7c5b;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+    align-self: center;
+    min-width: 200px;
+}
+
+.po-save-btn:hover {
+    background-color: #4a6b4a;
+}
+
+/* Timer button for settings - removed separate styles to use consistent styling */
+
+.timer-status {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.timer-status.work-time {
+    color: #5b7c5b;
+}
+
+.timer-status.break-time {
+    color: #ff6b35;
+}
+
+.session-info {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1rem;
+    color: #2d3a2d;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    opacity: 0.8;
 }
 
 .timer-display {
@@ -56,7 +212,7 @@
     font-size: clamp(3rem, 10vw, 8rem); /* Responsive font size */
     font-weight: 300;
     color: #5b7c5b;
-    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+    margin-bottom: clamp(1rem, 2vw, 2rem);
     letter-spacing: clamp(4px, 1vw, 8px);
     text-shadow: 2px 2px 4px rgba(91, 124, 91, 0.1);
     width: 100%;
@@ -65,47 +221,67 @@
 
 .timer-controls {
     display: flex;
-    gap: 32px;
     justify-content: center;
-    scale: 1.2; /* Make controls bigger */
+    align-items: center;
+    gap: 16px; /* Consistent spacing between buttons */
 }
 
 .timer-button {
-    width: 64px;
-    height: 64px;
+    width: 68px;
+    height: 68px;
     border: none;
-    border-radius: 25px;
+    border-radius: 30%; 
     background-color: #5b7c5b;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    margin: 0 8px;
 }
 
 .timer-button:hover {
-    background-color: #4a6b4a;
-    transform: scale(1.05);
+    background-color: #ff6b35; /* Consistent hover color */
 }
 
 .timer-button.active {
     background-color: #ff6b35;
 }
 
+.timer-button:disabled,
+.timer-button.disabled {
+    background-color: #aec0ae;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.timer-button:disabled:hover,
+.timer-button.disabled:hover {
+    background-color: #aec0ae;
+}
+
 .square-icon {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     background-color: #fff;
-    border-radius: 4px;
+    border-radius: 3px; /* Slightly rounded corners */
 }
 
 .triangle-icon {
     width: 0;
     height: 0;
-    border-left: 20px solid #fff;
+    border-left: 18px solid #fff;
     border-top: 12px solid transparent;
     border-bottom: 12px solid transparent;
-    margin-left: 4px;
+    margin-left: 4px; /* Center the play icon visually */
+}
+
+/* Make SVG icons consistent with other icons */
+.timer-button svg {
+    width: 24px;
+    height: 24px;
+    fill: white;
+    stroke: white;
 }
 
 /* Music Player Styles */
@@ -281,6 +457,16 @@
 }
 
 @media (max-width: 768px) {
+    .timer-status {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .session-info {
+        font-size: 0.9rem;
+        margin-bottom: 1.25rem;
+    }
+
     .timer-controls {
         gap: 16px;
         scale: 1;
@@ -298,6 +484,16 @@
 }
 
 @media (max-width: 600px) {
+    .timer-status {
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .session-info {
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
+    }
+
     .timer-button {
         width: 48px;
         height: 48px;

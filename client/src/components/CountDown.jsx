@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import PomodoroSettingsModal from './PomodoroSettingsModal';
+import { ReactComponent as SettingsIcon } from '../img/Settings.svg';
 
-export default function CountdownTimer({ initialSeconds = 60, offsetX = 0 }) {
-    const [time, setTime] = useState(initialSeconds);
-    const [isRunning, setIsRunning] = useState(false);
-    const [showSettings, setShowSettings] = useState(false);
-    const [currentSession, setCurrentSession] = useState(1);
-    const [isBreak, setIsBreak] = useState(false);
+export default function CountdownTimer({ offsetX = 0 }) {
     const [settings, setSettings] = useState({
         sessionTime: 25,
         shortBreak: 5,
         longBreak: 15,
         numSessions: 4
     });
+    const [time, setTime] = useState(settings.sessionTime * 60); // Start with the full session time
+    const [isRunning, setIsRunning] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [currentSession, setCurrentSession] = useState(1);
+    const [isBreak, setIsBreak] = useState(false);
+    const [completedPomodoros, setCompletedPomodoros] = useState(0);
 
     useEffect(() => {
         let interval;
@@ -25,34 +27,41 @@ export default function CountdownTimer({ initialSeconds = 60, offsetX = 0 }) {
                         
                         // Handle session transitions
                         if (!isBreak) {
-                            // Current session finished
+                            // Current work session finished
+                            setCompletedPomodoros(prev => prev + 1);
                             const nextSession = currentSession + 1;
                             const midPoint = Math.ceil(settings.numSessions / 2);
                             
-                            if (currentSession === midPoint) {
+                            if (completedPomodoros + 1 >= settings.numSessions) {
+                                // All pomodoros are complete
+                                // Just stay at zero until user resets
+                                return 0;
+                            } else if (currentSession === midPoint) {
                                 // Time for long break
                                 setTime(settings.longBreak * 60);
+                                setIsBreak(true);
                             } else {
                                 // Time for short break
                                 setTime(settings.shortBreak * 60);
+                                setIsBreak(true);
                             }
                             setCurrentSession(nextSession);
-                            setIsBreak(true);
+                            return 0;
                         } else {
                             // Break finished
                             if (currentSession <= settings.numSessions) {
                                 setTime(settings.sessionTime * 60);
                                 setIsBreak(false);
                             }
+                            return 0;
                         }
-                        return 0;
                     }
                     return prevTime - 1;
                 });
             }, 1000);
         }
         return () => clearInterval(interval);
-    }, [isRunning, time, currentSession, isBreak, settings]);
+    }, [isRunning, time, currentSession, isBreak, settings, completedPomodoros]);
 
     const toggleTimer = () => {
         if (time > 0) setIsRunning(!isRunning);
@@ -60,8 +69,27 @@ export default function CountdownTimer({ initialSeconds = 60, offsetX = 0 }) {
 
     const resetTimer = () => {
         setIsRunning(false);
-        setTime(initialSeconds);
+        setTime(settings.sessionTime * 60);
+        setCurrentSession(1);
+        setIsBreak(false);
+        setCompletedPomodoros(0);
     };
+    
+    // Update timer when settings change
+    useEffect(() => {
+        if (!isRunning) {
+            // Only update the timer if it's not running to avoid disrupting an active session
+            if (isBreak) {
+                if (currentSession === Math.ceil(settings.numSessions / 2)) {
+                    setTime(settings.longBreak * 60);
+                } else {
+                    setTime(settings.shortBreak * 60);
+                }
+            } else {
+                setTime(settings.sessionTime * 60);
+            }
+        }
+    }, [settings, isRunning, isBreak, currentSession]);
 
     const formatTime = (totalSeconds) => {
         const hours = Math.floor(totalSeconds / 3600);
@@ -72,8 +100,14 @@ export default function CountdownTimer({ initialSeconds = 60, offsetX = 0 }) {
 
     return (
         <div className="timer-container" style={{ '--timer-offset': `${offsetX}px` }}>
+            <div className={`timer-status ${isBreak ? 'break-time' : 'work-time'}`}>
+                {isBreak ? (currentSession === Math.ceil(settings.numSessions / 2) ? 'Long Break' : 'Short Break') : 'Work Time'}
+             </div>
             <div className="timer-display">
                 {formatTime(time)}
+            </div>
+            <div className="session-info">
+                Session {currentSession} of {settings.numSessions} • {completedPomodoros} completed
             </div>
             <div className="timer-controls">
                 <button 
@@ -86,12 +120,28 @@ export default function CountdownTimer({ initialSeconds = 60, offsetX = 0 }) {
                 <button 
                     className={`timer-button start ${!isRunning ? 'active' : ''}`}
                     onClick={toggleTimer}
-                    disabled={time === 0}
+                    disabled={time === 0 && completedPomodoros >= settings.numSessions}
                     aria-label="Start Countdown"
                 >
                     <div className="triangle-icon"></div>
                 </button>
+                <button 
+                    className={`timer-button settings ${isRunning ? 'disabled' : ''}`}
+                    onClick={() => !isRunning && setShowSettings(true)}
+                    disabled={isRunning}
+                    aria-label="Pomodoro Settings"
+                    title={isRunning ? "Settings cannot be changed during an active session" : "Pomodoro Settings"}
+                >
+                    <SettingsIcon />
+                </button>
             </div>
+            
+            <PomodoroSettingsModal 
+                isOpen={showSettings}
+                onClose={() => setShowSettings(false)}
+                onSave={updatedSettings => setSettings(updatedSettings)}
+                initialSettings={settings}
+            />
         </div>
     );
 }

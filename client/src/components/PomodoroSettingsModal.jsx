@@ -11,63 +11,107 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
         onClose();
     };
 
+    // Option values for the settings
+    const workOptions = [
+        { value: 25, label: "25 mins" },
+        { value: 30, label: "30 mins" },
+        { value: 35, label: "35 mins" }
+    ];
+
+    const shortBreakOptions = [
+        { value: 5, label: "5 mins" },
+        { value: 8, label: "8 mins" },
+        { value: 10, label: "10 mins" }
+    ];
+
+    const longBreakOptions = [
+        { value: 15, label: "15 mins" },
+        { value: 18, label: "18 mins" },
+        { value: 20, label: "20 mins" }
+    ];
+
+    const pomodorosOptions = [
+        { value: 2, label: "2" },
+        { value: 3, label: "3" },
+        { value: 4, label: "4" }
+    ];
+
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <h2>Pomodoro Settings</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="form-group">
-                        <label htmlFor="sessionTime">Session Time (minutes)</label>
-                        <input
-                            type="number"
-                            id="sessionTime"
-                            value={settings.sessionTime}
-                            onChange={(e) => setSettings({ ...settings, sessionTime: parseInt(e.target.value) })}
-                            min="1"
-                            required
-                        />
+        <div className="po-modal-overlay">
+            <div className="po-modal-content">
+                <h2 className="po-modal-title">Po-menu</h2>
+                <form onSubmit={handleSubmit} className="po-settings-form">
+                    <div className="po-setting-row">
+                        <div className="po-setting-label">Work duration</div>
+                        <div className="po-option-group">
+                            {workOptions.map(option => (
+                                <label key={option.value} className="po-option">
+                                    <input
+                                        type="checkbox"
+                                        checked={settings.sessionTime === option.value}
+                                        onChange={() => setSettings({ ...settings, sessionTime: option.value })}
+                                    />
+                                    <span className="po-checkbox"></span>
+                                    {option.label}
+                                </label>
+                            ))}
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="shortBreak">Short Break (minutes)</label>
-                        <input
-                            type="number"
-                            id="shortBreak"
-                            value={settings.shortBreak}
-                            onChange={(e) => setSettings({ ...settings, shortBreak: parseInt(e.target.value) })}
-                            min="1"
-                            required
-                        />
+                    
+                    <div className="po-setting-row">
+                        <div className="po-setting-label">Short break</div>
+                        <div className="po-option-group">
+                            {shortBreakOptions.map(option => (
+                                <label key={option.value} className="po-option">
+                                    <input
+                                        type="checkbox"
+                                        checked={settings.shortBreak === option.value}
+                                        onChange={() => setSettings({ ...settings, shortBreak: option.value })}
+                                    />
+                                    <span className="po-checkbox"></span>
+                                    {option.label}
+                                </label>
+                            ))}
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="longBreak">Long Break (minutes)</label>
-                        <input
-                            type="number"
-                            id="longBreak"
-                            value={settings.longBreak}
-                            onChange={(e) => setSettings({ ...settings, longBreak: parseInt(e.target.value) })}
-                            min="1"
-                            required
-                        />
+                    
+                    <div className="po-setting-row">
+                        <div className="po-setting-label">Long break</div>
+                        <div className="po-option-group">
+                            {longBreakOptions.map(option => (
+                                <label key={option.value} className="po-option">
+                                    <input
+                                        type="checkbox"
+                                        checked={settings.longBreak === option.value}
+                                        onChange={() => setSettings({ ...settings, longBreak: option.value })}
+                                    />
+                                    <span className="po-checkbox"></span>
+                                    {option.label}
+                                </label>
+                            ))}
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor="numSessions">Number of Sessions</label>
-                        <input
-                            type="number"
-                            id="numSessions"
-                            value={settings.numSessions}
-                            onChange={(e) => setSettings({ ...settings, numSessions: parseInt(e.target.value) })}
-                            min="1"
-                            required
-                        />
+                    
+                    <div className="po-setting-row">
+                        <div className="po-setting-label">Pomodoros</div>
+                        <div className="po-option-group">
+                            {pomodorosOptions.map(option => (
+                                <label key={option.value} className="po-option">
+                                    <input
+                                        type="checkbox"
+                                        checked={settings.numSessions === option.value}
+                                        onChange={() => setSettings({ ...settings, numSessions: option.value })}
+                                    />
+                                    <span className="po-checkbox"></span>
+                                    {option.label}
+                                </label>
+                            ))}
+                        </div>
                     </div>
-                    <div className="modal-actions">
-                        <button type="button" onClick={onClose} className="btn-cancel">
-                            Cancel
-                        </button>
-                        <button type="submit" className="btn-save">
-                            Save Settings
-                        </button>
-                    </div>
+                    
+                    <button type="submit" className="po-save-btn">
+                        Save & close
+                    </button>
                 </form>
             </div>
         </div>

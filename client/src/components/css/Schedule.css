@@ -1,12 +1,31 @@
 /* Schedule.css */
 .schedule-page {
-  padding: 24px;
+  padding: 24px 24px 24px 40px; /* Added more left padding to shift content right */
   height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Make the calendar bigger and wider in Schedule page */
+.schedule-page .schedule-calendar {
+  width: 90%;
+  min-height: 700px;
+  margin: 0 auto 0 40px; /* Add left margin to shift right */
+}
+
+.schedule-page .rbc-calendar,
+.schedule-page .rbc-time-view,
+.schedule-page .rbc-time-content {
+  min-width: 900px;
 }
 
 .schedule-header {
   margin-bottom: 24px;
-  margin-left: 30px;
+  margin-left: 60px; /* Increase left margin to align with calendar */
+  align-self: flex-start; /* Align header to the left of its container */
+  width: 90%;
 }
 
 .schedule-header h1 {
