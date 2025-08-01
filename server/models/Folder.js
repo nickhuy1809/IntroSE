@@ -1,20 +1,13 @@
 const mongoose = require('mongoose');
-
 const folderSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Tên thư mục không được để trống'],
-        trim: true
+        trim: true,
+        minlength: [1, 'Tên thư mục không được để trống'],
+        maxlength: [100, 'Tên thư mục không được quá 100 ký tự']
     },
-    // Tham chiếu đến người dùng sở hữu thư mục này
-    accountId: {
-        type: String,
-        ref: 'Account',
-        required: true
-    }
-}, {
-    timestamps: true
-});
-
+    accountId: { type: String, ref: 'Account', required: true }
+}, { timestamps: true });
 const Folder = mongoose.model('Folder', folderSchema);
 module.exports = Folder;

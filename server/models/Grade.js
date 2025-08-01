@@ -3,16 +3,19 @@ const gradeSchema = new mongoose.Schema({
     description: {
         type: String,
         required: [true, 'Mô tả điểm không được để trống'],
-        trim: true
+        trim: true,
+        maxlength: 200
     },
     score: {
         type: Number,
-        required: [true, 'Điểm số không được để trống']
+        required: [true, 'Điểm số không được để trống'],
+        min: 0
     },
     maxScore: {
         type: Number,
         required: [true, 'Điểm tối đa là bắt buộc'],
-        default: 10 // Mặc định là thang điểm 10, có thể thay đổi khi tạo
+        min: 0.5,
+        default: 10 
     },
     courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
     accountId: { type: String, ref: 'Account', required: true }

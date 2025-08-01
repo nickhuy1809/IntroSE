@@ -3,10 +3,21 @@ const Course = require('../Models/Course.js');
 
 // Tạo điểm mới
 exports.createGrade = async (req, res) => {
+    const { description, score, maxScore, courseId } = req.body;
+    
+    if (!description || score === undefined || !courseId) {
+        return res.status(400).json({ message: 'Vui lòng cung cấp đủ thông tin: description, score, courseId' });
+    }
+    if (typeof score !== 'number' || (maxScore !== undefined && typeof maxScore !== 'number')) {
+        return res.status(400).json({ message: 'Điểm số phải là một con số' });
+    }
+    if (maxScore !== undefined && score > maxScore) {
+        return res.status(400).json({ message: 'Điểm số không thể lớn hơn điểm tối đa' });
+    }
+
     try {
-        const { description, score, maxScore, courseId } = req.body;
         const parentCourse = await Course.findOne({ _id: courseId, accountId: req.accountId });
-        if (!parentCourse) return res.status(404).json({ message: 'Không tìm thấy khóa học cha' });
+        if (!parentCourse) return res.status(404).json({ message: 'Không tìm thấy khóa học' });
         const grade = await Grade.create({ description, score, maxScore, courseId, accountId: req.accountId });
         res.status(201).json(grade);
     } catch (error) {

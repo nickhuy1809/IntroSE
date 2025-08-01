@@ -9,6 +9,11 @@ exports.startSession = async (req, res) => {
         if (!tasks || tasks.length === 0) {
             return res.status(400).json({ message: 'Vui lòng chọn ít nhất một công việc' });
         }
+        for (const task of tasks) {
+            if (!task.taskId || !task.estimatedPomodoros || typeof task.estimatedPomodoros !== 'number' || task.estimatedPomodoros < 1) {
+                return res.status(400).json({ message: 'Mỗi công việc phải có taskId và estimatedPomodoros (là số dương)' });
+            }
+        }
 
         // Lấy cài đặt hiện tại của người dùng
         const settings = await PomodoroSetting.findOne({ accountId: req.accountId });
