@@ -4,14 +4,12 @@ const app = express();
 
 // Import các file routes
 const accountRoutes = require('./Routes/accountRoutes.js');
-// Thêm các file routes khác của bạn ở đây khi cần
-// const folderRoutes = require('./Routes/folder.routes.js');
-// const courseRoutes = require('./Routes/course.routes.js');
-// const gradeRoutes = require('./Routes/grade.routes.js');
-// const analysisRoutes = require('./Routes/analysis.routes.js');
+const folderRoutes = require('./Routes/folderRoutes.js');
+const courseRoutes = require('./Routes/courseRoutes.js');
+const gradeRoutes = require('./Routes/gradeRoutes.js');
+// const analysisRoutes = require('./Routes/analysisRoutes.js');
+const pomodoroRoutes = require('./Routes/pomodoroRoutes.js');
 
-
-// --- PHẦN CẤU HÌNH CORS ĐÚNG ĐẮN ---
 
 // 1. Định nghĩa các tùy chọn cho CORS
 const corsOptions = {
@@ -30,12 +28,7 @@ const corsOptions = {
 };
 
 // 2. Sử dụng middleware cors với các tùy chọn đã định nghĩa.
-// Dòng này sẽ được áp dụng cho TẤT CẢ các request và sẽ tự động xử lý
-// các preflight request (OPTIONS) mà không cần đến app.options('*', ...).
 app.use(cors(corsOptions));
-
-
-// --- KẾT THÚC PHẦN CẤU HÌNH CORS ---
 
 
 // Middleware cơ bản để xử lý JSON body
@@ -45,15 +38,16 @@ app.use(express.urlencoded({ extended: true }));
 
 // --- ĐỊNH NGHĨA CÁC API ROUTE ---
 app.use('/accounts', accountRoutes);
-// app.use('/api/folders', folderRoutes);
-// app.use('/api/courses', courseRoutes);
-// app.use('/api/grades', gradeRoutes);
-// app.use('/api/analysis', analysisRoutes);
+app.use('/folders', folderRoutes);
+app.use('/courses', courseRoutes);
+app.use('/grades', gradeRoutes);
+// app.use('/analysis', analysisRoutes);
+app.use('/pomodoro', pomodoroRoutes);
 
 
 // Route mặc định để kiểm tra server
 app.get('/', (req, res) => {
-  res.send('API của GradeAnalyst đang hoạt động...');
+  res.send('API của đang hoạt động...');
 });
 
 module.exports = app;
