@@ -30,6 +30,8 @@ const corsOptions = {
 // 2. Sử dụng middleware cors với các tùy chọn đã định nghĩa.
 app.use(cors(corsOptions));
 
+app.use(express.static('public'));
+
 
 // Middleware cơ bản để xử lý JSON body
 app.use(express.json());

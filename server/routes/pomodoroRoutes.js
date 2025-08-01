@@ -17,9 +17,13 @@ const {
     getTasks 
 } = require('../Controllers/taskController.js');
 
+const { getSoundTracks } = require('../Controllers/pomodoroSettingController.js');
+
 
 // Áp dụng middleware bảo vệ cho tất cả các route
 router.use(protect);
+
+router.route('/sounds').get(getSoundTracks);
 
 // --- Routes cho Cài đặt (Settings) ---
 router.route('/settings')

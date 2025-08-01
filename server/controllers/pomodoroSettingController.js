@@ -1,4 +1,5 @@
 const PomodoroSetting = require('../Models/PomodoroSetting.js');
+const SoundTrack = require('../Models/SoundTrack.js');
 
 // @desc    Lấy hoặc tạo cài đặt Pomodoro cho user
 exports.getSettings = async (req, res) => {
@@ -43,5 +44,14 @@ exports.updateSettings = async (req, res) => {
         res.status(200).json(settings);
     } catch (error) {
         res.status(400).json({ message: 'Lỗi cập nhật cài đặt', error: error.message });
+    }
+};
+
+exports.getSoundTracks = async (req, res) => {
+    try {
+        const tracks = await SoundTrack.find({});
+        res.status(200).json(tracks);
+    } catch (error) {
+        res.status(500).json({ message: 'Lỗi server khi lấy danh sách âm thanh', error: error.message });
     }
 };
