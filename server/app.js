@@ -47,9 +47,10 @@ app.use('/grades', gradeRoutes);
 app.use('/pomodoro', pomodoroRoutes);
 
 
+
 // Route mặc định để kiểm tra server
 app.get('/', (req, res) => {
-  res.send('API của đang hoạt động...');
+  res.send('API của GradeAnalyst đang hoạt động...');
 });
 
 module.exports = app;
