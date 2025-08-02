@@ -1,5 +1,5 @@
 const PomodoroSetting = require('../Models/PomodoroSetting.js');
-const SoundTrack = require('../Models/SoundTrack.js');
+const SoundTrack = require('../Models/MusicTrack.js');
 
 // @desc    Lấy hoặc tạo cài đặt Pomodoro cho user
 exports.getSettings = async (req, res) => {
