@@ -10,37 +10,37 @@ import './components/css/Layout.css';
 import {v4 as uuidv4} from 'uuid';
 
 function App() {
-//   const [loading, setLoading] = useState(true); // để chờ xử lý account
+  // const [loading, setLoading] = useState(true); // để chờ xử lý account
 
-//   useEffect(() => {
-//     const setupAccount = async () => {
-//       let accountId = localStorage.getItem('accountId');
-//       if (!accountId) {
-//         accountId = uuidv4();
-//         localStorage.setItem('accountId', accountId);
-//       }
+  // useEffect(() => {
+  //   const setupAccount = async () => {
+  //     let accountId = localStorage.getItem('accountId');
+  //     if (!accountId) {
+  //       accountId = uuidv4();
+  //       localStorage.setItem('accountId', accountId);
+  //     }
 
-//       try {
-//         const response = await fetch('http://localhost:5000/accounts', {
-//           method: 'POST',
-//           headers: { 'Content-Type': 'application/json' },
-//           body: JSON.stringify({ id: accountId }),
-//         });
+  //     try {
+  //       const response = await fetch('http://localhost:5000/accounts', {
+  //         method: 'POST',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ id: accountId }),
+  //       });
 
-//         if (!response.ok) throw new Error('Failed to create or get account');
+  //       if (!response.ok) throw new Error('Failed to create or get account');
 
-//         const data = await response.json();
-//         console.log('Account loaded/created:', data);
-//         setLoading(false); // Đã xong, cho phép render app
-//       } catch (error) {
-//         console.error('Error initializing account:', error);
-//       }
-//     };
+  //       const data = await response.json();
+  //       console.log('Account loaded/created:', data);
+  //       setLoading(false); // Đã xong, cho phép render app
+  //     } catch (error) {
+  //       console.error('Error initializing account:', error);
+  //     }
+  //   };
 
-//     setupAccount();
-//   }, []);
+  //   setupAccount();
+  // }, []);
 
-//   if (loading) return <div>Loading account...</div>; // hoặc spinner, hoặc splash
+  // if (loading) return <div>Loading account...</div>; // hoặc spinner, hoặc splash
 
   return (
     <Router>

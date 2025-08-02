@@ -3,40 +3,54 @@ const cors = require('cors');
 const app = express();
 
 // Import các file routes
-const accountRoutes = require('./Routes/account.routes.js');
-const folderRoutes = require('./Routes/folder.routes.js');
-const courseRoutes = require('./Routes/course.routes.js');
-const gradeRoutes = require('./Routes/grade.routes.js');
-const analysisRoutes = require('./Routes/analysis.routes.js');
+const accountRoutes = require('./Routes/accountRoutes.js');
+const folderRoutes = require('./Routes/folderRoutes.js');
+const courseRoutes = require('./Routes/courseRoutes.js');
+const gradeRoutes = require('./Routes/gradeRoutes.js');
+// const analysisRoutes = require('./Routes/analysisRoutes.js');
+const pomodoroRoutes = require('./Routes/pomodoroRoutes.js');
 
-// Cấu hình CORS linh hoạt cho development
+
+// 1. Định nghĩa các tùy chọn cho CORS
 const corsOptions = {
-  // Biểu thức này có nghĩa là: "Cho phép bất kỳ nguồn nào bắt đầu bằng http://localhost:"
-  // Ví dụ: http://localhost:3000, http://localhost:3001, http://localhost:8080 đều được chấp nhận.
+  // Cho phép các nguồn gốc (origin) khớp với biểu thức chính quy này.
+  // Nó sẽ chấp nhận http://localhost:3000, http://localhost:3001, v.v.
   origin: /localhost:\d+$/,
   
+  // Cho phép các phương thức HTTP này
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  
+  // Cho phép các header này trong request. Cần phải có 'x-account-id' của chúng ta.
   allowedHeaders: ['Content-Type', 'x-account-id'],
-  credentials: true
+  
+  // Tùy chọn để tương thích tốt hơn
+  optionsSuccessStatus: 204
 };
 
+// 2. Sử dụng middleware cors với các tùy chọn đã định nghĩa.
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
-// Middleware cơ bản
+app.use(express.static('public'));
+
+
+// Middleware cơ bản để xử lý JSON body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Định tuyến API
-app.use('/api/accounts', accountRoutes);
-// app.use('/api/folders', folderRoutes);
-// app.use('/api/courses', courseRoutes);
-// app.use('/api/grades', gradeRoutes);
-// app.use('/api/analysis', analysisRoutes);
+
+// --- ĐỊNH NGHĨA CÁC API ROUTE ---
+app.use('/accounts', accountRoutes);
+app.use('/folders', folderRoutes);
+app.use('/courses', courseRoutes);
+app.use('/grades', gradeRoutes);
+// app.use('/analysis', analysisRoutes);
+app.use('/pomodoro', pomodoroRoutes);
+
+
 
 // Route mặc định để kiểm tra server
 app.get('/', (req, res) => {
-  res.send('API của đang hoạt động...');
+  res.send('API của GradeAnalyst đang hoạt động...');
 });
 
 module.exports = app;

@@ -171,5 +171,3 @@ function CourseFrame() {
   }
 
 export default CourseFrame;
-
-  
