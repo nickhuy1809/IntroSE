@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+// import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Mainpage from './pages/Mainpage';
 import Schedule from './pages/Schedule';
 import Pomodoro from './pages/Pomodoro';
 import Grade from './pages/Grade';
+import Task from './pages/Task';
 import CornerShapes from './components/CornerShapes';
 import './components/css/Layout.css';
-import {v4 as uuidv4} from 'uuid';
+// import {v4 as uuidv4} from 'uuid';
 
 function App() {
   // const [loading, setLoading] = useState(true); // để chờ xử lý account
@@ -51,6 +52,7 @@ function App() {
             <Route path="/" element={<Mainpage />} />
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/grade" element={<Grade />} />
+            <Route path="/task" element={<Task />} />
             <Route path="/pomodoro" element={<Pomodoro />} /> {/* Add this route */}
           </Routes>
         </div>
