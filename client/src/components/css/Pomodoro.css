@@ -209,7 +209,7 @@
 
 .timer-display {
     font-family: 'Segoe UI', monospace;
-    font-size: clamp(3rem, 10vw, 8rem); /* Responsive font size */
+    font-size: clamp(3rem, 10vw, 6rem); /* Responsive font size */
     font-weight: 300;
     color: #5b7c5b;
     margin-bottom: clamp(1rem, 2vw, 2rem);

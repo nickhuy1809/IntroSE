@@ -32,8 +32,8 @@ const Rectangle30 = styled("div")({
   width: `180px`,
   height: `52px`,
   position: `absolute`,
-  left: `5px`,
-  top: `5px`,
+  left: `4px`,
+  top: `4px`,
 });
 
 const Statistics = styled("div")({

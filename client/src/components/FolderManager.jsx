@@ -4,6 +4,81 @@ import {
 
 import Button from './Button';
 
+// Button group container
+const ButtonGroup = styled("div")({
+  display: "flex",
+  flexDirection: "row",
+  gap: "12px",
+});
+
+// Styled icon wrapper
+const Icon = styled("svg")({
+  width: "18px",
+  height: "18px",
+  fill: "white",
+});
+
+function EditButtonGroup() {
+  return (
+    <ButtonGroup>
+      <button
+      onClick={() => alert("Clicked!")}
+      style={{
+        all: 'unset',
+        width: '32px',
+        height: '32px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        cursor: 'pointer',
+        }}
+        >
+        <Icon as="svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+          <path d="M9 3.75V14.25M3.75 9H14.25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </Icon>
+      </button>
+      <button
+      onClick={() => alert("Clicked!")}
+      style={{
+        all: 'unset',
+        width: '32px',
+        height: '32px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        cursor: 'pointer',
+      }}
+    >
+      <Icon as="svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path d="M3 5.25V3H15V5.25M6.75 15H11.25M9 3V15" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </Icon>
+    </button>
+    <button
+      onClick={() => alert("Clicked!")}
+      style={{
+        all: 'unset',
+        width: '32px',
+        height: '32px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        cursor: 'pointer',
+      }}
+    >
+      <Icon as="svg" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <path
+          d="M13.5 4.5L4.5 13.5M4.5 4.5L13.5 13.5"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </Icon>
+    </button>
+    </ButtonGroup>
+  );
+}
+
 const FolderButton1 = styled("div")({
   backgroundColor: `rgba(88, 129, 95, 1)`,
   borderRadius: `20px`,
@@ -16,7 +91,7 @@ const FolderButton1 = styled("div")({
   padding: `0px 10px`,
   boxSizing: `border-box`,
   height: `35px`,
-  width: `223px`,
+  width: `325px`,
 });
 
 const Folder = styled("div")({
@@ -34,6 +109,8 @@ const Folder = styled("div")({
   width: `158px`,
   height: `35px`,
   margin: `0px 0px 0px 10px`,
+  overflow: `hidden`,
+  textOverflow: `clip`,
 });
 
 
@@ -46,6 +123,7 @@ function FolderButton() {
       <Folder>
         {`Main folder`}
       </Folder>
+      <EditButtonGroup />
     </FolderButton1>);
   }
 
@@ -72,7 +150,9 @@ const Rectangle31 = styled("div")({
   left: `0px`,
   top: `50px`,
   padding: `5px`,
-  gap: `10px`,
+  flexDirection: 'column',
+  display: 'flex',
+  gap: '15px'
 });
 
 const Rectangle30 = styled("div")({
@@ -107,15 +187,18 @@ const Folders = styled("div")({
 const StyledFolderButton = styled(FolderButton)({
   width: `223px`,
   height: `35px`,
-  position: `absolute`,
-  left: `56px`,
-  top: `155px`,
 });
 
 function FolderManager() {
   return (
     <FolderManager1>
+      <div style={{ position: "absolute", top: "58px", left: "428px", zIndex: 2 }}>
+        <Button />
+      </div>
+      
       <Rectangle31>
+        <StyledFolderButton/>
+        <StyledFolderButton/>
         <StyledFolderButton/>
         <StyledFolderButton/>
         <StyledFolderButton/>

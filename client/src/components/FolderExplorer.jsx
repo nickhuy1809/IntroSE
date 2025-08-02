@@ -47,22 +47,21 @@ const Frame6 = styled("div")({
 });
 
 const Frame7 = styled("div")({
-  display: `flex`,
-  position: `absolute`,
-  isolation: `isolate`,
-  flexDirection: `column`,
-  justifyContent: `flex-start`,
-  alignItems: `flex-start`,
-  padding: `0px`,
-  boxSizing: `border-box`,
-  width: `1024px`,
-  height: `1004px`,
-  left: `9px`,
-  top: `70px`,
-  overflowX: `hidden`,
+  display: "block",
+  padding: 0,
+  boxSizing: "border-box",
+  width: "1024px",
+  maxHeight: "1004px",
   overflowY: "auto",
-  background: `transparent`,
-  gap: `100px`,
+  background: "transparent",
+  position: "absolute",
+  top: "70px",
+  left: "9px",
+  isolation: "isolate",
+  "::-webkit-scrollbar": {
+    display: "none",
+  },
+  scrollbarWidth: "none",
 });
 
 const CoursesInThisFolder = styled("div")({
@@ -93,6 +92,7 @@ function FolderExplorer() {
     <FolderExplorer1>
       <Rectangle27 />
       <Frame7>
+        <CourseFrame/>
         <CourseFrame/>
         <CourseFrame/>
         <CourseFrame/>

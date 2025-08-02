@@ -19,9 +19,9 @@
   --space-xxl: 1rem;
 
   /* Sizing constants - reduced to fit 100% zoom */
-  --sidebar-width-xl: 150px;
-  --sidebar-width-lg: 120px;
-  --sidebar-width-md: 100px;
+  --sidebar-width-xl: 300px;
+  --sidebar-width-lg: 200px;
+  --sidebar-width-md: 120px;
   --reminders-width-xl: 150px;
   --reminders-width-lg: 140px;
 
@@ -64,7 +64,7 @@ body {
 }
 
 html {
-  font-size: 14px; 
+  font-size: 30px; 
 }
 
 /* Main layout components */
@@ -118,7 +118,7 @@ html {
   align-items: center;
   justify-content: flex-start;
   gap: 2rem !important;              /* consistent spacing between items */
-  margin-top: 25rem !important;
+  margin-top: 10rem !important;
   padding: 0 0.5rem;
   width: 100%;
 }
