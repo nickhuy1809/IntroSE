@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import PomodoroSettingsModal from './PomodoroSettingsModal';
 import { ReactComponent as SettingsIcon } from '../img/Settings.svg';
+import { ReactComponent as CheckIcon } from '../img/Task.svg'; // Assuming this exists, or use another appropriate icon
+import { usePomodoroTasks } from '../hooks/usePomodoroTasks';
 
 export default function CountdownTimer({ offsetX = 0 }) {
     const [settings, setSettings] = useState({
@@ -15,6 +17,17 @@ export default function CountdownTimer({ offsetX = 0 }) {
     const [currentSession, setCurrentSession] = useState(1);
     const [isBreak, setIsBreak] = useState(false);
     const [completedPomodoros, setCompletedPomodoros] = useState(0);
+
+    // Task management
+    const { 
+        getCurrentTask,
+        setTaskList, 
+        completeCurrentTask, 
+        setCurrentTask,
+        getAllTasks
+    } = usePomodoroTasks();
+    
+    const currentTask = getCurrentTask();
 
     useEffect(() => {
         let interval;
@@ -95,10 +108,49 @@ export default function CountdownTimer({ offsetX = 0 }) {
         const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-        return `${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
 
-    return (
+    const handleTasksSelected = (tasks) => {
+        setTaskList(tasks);
+        if (tasks.length > 0) {
+            setCurrentTask(0); // Set first task as current
+        }
+    };
+
+    const handleCompleteTask = () => {
+        // Provide feedback that the task is complete
+        const taskElement = document.querySelector('.current-task-container');
+        
+        if (taskElement) {
+            taskElement.classList.add('task-completed');
+            
+            // Display success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'task-success-message';
+            successMessage.textContent = '✓ Task completed!';
+            document.body.appendChild(successMessage);
+            
+            // Use setTimeout to wait for animation to complete before moving to next task
+            setTimeout(() => {
+                completeCurrentTask();
+                taskElement.classList.remove('task-completed');
+                
+                // If timer is running, adjust the session state to account for task completion
+                if (isRunning) {
+                    // Increment completed pomodoros for proper tracking
+                    setCompletedPomodoros(prev => prev + 1);
+                }
+                
+                // Remove success message after a delay
+                setTimeout(() => {
+                    document.body.removeChild(successMessage);
+                }, 1500);
+            }, 700); // Match the animation duration (0.7s)
+        } else {
+            completeCurrentTask();
+        }
+    };    return (
         <div className="timer-container" style={{ '--timer-offset': `${offsetX}px` }}>
             <div className={`timer-status ${isBreak ? 'break-time' : 'work-time'}`}>
                 {isBreak ? (currentSession === Math.ceil(settings.numSessions / 2) ? 'Long Break' : 'Short Break') : 'Work Time'}
@@ -109,6 +161,69 @@ export default function CountdownTimer({ offsetX = 0 }) {
             <div className="session-info">
                 Session {currentSession} of {settings.numSessions} • {completedPomodoros} completed
             </div>
+
+            {/* Current task display */}
+            {currentTask && (
+                <div className="current-task-container">
+                    <div className="current-task-header">
+                        <span className={`task-priority-tag ${currentTask.priority.toLowerCase()}`}>
+                            {currentTask.priority}
+                        </span>
+                        <h3 className="current-task-name">{currentTask.name}</h3>
+                        <div className="task-complete-container">
+                            <label className="task-checkbox-label">
+                                <input 
+                                    type="checkbox"
+                                    className="task-checkbox"
+                                    onChange={handleCompleteTask}
+                                    title="Mark task as complete"
+                                />
+                                <span className="task-checkbox-custom">
+                                    <CheckIcon className="task-checkbox-icon" />
+                                </span>
+                                <span className="task-complete-label">Mark done</span>
+                            </label>
+                        </div>
+                    </div>
+                    {currentTask.description && (
+                        <p className="current-task-description">{currentTask.description}</p>
+                    )}
+                    {currentTask.dueDate && (
+                        <div className="task-due-date">
+                            Due: {new Date(currentTask.dueDate).toLocaleDateString('en-US', { 
+                                weekday: 'long', 
+                                year: 'numeric', 
+                                month: 'short', 
+                                day: 'numeric' 
+                            })}
+                        </div>
+                    )}
+                    <div className="task-pomodoro-estimate">
+                        <div className="task-progress-indicator">
+                            <div className="task-progress-dots">
+                                {Array.from({ length: currentTask.estimatedPomodoros }).map((_, index) => (
+                                    <div 
+                                        key={index} 
+                                        className={`progress-dot ${index < completedPomodoros % (currentTask.estimatedPomodoros || 1) ? 'completed' : ''}`}
+                                    />
+                                ))}
+                            </div>
+                            <span className="task-progress-text">
+                                {Math.min(completedPomodoros % (currentTask.estimatedPomodoros || 1), currentTask.estimatedPomodoros)} 
+                                of {currentTask.estimatedPomodoros} pomodoros
+                            </span>
+                        </div>
+                        <div className="next-task-hint">
+                            {getAllTasks().length > 1 && (
+                                <span>
+                                    Check the box to mark the task as done in order to move the next task
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="timer-controls">
                 <button 
                     className={`timer-button stop ${isRunning ? 'active' : ''}`}
@@ -141,6 +256,7 @@ export default function CountdownTimer({ offsetX = 0 }) {
                 onClose={() => setShowSettings(false)}
                 onSave={updatedSettings => setSettings(updatedSettings)}
                 initialSettings={settings}
+                onTasksSelected={handleTasksSelected}
             />
         </div>
     );
