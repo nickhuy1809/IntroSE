@@ -1,21 +1,23 @@
 import Suggestion from '../components/Suggestion';
 import ScheduleCalendar from '../components/ScheduleCalendar';
 import Reminder from '../components/Reminder';
+import styled from "@emotion/styled";
+
+const MainContainer = styled("div")({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "flex-start",
+  gap: "0px",
+  position: "relative",
+  width: "100%",
+});
 
 export default function MainPage() {
     return (
-        <div className="app-container">
-            <main className="main-content">
-                <div className="suggestion-container">
-                    <Suggestion />
-                </div>
-                <div className="calendar-container">
-                    <ScheduleCalendar defaultView="week" availableViews={['week']} />
-                </div>
-                <div className="reminder-container">
-                    <Reminder />
-                </div>
-            </main>
-        </div>
+        <MainContainer>
+            <Suggestion />
+            <ScheduleCalendar defaultView="week" availableViews={['week']} />
+            <Reminder />
+        </MainContainer>
     );
 }

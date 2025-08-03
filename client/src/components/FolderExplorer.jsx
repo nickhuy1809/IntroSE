@@ -65,7 +65,6 @@ const FolderExplorer1 = styled("div")({
   alignItems: `flex-start`,
   padding: `0px`,
   boxSizing: `border-box`,
-  overflow: `hidden`,
 });
 
 const Rectangle27 = styled("div")({
@@ -138,7 +137,7 @@ const StyledButton = styled(Button)({
   display: `flex`,
 });
 
-function FolderExplorer({ folderId }) {
+function FolderExplorer({ folderId, onEditClick }) {
   const [courses, setCourses] = useState([]);
   const [grades, setGrades] = useState([]);
   const [currentFolder, setCurrentFolder] = useState(null);
@@ -229,7 +228,7 @@ function FolderExplorer({ folderId }) {
 
   const openEditCourseModal = (course) => {
     setEditingCourse(course);
-    setIsCourseModalOpen(true);
+    onEditClick(course);
   };
 
   return (
@@ -250,7 +249,7 @@ function FolderExplorer({ folderId }) {
                   key={course._id} 
                   course={course} 
                   grades={gradesForCourse}
-                  onEditClick={openEditCourseModal}
+                  onEditClick={onEditClick}
                   onCourseClick={handleCourseClick}
                 />
               );
