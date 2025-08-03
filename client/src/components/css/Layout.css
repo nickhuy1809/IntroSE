@@ -1,200 +1,459 @@
-body {
-  background: #f5f6ef;
+/* Base styles with CSS variables for theming */
+:root {
+  /* Color palette */
+  --bg-primary: #f5f6ef;
+  --bg-sidebar: #5b7c5b;
+  --bg-card-light: #dbe5d1;
+  --bg-card-dark: #e9e9d7;
+  --text-light: #f5f6ef;
+  --text-dark: #2d3a2d;
+  --text-accent: #ff6b35;
+  --hover-color: rgba(233, 233, 215, 0.1);
+
+  /* Spacing scale (in rem) - scaled down by ~70% to be visible at 100% zoom */
+  --space-xs: 0.1rem;
+  --space-sm: 0.2rem;
+  --space-md: 0.33rem;
+  --space-lg: 0.5rem;
+  --space-xl: 0.75rem;
+  --space-xxl: 1rem;
+
+  /* Sizing constants - reduced to fit 100% zoom */
+  --sidebar-width-xl: 300px;
+  --sidebar-width-lg: 200px;
+  --sidebar-width-md: 120px;
+  --reminders-width-xl: 150px;
+  --reminders-width-lg: 140px;
+
+  /* Border radius */
+  --border-radius-xs: 2px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 8px;
+
+  /* Z-index layers */
+  --z-sidebar: 1000;
+  --z-decorative: 1;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-default: 0.3s ease;
 }
 
+/* Reset styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px; /* Restored to a more readable size */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg-primary);
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.3;
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 1rem;
+  zoom: 1; 
+}
+
+html {
+  font-size: 30px; 
+}
+
+/* Main layout components */
 .dashboard {
   display: flex;
-  height: 100vh;
-  background: #f5f6ef;
+  min-height: 100vh;
+  background: var(--bg-primary);
+  position: relative;
+  overflow-x: hidden; 
 }
 
 .sidebar {
   position: fixed;
-  width: 220px;
-  background: #5b7c5b;
-  color: #f5f6ef;
+  width: var(--sidebar-width-lg);
+  background: var(--bg-sidebar);
+  color: var(--text-light);
   display: flex;
   flex-direction: column;
-  padding: 24px 16px;
-  min-width: 220px;
-  font-family: 'Segoe UI', sans-serif;
+  padding: 1rem 1rem;
   height: 100vh;
-  z-index: 1000;
+  z-index: var(--z-sidebar);
+  transition: width var(--transition-default), transform var(--transition-default);
 }
 
-.sidebar .nav-item {
+/* Navigation items - flexbox alignment */
+.nav-item {
+  color: var(--color-text-secondary);
   display: flex;
   align-items: center;
-  gap: 24px;
-  font-size: 1.8rem;
-  padding: 30px 20px;
-  margin: 40px 0;
-  border-radius: 24px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  justify-content: flex-start; /* Left align content for better visual consistency */
+  padding: 0.5rem 0.75rem; /* Reduced horizontal padding */
+  border-radius: 0.5rem;
   text-decoration: none;
-  color: #e0e0e0;
+  transition: all 0.3s ease;
+  width: 120%; 
+  margin: auto auto; 
+  box-sizing: border-box;
+  gap: 0.75rem; 
+  font-size: 1rem; /* Larger font size */
+}
+
+.nav-item span {
+  font-size: 1rem; /* Consistent text size */
+  font-weight: 500; /* Slightly bolder for better readability */
+  line-height: 1;
+}
+
+.sidebar .GroupItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2rem !important;              /* consistent spacing between items */
+  margin-top: 10rem !important;
+  padding: 0 0.5rem;
   width: 100%;
 }
 
+
 .sidebar .nav-item svg {
-  width: 44px;
-  height: 44px;
+  width: 44px !important; /* Consistent icon size that matches with text */
+  height: 44px !important;
+  flex-shrink: 0; /* Prevent icon from shrinking */
 }
 
 .sidebar .nav-item svg path {
   stroke: currentColor;
-  transition: stroke 0.3s ease;
+  transition: stroke var(--transition-default);
 }
 
 .sidebar .nav-item:hover {
-  background: rgba(233, 233, 215, 0.1);
+  background: var(--hover-color);
   color: #fff;
 }
 
 .sidebar .nav-item.active {
-  background: #f5f6ef;
-  color: #ff6b35;
+  background: var(--bg-primary);
+  color: var(--text-accent);
   font-weight: 500;
 }
 
 .sidebar .nav-item.active svg path {
-  stroke: #ff6b35;
+  stroke: var(--text-accent);
 }
 
 .sidebar .nav-item span {
   white-space: nowrap;
 }
 
-.sidebar .settings {
-  margin-top: auto;
-  margin-bottom: 24px;
-  font-size: 1.1rem;
-  color: #f5f6ef;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
 
+/* Main content area with flexbox layout */
 .main-content {
   flex: 1;
-  padding: 32px 40px 32px 40px;
-  background: #f5f6ef;
+  padding: var(--space-lg) var(--space-lg);
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--space-md);
   font-family: 'Segoe UI', sans-serif;
-  margin-left: 220px; /* Match sidebar width */
-  margin-right: 458px; /* reminder width (428px) + right padding (30px) */
+  margin-left: var(--sidebar-width-lg);
+  margin-right: calc(var(--reminders-width-lg) + var(--space-md));
   min-height: 100vh;
-  width: calc(100% - 678px); /* sidebar (220px) + reminder (428px) + padding (30px) */
+  width: calc(100% - var(--sidebar-width-lg) - var(--reminders-width-lg) - var(--space-md));
+  transition: margin var(--transition-default), width var(--transition-default);
 }
 
+/* Card component styling */
 .suggestions {
-  background: #dbe5d1;
-  border-radius: 18px;
-  padding: 24px 32px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(91,124,91,0.07);
-  font-size: 1.2rem;
-  color: #2d3a2d;
-  width: 1073px;
-  height: 283px;
+  background: var(--bg-card-light);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md) var(--space-lg);
+  margin-bottom: var(--space-md);
+  box-shadow: 0 1px 3px rgba(91,124,91,0.07);
+  font-size: 0.9rem; /* Increased font size for better readability */
+  color: var(--text-dark);
+  height: auto;
+  min-height: 80px;
   max-width: 100%;
-  box-sizing: border-box;
 }
 
 .suggestions h2 {
   font-family: 'Georgia', serif;
-  font-size: 2rem;
+  font-size: 1.2rem; /* Larger heading */
   color: #3d5a3d;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-xs);
 }
 
+/* Reminders sidebar */
 .reminders {
   position: fixed;
-  right: 30px;
-  top: 500px;
-  width: 428px;
+  right: var(--space-md);
+  top: 15%;
+  width: var(--reminders-width-lg);
   height: auto;
-  background: #e9e9d7;
-  border-radius: 18px;
-  box-shadow: 0 2px 8px rgba(91,124,91,0.07);
-  color: #2d3a2d;
-  font-size: 1.1rem;
-  padding: 32px 24px;
+  max-height: 70vh;
+  background: var(--bg-card-dark);
+  border-radius: var(--border-radius-sm);
+  box-shadow: 0 1px 3px rgba(91,124,91,0.07);
+  color: var(--text-dark);
+  font-size: 0.85rem; /* More readable font size */
+  padding: var(--space-md) var(--space-sm);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 18px;
+  gap: var(--space-xs);
   overflow-y: auto;
+  transition: width var(--transition-default), right var(--transition-default);
 }
-@media (max-width: 1200px) {
+/* Large desktop screens (≥1440px) - 2xl in Tailwind */
+@media (min-width: 1440px) {
+  .sidebar {
+    width: var(--sidebar-width-xl);
+    min-width: var(--sidebar-width-xl);
+    padding: 0.6rem 0.4rem;
+  }
+  .sidebar .nav-item {
+    font-size: 1rem; /* Larger font for desktop */
+    padding: 0.5rem 0.5rem;
+  }
+  .sidebar .nav-item span {
+    font-size: 1.1rem; 
+  }
+  .sidebar .nav-item svg {
+    width: 24px; /* Consistent icon size */
+    height: 24px;
+  }
   .main-content {
+    margin-left: var(--sidebar-width-xl);
+    margin-right: calc(var(--reminders-width-xl) + 0.5rem); /* adjusted for larger sidebar */
+    padding: 0.7rem 0.8rem;
+    width: calc(100% - var(--sidebar-width-xl) - var(--reminders-width-xl) - 0.5rem); 
+  }
+  .suggestions {
+    padding: 0.6rem 0.7rem;
+    font-size: 1rem; /* Larger font for desktop */
+  }
+  .reminders {
+    right: 0.7rem;
+    width: var(--reminders-width-xl);
+    padding: 0.6rem 0.5rem;
+    font-size: 0.9rem; /* Larger font for desktop */
+  }
+}
+
+/* Standard desktops/laptops (1024px–1439px) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .main-content {
+    margin-left: var(--sidebar-width-lg);
+    margin-right: calc(var(--reminders-width-lg) + var(--space-md));
+    width: calc(100% - var(--sidebar-width-lg) - var(--reminders-width-lg) - var(--space-md));
+  }
+}
+
+/* Tablets (768px–1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dashboard {
+    flex-wrap: wrap;
+  }
+  .sidebar {
+    width: var(--sidebar-width-md);
+    min-width: var(--sidebar-width-md);
+    padding: 0.4rem 0.3rem;
+  }
+  .sidebar .nav-item {
+    font-size: 0.9rem; /* Consistent font size */
+    padding: 0.35rem 0.4rem;
+    margin: 0.3rem 0;
+    gap: 0.5rem;
+  }
+  .sidebar .nav-item span {
+    font-size: 0.9rem; /* Matching text size */
+  }
+  .sidebar .nav-item svg {
+    width: 22px; /* Proportional icon size */
+    height: 22px;
+  }
+  .main-content {
+    margin-left: var(--sidebar-width-md);
     margin-right: 0;
-    padding: 24px 8px 24px 8px;
+    padding: 0.5rem 0.4rem;
+    width: calc(100% - var(--sidebar-width-md));
   }
   .suggestions {
     width: 100%;
+    padding: 0.4rem;
     height: auto;
     min-width: 0;
-    padding: 16px;
+    font-size: 0.85rem; /* Adjusted font size */
   }
   .reminders {
     position: static;
     width: 100%;
     height: auto;
-    right: unset;
-    top: unset;
-    transform: none;
-    margin-bottom: 24px;
-    border-radius: 12px;
-    box-shadow: none;
-    padding: 16px 8px;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 1px 3px rgba(91,124,91,0.07);
+    padding: 0.5rem 0.4rem;
+    font-size: 0.8rem; /* Adjusted font size */
   }
 }
 
-@media (max-width: 900px) {
+/* Large phones (600px–767px) */
+@media (min-width: 600px) and (max-width: 767px) {
   .dashboard {
     flex-direction: column;
     height: auto;
   }
   .sidebar {
-    position: static;
+    position: sticky;
+    top: 0;
     flex-direction: row;
     width: 100%;
     min-width: unset;
     border-radius: 0;
-    padding: 8px 0;
+    padding: 0.3rem 0.2rem;
     height: auto;
-    box-shadow: none;
-    align-items: flex-start;
-    justify-content: flex-start;
+    box-shadow: 0 1px 3px rgba(91,124,91,0.07);
+    overflow-x: auto;
+    z-index: var(--z-sidebar);
+    justify-content: space-between;
+  }
+  .sidebar .GroupItem {
+    display: flex;
+    margin-top: 0;
+    flex-direction: row;
+    align-items: center;       /* horizontal centering */
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+  }
+  .sidebar .nav-item {
+    flex-direction: column;
+    font-size: 0.75rem; /* Consistent font size */
+    padding: 0.25rem 0.2rem;
+    margin: 0;
+    gap: 0.2rem;
+    width: auto;
+    align-items: center; /* Center align icon and text */
+    justify-content: center; /* Center contents in column layout */
+  }
+  .sidebar .nav-item span {
+    font-size: 0.75rem; /* Matching text size */
+    text-align: center; /* Ensure text is centered */
+  }
+  .sidebar .nav-item svg {
+    width: 18px; /* Proportional icon size */
+    height: 18px;
   }
   .main-content {
+    margin-left: 0;
     margin-right: 0;
-    padding: 16px 4px;
-    gap: 16px;
+    padding: 0.3rem 0.2rem;
+    width: 100%;
+    gap: 0.3rem;
   }
   .suggestions {
     width: 100%;
     height: auto;
     min-width: 0;
-    padding: 12px;
-    font-size: 1rem;
+    padding: 0.3rem;
+    font-size: 0.75rem; /* Increased font size */
   }
   .reminders {
     position: static;
     width: 100%;
     height: auto;
-    right: unset;
-    top: unset;
-    transform: none;
-    margin-bottom: 16px;
-    border-radius: 8px;
+    margin-bottom: 0.4rem;
+    border-radius: var(--border-radius-xs);
+    box-shadow: 0 1px 2px rgba(91,124,91,0.07);
+    padding: 0.4rem 0.3rem;
+    font-size: 0.7rem; /* Increased font size */
+    gap: 0.3rem;
+  }
+}
+
+/* Small phones (≤599px) */
+@media (max-width: 599px) {
+  .dashboard {
+    flex-direction: column;
+    height: auto;
+  }
+  .sidebar {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    min-width: unset;
+    border-radius: 0;
+    padding: 0.25rem 0.15rem;
+    height: auto;
+    box-shadow: 0 1px 2px rgba(91,124,91,0.07);
+    z-index: var(--z-sidebar);
+    background: var(--bg-sidebar);
+  }
+  .sidebar .GroupItem {
+    margin-top: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.1rem;
+  }
+  .sidebar .nav-item {
+    display: flex;
+    flex-direction: column;    /* icon on top, text below */
+    align-items: center;       /* center icon and text */
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    padding: 0.75rem 0;        /* vertical spacing */
+    gap: 0.5rem;
+  }
+  .sidebar .nav-item svg {
+    width: 16px; /* Proportional icon size */
+    height: 16px;
+  }
+  .sidebar .nav-item span {
+    font-size: 0.65rem; /* Matching text size */
+    line-height: 1.1;
+  }
+  .main-content {
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0.25rem 0.2rem;
+    width: 100%;
+    gap: 0.25rem;
+  }
+  .suggestions {
+    width: 100%;
+    height: auto;
+    min-width: 0;
+    padding: 0.25rem;
+    font-size: 0.7rem; /* Increased font size */
+    border-radius: var(--border-radius-xs);
+  }
+  .suggestions h2 {
+    font-size: 0.9rem; /* Increased font size */
+    margin-bottom: 0.2rem;
+  }
+  .reminders {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-bottom: 0.25rem;
+    border-radius: var(--border-radius-xs);
     box-shadow: none;
-    padding: 12px 4px;
-    gap: 12px;
+    padding: 0.25rem 0.2rem;
+    font-size: 0.65rem; /* Increased font size */
+    gap: 0.2rem;
   }
 }
 .corner-shapes {
@@ -204,16 +463,97 @@ body {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  z-index: 1;
+  z-index: var(--z-decorative);
   pointer-events: none;
 }
+.corner-shapes svg {
+  width: 60px;
+  height: 60px;
+}
 .corner-shapes svg:not(:first-child) {
-  margin-left: -130px;
+  margin-left: -40px;
 }
 
-.sidebar .GroupItem {
-  margin-top: 300px; /* 👈 Increase or decrease this to move nav items lower */
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+/* Responsive corner shapes */
+@media (max-width: 1023px) {
+  .corner-shapes svg {
+    width: 50px;
+    height: 50px;
+    transform-origin: bottom right;
+  }
+  .corner-shapes svg:not(:first-child) {
+    margin-left: -35px;
+  }
+}
+
+@media (max-width: 767px) {
+  .corner-shapes svg {
+    width: 40px;
+    height: 40px;
+    transform-origin: bottom right;
+  }
+  .corner-shapes svg:not(:first-child) {
+    margin-left: -25px;
+  }
+}
+
+@media (max-width: 599px) {
+  .corner-shapes svg {
+    width: 30px;
+    height: 30px;
+    transform-origin: bottom right;
+  }
+  .corner-shapes svg:not(:first-child) {
+    margin-left: -15px;
+  }
+}
+
+
+/* Responsive layout for GroupItem */
+@media (min-width: 1440px) {
+  .sidebar .GroupItem {
+    margin-top: 60px;
+    gap: 0.3rem;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .sidebar .GroupItem {
+    margin-top: 50px;
+    gap: 0.25rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .sidebar .GroupItem {
+    margin-top: 40px;
+    gap: 0.2rem;
+  }
+}
+
+/* Override existing styles for mobile to ensure full visibility */
+@media (min-width: 600px) and (max-width: 767px) {
+  .sidebar .GroupItem {
+    margin-top: 0;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    padding: 0 var(--space-sm);
+    justify-content: space-around;
+  }
+  
+  .sidebar .GroupItem::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
+
+@media (max-width: 599px) {
+  .sidebar .GroupItem {
+    margin-top: 0;
+    padding: var(--space-xs);
+    gap: var(--space-xs);
+  }
 }

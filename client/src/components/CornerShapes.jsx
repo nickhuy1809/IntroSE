@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function CornerShapes() {
   return (
     <div className="corner-shapes">
