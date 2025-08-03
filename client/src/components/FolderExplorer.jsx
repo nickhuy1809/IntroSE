@@ -138,13 +138,7 @@ const StyledButton = styled(Button)({
   display: `flex`,
 });
 
-function FolderExplorer({ folderId }) {
-  const [courses, setCourses] = useState([]);
-  const [grades, setGrades] = useState([]);
-  const [currentFolder, setCurrentFolder] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
+function FolderExplorer({ folder, courses, grades, isLoading, error, onDataChange }) {
   // THÊM STATE ĐỂ QUẢN LÝ COURSE MODAL ---
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
   // editingCourse có thể dùng trong tương lai để sửa tên course
@@ -153,41 +147,11 @@ function FolderExplorer({ folderId }) {
   const accountId = localStorage.getItem('accountId');
   // const navigate = useNavigate();
 
-  // HÀM LẤY DỮ LIỆU (Cần cập nhật để có thể gọi lại) ---
-  const fetchData = async () => {
-    if (!folderId) {
-      setCourses([]);
-      setGrades([]);
-      setCurrentFolder(null);
-      return;
-    }
-    setIsLoading(true);
-    setError(null);
-    try {
-      const [folderRes, coursesRes, gradesRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/folders/${folderId}`, { headers: { 'x-account-id': accountId } }),
-          fetch(`http://localhost:5000/api/courses/folder/${folderId}`, { headers: { 'x-account-id': accountId } }),
-          fetch(`http://localhost:5000/api/grades/folder/${folderId}`, { headers: { 'x-account-id': accountId } })
-      ]);
-      if (!folderRes.ok || !coursesRes.ok || !gradesRes.ok) throw new Error('Không thể tải dữ liệu cho thư mục này');
-      const folderData = await folderRes.json();
-      const coursesData = await coursesRes.json();
-      const gradesData = await gradesRes.json();
-      setCurrentFolder(folderData);
-      setCourses(coursesData);
-      setGrades(gradesData);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [folderId]);
-
   const handleSaveCourse = async (courseName) => {
+    if (!folder || !folder._id) {
+        alert("Lỗi: Không xác định được thư mục hiện tại để thêm khóa học.");
+        return; // Dừng hàm lại ngay lập tức
+    }
     const isEditing = !!editingCourse;
     
     const url = isEditing
@@ -196,10 +160,7 @@ function FolderExplorer({ folderId }) {
 
     const method = isEditing ? 'PUT' : 'POST';
 
-    const body = {
-      name: courseName,
-      folderId: folderId // folderId luôn được lấy từ prop
-    };
+     const body = { name: courseName, folderId: folder._id };
 
     try {
       const response = await fetch(url, {
@@ -208,7 +169,7 @@ function FolderExplorer({ folderId }) {
         body: JSON.stringify(body),
       });
       if (!response.ok) throw new Error('Thao tác thất bại');
-      fetchData(); // Tải lại danh sách để cập nhật UI
+      onDataChange();  // Tải lại danh sách để cập nhật UI
     } catch (err) {
       alert(`Lỗi: ${err.message}`);
     }
@@ -217,7 +178,7 @@ function FolderExplorer({ folderId }) {
   // --- HÀM XỬ LÝ KHI CLICK VÀO COURSE FRAME ---
   const handleCourseClick = (courseId) => {
     console.log(`Điều hướng đến trang chi tiết của course: ${courseId}`);
-    // Dòng này sẽ hoạt động khi bạn đã thiết lập React Router
+    // Dòng này sẽ hoạt động khi đã thiết lập React Router
     // navigate(`/grades/course/${courseId}`); 
   };
   
@@ -257,15 +218,15 @@ function FolderExplorer({ folderId }) {
             })
           ) : (
             <div style={{ color: 'black', padding: '20px' }}>
-              {folderId ? "Thư mục này chưa có khóa học nào. Hãy tạo một khóa học mới!" : "Vui lòng chọn một thư mục để bắt đầu."}
+              {folder ? "Thư mục này chưa có khóa học nào. Hãy tạo một khóa học mới!" : "Vui lòng chọn một thư mục để bắt đầu."}
             </div>
           )}
         </Frame7>
         <Frame6>
           <CoursesInThisFolder>
-            {currentFolder ? `Courses in ${currentFolder.name}` : 'Courses in this folder'}
+            {folder ? `Courses in ${folder.name}` : 'Courses in this folder'}
           </CoursesInThisFolder>
-          {folderId && <StyledButton label='+ New course' onClick={openAddCourseModal} />}
+          {folder && <StyledButton label='+ New course' onClick={openAddCourseModal} />}
         </Frame6>
       </FolderExplorer1>
       <CourseModal

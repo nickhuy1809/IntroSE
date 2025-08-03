@@ -4,6 +4,7 @@ const app = express();
 
 // Import các file routes
 const accountRoutes = require('./Routes/accountRoutes.js');
+const taskRoutes = require('./Routes/taskRoutes.js');
 const folderRoutes = require('./Routes/folderRoutes.js');
 const courseRoutes = require('./Routes/courseRoutes.js');
 const gradeRoutes = require('./Routes/gradeRoutes.js');
@@ -40,6 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // --- ĐỊNH NGHĨA CÁC API ROUTE ---
 app.use('/api/accounts', accountRoutes);
+app.use('/api/tasks', taskRoutes);
 app.use('/api/folders', folderRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/grades', gradeRoutes);
