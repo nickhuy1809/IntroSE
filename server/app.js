@@ -11,7 +11,6 @@ const gradeRoutes = require('./Routes/gradeRoutes.js');
 // const analysisRoutes = require('./Routes/analysisRoutes.js');
 const pomodoroRoutes = require('./Routes/pomodoroRoutes.js');
 
-
 // 1. Định nghĩa các tùy chọn cho CORS
 const corsOptions = {
   // Cho phép các nguồn gốc (origin) khớp với biểu thức chính quy này.
@@ -33,7 +32,6 @@ app.use(cors(corsOptions));
 
 app.use(express.static('public'));
 
-
 // Middleware cơ bản để xử lý JSON body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -47,8 +45,6 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/grades', gradeRoutes);
 // app.use('/analysis', analysisRoutes);
 app.use('/api/pomodoro', pomodoroRoutes);
-
-
 
 // Route mặc định để kiểm tra server
 app.get('/', (req, res) => {
