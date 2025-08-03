@@ -53,7 +53,7 @@ function App() {
             <Route path="/schedule" element={<Schedule />} />
             <Route path="/grade" element={<Grade />} />
             <Route path="/task" element={<Task />} />
-            <Route path="/pomodoro" element={<Pomodoro />} /> {/* Add this route */}
+            <Route path="/pomodoro" element={<Pomodoro />} /> 
           </Routes>
         </div>
         <CornerShapes />
