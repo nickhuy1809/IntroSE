@@ -11,6 +11,13 @@ const gradeSchema = new mongoose.Schema({
         required: [true, 'Điểm số không được để trống'],
         min: 0
     },
+    weight: {
+        type: Number,
+        required: [true, 'Tỉ lệ điểm là bắt buộc'],
+        min: 0,
+        max: 100
+    },
+
     maxScore: {
         type: Number,
         required: [true, 'Điểm tối đa là bắt buộc'],

@@ -3,10 +3,10 @@ const Course = require('../Models/Course.js');
 
 // Tạo điểm mới
 exports.createGrade = async (req, res) => {
-    const { description, score, maxScore, courseId } = req.body;
+    const { description, score, weight, maxScore, courseId } = req.body;
     
-    if (!description || score === undefined || !courseId) {
-        return res.status(400).json({ message: 'Vui lòng cung cấp đủ thông tin: description, score, courseId' });
+    if (!description || score === undefined || weight === undefined || !courseId) {
+        return res.status(400).json({ message: 'Vui lòng cung cấp đủ thông tin: description, score, weight, courseId' });
     }
     if (typeof score !== 'number' || (maxScore !== undefined && typeof maxScore !== 'number')) {
         return res.status(400).json({ message: 'Điểm số phải là một con số' });
@@ -18,7 +18,7 @@ exports.createGrade = async (req, res) => {
     try {
         const parentCourse = await Course.findOne({ _id: courseId, accountId: req.accountId });
         if (!parentCourse) return res.status(404).json({ message: 'Không tìm thấy khóa học' });
-        const grade = await Grade.create({ description, score, maxScore, courseId, accountId: req.accountId });
+        const grade = await Grade.create({ description, score, weight, maxScore, courseId, accountId: req.accountId });
         res.status(201).json(grade);
     } catch (error) {
         res.status(400).json({ message: "Lỗi tạo điểm", error: error.message });
@@ -38,10 +38,10 @@ exports.getGradesForCourse = async (req, res) => {
 // Cập nhật điểm
 exports.updateGrade = async (req, res) => {
     try {
-        const { description, score, maxScore } = req.body;
+        const { description, score, weight, maxScore } = req.body;
         const grade = await Grade.findOneAndUpdate(
             { _id: req.params.id, accountId: req.accountId },
-            { description, score, maxScore },
+            { description, score, weight, maxScore },
             { new: true, runValidators: true }
         );
         if (!grade) return res.status(404).json({ message: 'Không tìm thấy điểm' });
@@ -59,5 +59,34 @@ exports.deleteGrade = async (req, res) => {
         res.status(200).json({ message: 'Đã xóa điểm thành công' });
     } catch (error) {
         res.status(500).json({ message: "Lỗi server", error: error.message });
+    }
+};
+
+
+// Lấy tất cả điểm của các course trong một folder cụ thể
+exports.getGradesForFolder = async (req, res) => {
+    try {
+        // 1. Tìm tất cả các course ID thuộc về folder này và người dùng này
+        const coursesInFolder = await Course.find({ 
+            folderId: req.params.folderId, 
+            accountId: req.accountId 
+        }).select('_id'); // .select('_id') để tối ưu hóa, chỉ lấy trường _id
+
+        // Nếu folder không có course nào, trả về một mảng rỗng là hợp lý
+        if (coursesInFolder.length === 0) {
+            return res.status(200).json([]);
+        }
+
+        // 2. Tạo một mảng mới chỉ chứa các giá trị ID
+        const courseIds = coursesInFolder.map(course => course._id);
+        
+        // 3. Tìm tất cả các Grade có trường `courseId` nằm trong mảng `courseIds`
+        const grades = await Grade.find({ courseId: { $in: courseIds } });
+        
+        // 4. Trả về mảng các grade tìm được
+        res.status(200).json(grades);
+    } catch (error) {
+        // Nếu có lỗi xảy ra, báo lỗi server
+        res.status(500).json({ message: "Lỗi server khi lấy điểm theo thư mục", error: error.message });
     }
 };

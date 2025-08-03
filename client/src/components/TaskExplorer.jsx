@@ -88,7 +88,7 @@ const TaskMenu = styled("img")({
 function TaskExplorer() {
   const [selectedSort, setSelectedSort] = useState("A");
 
-  const sortOptions = ["All tasks", "Status", "Priority", "Due date"]; // Replace with real sort names
+  const sortOptions = ["All tasks", "Priority", "Due date"]; // Replace with real sort names
 
   return (
     <TaskMainContent>

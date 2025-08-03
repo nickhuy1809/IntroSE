@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createFolder, getFoldersByAccount, updateFolder, deleteFolder } = require('../Controllers/folderController.js');
+const { createFolder, getFoldersByAccount, getFolderById, updateFolder, deleteFolder } = require('../Controllers/folderController.js');
 const { protect } = require('../Middleware/authMiddleware.js');
 
 router.use(protect); // Áp dụng cho tất cả
@@ -9,6 +9,6 @@ router.use(protect); // Áp dụng cho tất cả
 router.route('/').post(createFolder).get(getFoldersByAccount);
 
 // PUT & DELETE /api/folders/:id
-router.route('/:id').put(updateFolder).delete(deleteFolder);
+router.route('/:id').get(getFolderById).put(updateFolder).delete(deleteFolder);
 
 module.exports = router;

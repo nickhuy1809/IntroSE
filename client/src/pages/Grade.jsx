@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from "@emotion/styled";
 import FolderExplorer from "../components/FolderExplorer";
 import StatisticsBoard from "../components/StatisticsBoard";
@@ -13,12 +14,20 @@ const GradeContainer = styled("div")({
 });
 
 export default function Grade() {
+  // 1. State `selectedFolderId` được quản lý ở cấp cao nhất
+  const [selectedFolderId, setSelectedFolderId] = useState(null);
+
+  // 2. Hàm để cập nhật state, sẽ được truyền xuống component con
+  const handleFolderSelect = (folderId) => {
+    setSelectedFolderId(folderId);
+  };
+
   return (
     <GradeContainer>
-      <FolderExplorer />
+      <FolderExplorer folderId={selectedFolderId} />
       <div>
-        <FolderManager />
-        <StatisticsBoard />
+        <FolderManager selectedFolderId={selectedFolderId} onFolderSelect={handleFolderSelect}/>
+        <StatisticsBoard folderId={selectedFolderId} />
       </div>
     </GradeContainer>
   );

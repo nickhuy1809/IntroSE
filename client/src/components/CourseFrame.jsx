@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   styled
 } from '@mui/material/styles';
@@ -89,6 +90,7 @@ const Edit = styled("div")({
   position: `absolute`,
   left: `893px`,
   top: `105px`,
+  cursor: `pointer`,
 });
 
 const CourseName = styled("div")({
@@ -120,7 +122,9 @@ const StyledProgressBar = styled(ProgressBar)({
 
 const Progress = styled("div")({
   textAlign: `left`,
-  whiteSpace: `pre-wrap`,
+  whiteSpace: "nowrap",         // Không cho xuống dòng
+  overflow: "hidden",         
+  textOverflow: "clip",    
   fontSynthesis: `none`,
   color: `rgba(89, 111, 99, 1)`,
   fontStyle: `normal`,
@@ -130,7 +134,7 @@ const Progress = styled("div")({
   letterSpacing: `0px`,
   textDecoration: `none`,
   textTransform: `none`,
-  width: `67px`,
+  width: `auto`,
   height: `37.78px`,
   position: `absolute`,
   left: `161px`,
@@ -138,9 +142,38 @@ const Progress = styled("div")({
 });
 
 
-function CourseFrame() {
+function CourseFrame({ course, grades, onEditClick, onCourseClick }) {
+   // --- LOGIC TÍNH ĐIỂM TỔNG (OVERALL SCORE) ---
+  const calculateOverallScore = () => {
+    // Nếu không có điểm nào, trả về 0
+    if (!grades || grades.length === 0) return { score: "N/A", totalWeight: 0 };
+
+    let weightedScoreSum = 0;
+    let totalWeight = 0;
+
+    grades.forEach(grade => {
+      // Bỏ qua các điểm không có trọng số hoặc điểm không hợp lệ
+      if (grade.weight > 0 && grade.maxScore > 0) {
+        // (điểm thực / điểm tối đa) * trọng số
+        weightedScoreSum += (grade.score / grade.maxScore) * grade.weight;
+        totalWeight += grade.weight;
+      }
+    });
+
+    // Tránh chia cho 0
+    if (totalWeight === 0) return { score: "N/A", totalWeight: 0 };
+    
+    // Điểm tổng cuối cùng là tổng điểm có trọng số chia cho tổng trọng số
+    // Sau đó có thể nhân với 10 hoặc 100 để ra thang điểm mong muốn. Ở đây ta giữ thang điểm 100.
+    const finalScore = (weightedScoreSum / totalWeight) * 10;
+    
+    return { score: finalScore.toFixed(1), totalWeight }; // Làm tròn đến 1 chữ số thập phân
+  };
+
+  const { score, totalWeight } = calculateOverallScore();
+
   return (
-    <CourseFrame1>
+    <CourseFrame1 onClick={() => onCourseClick(course._id)}>
       <Rectangle25>
       </Rectangle25>
       <Rectangle27>
@@ -153,18 +186,17 @@ function CourseFrame() {
       <Rectangle26>
       </Rectangle26>
       <TotalScore>
-        {`Total score:
-8.0`}
+        {`Total score:\n${score}`}
       </TotalScore>
-      <Edit>
+      <Edit onClick={(e) => { e.stopPropagation(); onEditClick(course); }}>
         {`EDIT`}
       </Edit>
       <CourseName>
-        {`Course name`}
+        {course.name}
       </CourseName>
-      <StyledProgressBar/>
+      <StyledProgressBar progress={totalWeight} />
       <Progress>
-        {`Progress`}
+        {`${totalWeight}% completed`}
       </Progress>
     </CourseFrame1>);
 

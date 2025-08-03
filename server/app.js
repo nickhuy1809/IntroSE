@@ -39,12 +39,12 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // --- ĐỊNH NGHĨA CÁC API ROUTE ---
-app.use('/accounts', accountRoutes);
-app.use('/folders', folderRoutes);
-app.use('/courses', courseRoutes);
-app.use('/grades', gradeRoutes);
+app.use('/api/accounts', accountRoutes);
+app.use('/api/folders', folderRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/grades', gradeRoutes);
 // app.use('/analysis', analysisRoutes);
-app.use('/pomodoro', pomodoroRoutes);
+app.use('/api/pomodoro', pomodoroRoutes);
 
 
 

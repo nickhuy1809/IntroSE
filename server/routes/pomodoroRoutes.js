@@ -12,10 +12,6 @@ const {
     incrementTaskPomodoro, 
     completeTaskInSession 
 } = require('../Controllers/pomodoroSessionController.js');
-const { 
-    createTask, 
-    getTasks 
-} = require('../Controllers/taskController.js');
 
 const { getSoundTracks } = require('../Controllers/pomodoroSettingController.js');
 
@@ -30,10 +26,6 @@ router.route('/settings')
     .get(getSettings)
     .put(updateSettings);
 
-// --- Routes cho Công việc (Tasks) ---
-router.route('/tasks')
-    .post(createTask)
-    .get(getTasks);
 
 // --- Routes cho Phiên làm việc (Sessions) ---
 router.route('/sessions/start').post(startSession);

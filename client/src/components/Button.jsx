@@ -11,6 +11,11 @@ const ButtonRoot = styled("div")({
   alignItems: `flex-start`,
   padding: `0px`,
   boxSizing: `border-box`,
+  cursor: `pointer`,
+  transition: 'transform 0.1s ease-in-out',
+  '&:active': {
+    transform: 'scale(0.98)' // Thêm hiệu ứng nhấn nút
+  }
 });
 
 const Rectangle = styled("div")({
@@ -42,9 +47,9 @@ const NewTask = styled("div")({
   top: `12px`,
 });
 
-function Button({ label = "+ New task" }) {
+function Button({ label = "+ New task", onClick }) {
   return (
-    <ButtonRoot>
+    <ButtonRoot onClick={onClick}>
       <Rectangle />
       <NewTask>
         {label}
