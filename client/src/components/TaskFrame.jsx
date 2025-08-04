@@ -178,6 +178,7 @@ const Edit = styled("div")({
   position: `absolute`,
   left: `926px`,
   top: `102px`,
+  cursor: 'pointer'
 });
 
 const Line7 = styled("img")({
@@ -189,7 +190,31 @@ const Line7 = styled("img")({
 });
 
 
-function TaskFrame() {
+function TaskFrame({ task, onEdit }) {
+
+  // Hàm trợ giúp để format ngày tháng
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return { dayOfWeek: '', date: 'No due date' };
+    }
+    const date = new Date(dateString);
+    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' });
+    const formattedDate = date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    return { dayOfWeek, date: formattedDate };
+  };
+
+  const dueDateInfo = formatDate(task.dueDate);
+  
+  // Hàm để thay đổi màu sắc dựa trên độ ưu tiên
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'high': return '#FFC0CB'; // Màu hồng nhạt cho High
+      case 'medium': return '#FFFFE0'; // Màu vàng nhạt cho Medium
+      case 'low': return '#ADD8E6'; // Màu xanh nhạt cho Low
+      default: return '#FFF6F6'; // Màu mặc định
+    }
+  };
+
   return (
     <TaskFrame1>
       <Rectangle24>
@@ -202,27 +227,26 @@ function TaskFrame() {
         <path d="M15 1H127V127H15C7.26801 127 1 120.732 1 113V15C1 7.26801 7.26801 1 15 1ZM1009 1C1016.73 1 1023 7.26801 1023 15V113C1023 120.732 1016.73 127 1009 127H129V1H1009Z" stroke="#58815F" stroke-width="2"/>
       </Vector>
       <PriorityHigh>
-        {`Priority
-        HIGH`}
+        {`Priority\n${task.priority ? task.priority.toUpperCase() : 'N/A'}`}
       </PriorityHigh>
       <Due>
         {`DUE`}
       </Due>
       <Sunday>
-        {`Sunday`}
+        {dueDateInfo.dayOfWeek}
       </Sunday>
       <Q27Jul2025>
-        {`27 Jul 2025`}
+        {dueDateInfo.date}
       </Q27Jul2025>
       <TaskName>
-        {`Task name`}
+        {task.title}
       </TaskName>
       <TaskDescription>
-        {`Task description`}
+        {task.description}
       </TaskDescription>
       <Rectangle26>
       </Rectangle26>
-      <Edit>
+      <Edit onClick={() => onEdit(task)}>
         {`EDIT`}
       </Edit>
       <Line7 as='svg' xmlns="http://www.w3.org/2000/svg" width="2" height="128" viewBox="0 0 2 128" fill="none">

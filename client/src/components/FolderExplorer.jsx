@@ -1,6 +1,57 @@
+import { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import Button from './Button';
 import CourseFrame from './CourseFrame';
+
+function CourseModal({ isOpen, onClose, onSubmit, initialName = '', title }) {
+  const [name, setName] = useState(initialName);
+
+  useEffect(() => {
+    if (isOpen) {
+      setName(initialName);
+    }
+  }, [initialName, isOpen]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (name.trim()) {
+      onSubmit(name);
+      onClose();
+    } else {
+      alert("Tên khóa học không được để trống!");
+    }
+  };
+
+  // Kiểu dáng tạm thời cho modal
+  const modalOverlayStyle = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center' };
+  const modalContentStyle = { background: 'white', padding: '20px', borderRadius: '8px', width: '300px' };
+  const inputStyle = { width: '100%', padding: '8px', boxSizing: 'border-box' };
+  const buttonContainerStyle = { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' };
+
+  return (
+    <div style={modalOverlayStyle} onClick={onClose}>
+      <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
+        <h3 style={{ marginTop: 0 }}>{title}</h3>
+        <form onSubmit={handleSubmit}>
+          <input 
+            type="text" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)} 
+            placeholder="Nhập tên khóa học..."
+            style={inputStyle}
+            autoFocus
+          />
+          <div style={buttonContainerStyle}>
+            <button type="button" onClick={onClose}>Hủy</button>
+            <button type="submit">Lưu</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 const FolderExplorer1 = styled("div")({
   borderRadius: `15px 15px 0px 0px`,
@@ -87,26 +138,105 @@ const StyledButton = styled(Button)({
   display: `flex`,
 });
 
-function FolderExplorer() {
+function FolderExplorer({ folder, courses, grades, isLoading, error, onDataChange }) {
+  // THÊM STATE ĐỂ QUẢN LÝ COURSE MODAL ---
+  const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
+  // editingCourse có thể dùng trong tương lai để sửa tên course
+  const [editingCourse, setEditingCourse] = useState(null); 
+
+  const accountId = localStorage.getItem('accountId');
+  // const navigate = useNavigate();
+
+  const handleSaveCourse = async (courseName) => {
+    if (!folder || !folder._id) {
+        alert("Lỗi: Không xác định được thư mục hiện tại để thêm khóa học.");
+        return; // Dừng hàm lại ngay lập tức
+    }
+    const isEditing = !!editingCourse;
+    
+    const url = isEditing
+      ? `http://localhost:5000/api/courses/${editingCourse._id}`
+      : 'http://localhost:5000/api/courses';
+
+    const method = isEditing ? 'PUT' : 'POST';
+
+     const body = { name: courseName, folderId: folder._id };
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json', 'x-account-id': accountId },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) throw new Error('Thao tác thất bại');
+      onDataChange();  // Tải lại danh sách để cập nhật UI
+    } catch (err) {
+      alert(`Lỗi: ${err.message}`);
+    }
+  };
+
+  // --- HÀM XỬ LÝ KHI CLICK VÀO COURSE FRAME ---
+  const handleCourseClick = (courseId) => {
+    console.log(`Điều hướng đến trang chi tiết của course: ${courseId}`);
+    // Dòng này sẽ hoạt động khi đã thiết lập React Router
+    // navigate(`/grades/course/${courseId}`); 
+  };
+  
+  // --- CÁC HÀM ĐIỀU KHIỂN MODAL ---
+  const openAddCourseModal = () => {
+    setEditingCourse(null);
+    setIsCourseModalOpen(true);
+  };
+
+  const openEditCourseModal = (course) => {
+    setEditingCourse(course);
+    setIsCourseModalOpen(true);
+  };
+
   return (
-    <FolderExplorer1>
-      <Rectangle27 />
-      <Frame7>
-        <CourseFrame/>
-        <CourseFrame/>
-        <CourseFrame/>
-        <CourseFrame/>
-        <CourseFrame/>
-        <CourseFrame/>
-        <CourseFrame/>
-      </Frame7>
-      <Frame6>
-        <CoursesInThisFolder>
-          {`Courses in this folder`}
-        </CoursesInThisFolder>
-        <StyledButton label='+ New course'/>
-      </Frame6>
-    </FolderExplorer1>
+    <>
+      <FolderExplorer1>
+        <Rectangle27 />
+        <Frame7>
+          {isLoading ? (
+            <div style={{ color: 'black', padding: '20px' }}>Đang tải...</div>
+          ) : error ? (
+            <div style={{ color: 'red', padding: '20px' }}>Lỗi: {error}</div>
+          ) : courses.length > 0 ? (
+            courses.map(course => {
+              // Với mỗi course, lọc ra các grade tương ứng của nó
+              const gradesForCourse = grades.filter(grade => grade.courseId === course._id);
+              return (
+                <CourseFrame 
+                  key={course._id} 
+                  course={course} 
+                  grades={gradesForCourse}
+                  onEditClick={openEditCourseModal}
+                  onCourseClick={handleCourseClick}
+                />
+              );
+            })
+          ) : (
+            <div style={{ color: 'black', padding: '20px' }}>
+              {folder ? "Thư mục này chưa có khóa học nào. Hãy tạo một khóa học mới!" : "Vui lòng chọn một thư mục để bắt đầu."}
+            </div>
+          )}
+        </Frame7>
+        <Frame6>
+          <CoursesInThisFolder>
+            {folder ? `Courses in ${folder.name}` : 'Courses in this folder'}
+          </CoursesInThisFolder>
+          {folder && <StyledButton label='+ New course' onClick={openAddCourseModal} />}
+        </Frame6>
+      </FolderExplorer1>
+      <CourseModal
+        isOpen={isCourseModalOpen}
+        onClose={() => setIsCourseModalOpen(false)}
+        onSubmit={handleSaveCourse} // <-- Gọi hàm save duy nhất
+        initialName={editingCourse ? editingCourse.name : ''} // <-- Lấy tên cũ nếu sửa
+        title={editingCourse ? 'Đổi tên khóa học' : 'Tạo khóa học mới'} // <-- Đổi tiêu đề
+      />
+    </>
   );
 }
 
