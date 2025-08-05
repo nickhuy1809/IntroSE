@@ -8,6 +8,7 @@ const taskRoutes = require('./Routes/taskRoutes.js');
 const folderRoutes = require('./Routes/folderRoutes.js');
 const courseRoutes = require('./Routes/courseRoutes.js');
 const gradeRoutes = require('./Routes/gradeRoutes.js');
+const scheduleRoutes = require('./routes/scheduleRoutes');
 // const analysisRoutes = require('./Routes/analysisRoutes.js');
 const pomodoroRoutes = require('./Routes/pomodoroRoutes.js');
 
@@ -43,6 +44,8 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/folders', folderRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/grades', gradeRoutes);
+app.use('/schedules', scheduleRoutes);
+
 // app.use('/analysis', analysisRoutes);
 app.use('/api/pomodoro', pomodoroRoutes);
 
