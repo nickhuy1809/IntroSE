@@ -1,43 +1,73 @@
 import { useState,useEffect } from 'react';
 
-// Music data with actual file paths
-const songs = [
-    { 
-        id: 1, 
-        title: "Calm Study", 
-        thumbnail: "/songs/calm-study/cover.png",
-        audioFile: "/songs/calm-study/track.mp3"
-    },
-    { 
-        id: 2, 
-        title: "Gentle Rain", 
-        thumbnail: "/songs/gentle-rain/cover.png",
-        audioFile: "/songs/gentle-rain/track.mp3"
-    },
-    { 
-        id: 3, 
-        title: "Forest Sounds", 
-        thumbnail: "/songs/forest-sounds/cover.png",
-        audioFile: "/songs/forest-sounds/track.mp3"
-    },
-    { 
-        id: 4, 
-        title: "Ocean Waves", 
-        thumbnail: "/songs/ocean-waves/cover.png",
-        audioFile: "/songs/ocean-waves/track.mp3"
-    },
-    { 
-        id: 5, 
-        title: "Soft Piano", 
-        thumbnail: "/songs/soft-piano/cover.png",
-        audioFile: "/songs/soft-piano/track.mp3"
-    }
-];
+// // Music data with actual file paths
+// const songs = [
+//     { 
+//         id: 1, 
+//         title: "Calm Study", 
+//         thumbnail: "/songs/calm-study/cover.png",
+//         audioFile: "/songs/calm-study/track.mp3"
+//     },
+//     { 
+//         id: 2, 
+//         title: "Gentle Rain", 
+//         thumbnail: "/songs/gentle-rain/cover.png",
+//         audioFile: "/songs/gentle-rain/track.mp3"
+//     },
+//     { 
+//         id: 3, 
+//         title: "Forest Sounds", 
+//         thumbnail: "/songs/forest-sounds/cover.png",
+//         audioFile: "/songs/forest-sounds/track.mp3"
+//     },
+//     { 
+//         id: 4, 
+//         title: "Ocean Waves", 
+//         thumbnail: "/songs/ocean-waves/cover.png",
+//         audioFile: "/songs/ocean-waves/track.mp3"
+//     },
+//     { 
+//         id: 5, 
+//         title: "Soft Piano", 
+//         thumbnail: "/songs/soft-piano/cover.png",
+//         audioFile: "/songs/soft-piano/track.mp3"
+//     }
+// ];
 
 export default function MusicPlayer() {
+    const [songs, setSongs] = useState([]); 
     const [currentSong, setCurrentSong] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [audio, setAudio] = useState(null);
+    const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); // Thêm state loading
+
+    useEffect(() => {
+        const fetchSongs = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/pomodoro/sounds', {
+                    headers: { 'x-account-id': localStorage.getItem('accountId') }
+                });
+                if (!response.ok) throw new Error('Không thể tải danh sách nhạc');
+
+                const data = await response.json();
+                const formattedSongs = data.map(track => ({
+                    id: track._id,
+                    title: track.displayName,
+                    thumbnail: `http://localhost:5000/songs/${track.trackIdentifier}/cover.png`,
+                    audioFile: `http://localhost:5000/songs/${track.trackIdentifier}/track.mp3`
+                }));
+
+                setSongs(formattedSongs);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchSongs();
+    }, []);
 
     // Initialize or cleanup audio on component mount/unmount
     useEffect(() => {

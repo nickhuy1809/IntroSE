@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const soundTrackSchema = new mongoose.Schema({
-    // Tên file âm thanh, ví dụ: "rain.mp3"
-    filename: {
+    // Định danh duy nhất cho bài hát, cũng là tên thư mục chứa file
+    // Ví dụ: "gentle-rain"
+    trackIdentifier: {
         type: String,
-        required: [true, 'Tên file không được để trống'],
-        unique: true, // Đảm bảo không có 2 tên file trùng lặp
+        required: [true, 'Định danh bài hát không được để trống'],
+        unique: true, // Đảm bảo không có 2 định danh trùng lặp
         trim: true
     },
     // Tên hiển thị cho người dùng, ví dụ: "Tiếng mưa rơi"

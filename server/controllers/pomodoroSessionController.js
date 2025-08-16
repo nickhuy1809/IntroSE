@@ -1,6 +1,7 @@
 const PomodoroSession = require('../Models/PomodoroSession.js');
 const PomodoroSetting = require('../Models/PomodoroSetting.js');
 const Account = require('../Models/Account.js');
+const Task = require('../Models/Task.js');
 
 // @desc Bắt đầu một phiên Pomodoro mới
 exports.startSession = async (req, res) => {
@@ -26,7 +27,7 @@ exports.startSession = async (req, res) => {
         }));
         
         // Tạo phiên mới
-        const newSession = await PomodoroSession.create({
+        let newSession = await PomodoroSession.create({
             accountId: req.accountId,
             settingsUsed: {
                 workDuration: settings.workDuration,
@@ -37,9 +38,19 @@ exports.startSession = async (req, res) => {
             tasks: sessionTasks
         });
 
+        newSession = await newSession.populate('tasks.task', 'title description priority dueDate');
+
         res.status(201).json(newSession);
     } catch (error) {
-        res.status(400).json({ message: 'Lỗi bắt đầu phiên', error: error.message });
+        // IN ra toàn bộ lỗi chi tiết trên console của server
+        console.error("LỖI CHI TIẾT KHI BẮT ĐẦU PHIÊN:", error); 
+
+        // Gửi thông báo lỗi chi tiết của Mongoose về cho client để dễ debug
+        res.status(400).json({ 
+            message: 'Lỗi bắt đầu phiên', 
+            error: error.message // error.message sẽ chứa thông báo của Mongoose
+        });
+        // res.status(400).json({ message: 'Lỗi bắt đầu phiên', error: error.message });
     }
 };
 
@@ -61,7 +72,7 @@ exports.abandonSession = async (req, res) => {
             { _id: req.params.sessionId, accountId: req.accountId, status: 'active' },
             { status: 'abandoned', endTime: new Date() },
             { new: true }
-        );
+        ).populate('tasks.task', 'title description priority dueDate');;
         if (!session) return res.status(404).json({ message: 'Không tìm thấy phiên đang hoạt động' });
         res.status(200).json(session);
     } catch (error) {
@@ -73,7 +84,7 @@ exports.abandonSession = async (req, res) => {
 exports.incrementTaskPomodoro = async (req, res) => {
     try {
         const { sessionId, taskId } = req.params;
-        const session = await PomodoroSession.findOne({ _id: sessionId, accountId: req.accountId, status: 'active' });
+        let session = await PomodoroSession.findOne({ _id: sessionId, accountId: req.accountId, status: 'active' });
         if (!session) return res.status(404).json({ message: 'Không tìm thấy phiên đang hoạt động' });
         const taskInSession = session.tasks.find(t => t.task.toString() === taskId);
         if (!taskInSession) return res.status(404).json({ message: 'Không tìm thấy công việc' });
@@ -81,8 +92,12 @@ exports.incrementTaskPomodoro = async (req, res) => {
         taskInSession.actualPomodoros += 1;
         await session.save();
 
-        res.status(200).json(session);
+        const updatedSession = await PomodoroSession.findById(sessionId)
+            .populate('tasks.task', 'title description priority dueDate');
+
+        res.status(200).json(updatedSession);
     } catch (error) {
+        console.error("LỖI KHI TĂNG POMODORO:", error);
         res.status(500).json({ message: 'Lỗi server', error: error.message });
     }
 };
@@ -91,31 +106,41 @@ exports.incrementTaskPomodoro = async (req, res) => {
 exports.completeTaskInSession = async (req, res) => {
     try {
         const { sessionId, taskId } = req.params;
+        const { incrementBeforeCompleting } = req.body; 
         const session = await PomodoroSession.findOne({ _id: sessionId, accountId: req.accountId, status: 'active' });
         if (!session) return res.status(404).json({ message: 'Không tìm thấy phiên đang hoạt động' });
         const taskInSession = session.tasks.find(t => t.task.toString() === taskId);
         if (!taskInSession) return res.status(404).json({ message: 'Không tìm thấy công việc' });
         if (taskInSession.status === 'completed') return res.status(400).json({ message: 'Công việc đã được hoàn thành' });
         
+        if (incrementBeforeCompleting) {
+            taskInSession.actualPomodoros += 1;
+        }
+        
         // Logic tính điểm
         let pointsToAdd = 0;
         const basePoints = 100;
-        const penaltyMultiplier = 0.5;
+        const penaltyPoints = 50;
         
         if (taskInSession.actualPomodoros <= taskInSession.estimatedPomodoros) {
             pointsToAdd = basePoints; // Xong sớm hoặc đúng hạn
         } else {
-            pointsToAdd = basePoints * penaltyMultiplier; // Xong muộn
+            pointsToAdd = penaltyPoints; // Xong muộn
         }
 
         // Cập nhật CSDL
         taskInSession.status = 'completed';
+        await Task.findByIdAndUpdate(taskInSession.task, { isCompleted: true });
         await Account.findByIdAndUpdate(req.accountId, { $inc: { point: pointsToAdd } });
         await session.save();
 
-        res.status(200).json({ message: `Công việc đã hoàn thành! Bạn được cộng ${pointsToAdd} điểm.`, session });
+        const updatedSession = await PomodoroSession.findById(sessionId)
+            .populate('tasks.task', 'title description priority dueDate');
+
+        res.status(200).json({ message: `Công việc đã hoàn thành! Bạn được cộng ${pointsToAdd} điểm.`, session: updatedSession });
 
     } catch (error) {
+        console.error("LỖI KHI HOÀN THÀNH TASK:", error);
         res.status(500).json({ message: 'Lỗi server', error: error.message });
     }
 };
