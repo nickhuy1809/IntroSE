@@ -1,54 +1,99 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initialSettings, onTasksSelected }) {
+export default function PomodoroSettingsModal({ isOpen, onClose, initialSettings, onSessionStarted }) {
     const [settings, setSettings] = useState(initialSettings);
-    const [activeTab, setActiveTab] = useState('timer'); // 'timer' or 'tasks'
+    const [activeTab, setActiveTab] = useState('timer');
     const [availableTasks, setAvailableTasks] = useState([]);
     const [selectedTasks, setSelectedTasks] = useState([]);
-    const [currentTask, setCurrentTask] = useState({
-        name: '',
-        estimatedPomodoros: 1,
-        priority: 'Medium',
-        description: ''
-    });
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const accountId = localStorage.getItem('accountId');
 
     const handleViewTaskPage = () => {
         onClose(); // Close the modal
         navigate('/task'); // Navigate to the task page
     };
 
+    useEffect(() => {
+        setSettings(initialSettings);
+    }, [initialSettings]);
+
+    
+
     // Fetch available tasks when modal opens
     useEffect(() => {
-        if (isOpen) {
-            // change the tasks here, currently is temp
-            const dummyTasks = [
-                { id: 1, name: 'Study for Math Exam', priority: 'High', description: 'Review chapters 1-5', dueDate: '2025-08-10' },
-                { id: 2, name: 'Write English Essay', priority: 'Medium', description: 'On Shakespeare\'s Macbeth', dueDate: '2025-08-15' },
-                { id: 3, name: 'Physics Problem Set', priority: 'High', description: 'Complete all odd-numbered problems', dueDate: '2025-08-05' },
-                { id: 4, name: 'Read History Chapter', priority: 'Low', description: 'Chapter 10: World War II', dueDate: '2025-08-12' },
-                { id: 5, name: 'Complete Programming Project', priority: 'High', description: 'Build a React app', dueDate: '2025-08-20' },
-                { id: 6, name: 'Research for Economics', priority: 'Medium', description: 'Gather sources for term paper', dueDate: '2025-08-18' }
-            ];
-            setAvailableTasks(dummyTasks);
+        if (isOpen && activeTab === 'tasks') {
+            setIsLoading(true);
+            const fetchAvailableTasks = async () => {
+                try {
+                    const response = await fetch('http://localhost:5000/api/tasks?isCompleted=false', {
+                        headers: { 'x-account-id': accountId }
+                    });
+                    if (!response.ok) throw new Error('Không thể tải danh sách công việc');
+                    const data = await response.json();
+                    setAvailableTasks(data); // <-- Dùng dữ liệu thật
+                } catch (err) {
+                    alert(err.message);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            fetchAvailableTasks();
         }
-    }, [isOpen]);
+    }, [isOpen, activeTab, accountId]);
 
     if (!isOpen) return null;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        onSave(settings);
-        if (onTasksSelected && selectedTasks.length > 0) {
-            onTasksSelected(selectedTasks);
+        setIsLoading(true);
+        try {
+            // Gửi yêu cầu cập nhật cài đặt timer
+            const settingsResponse = await fetch('http://localhost:5000/api/pomodoro/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'x-account-id': accountId },
+                body: JSON.stringify({
+                    workDuration: settings.sessionTime,
+                    shortBreakDuration: settings.shortBreak,
+                    longBreakDuration: settings.longBreak,
+                    pomodorosPerCycle: settings.numSessions
+                }),
+            });
+            if (!settingsResponse.ok) throw new Error('Lỗi cập nhật cài đặt');
+            const updatedSettings = await settingsResponse.json();
+
+            // Nếu có task được chọn, bắt đầu một phiên mới
+            if (selectedTasks.length > 0) {
+                const tasksForSession = selectedTasks.map(task => ({
+                    taskId: task._id, // <-- Dùng _id từ MongoDB
+                    estimatedPomodoros: task.estimatedPomodoros
+                }));
+                const sessionResponse = await fetch('http://localhost:5000/api/pomodoro/sessions/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-account-id': accountId },
+                    body: JSON.stringify({ tasks: tasksForSession }),
+                });
+                if (!sessionResponse.ok) {
+                    const errorData = await sessionResponse.json();
+                    throw new Error(errorData.message || 'Lỗi bắt đầu phiên');
+                }
+                const newSession = await sessionResponse.json();
+                onSessionStarted(newSession, updatedSettings); // Gửi phiên mới và cài đặt mới về cha
+            } else {
+                onSessionStarted(null, updatedSettings); // Chỉ gửi cài đặt mới về cha
+            }
+            onClose();
+        } catch (err) {
+            alert(`Lỗi: ${err.message}`);
+        } finally {
+            setIsLoading(false);
         }
-        onClose();
     };
 
     // Option values for the settings
     const workOptions = [
-        { value: 25, label: "25 mins" },
+        { value: 1, label: "1 mins" },
         { value: 30, label: "30 mins" },
         { value: 35, label: "35 mins" }
     ];
@@ -72,46 +117,18 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
     ];
 
     const handleTaskSelection = (task) => {
-        const taskIndex = selectedTasks.findIndex(t => t.id === task.id);
+        const taskIndex = selectedTasks.findIndex(t => t._id === task._id); // <-- Dùng _id
         if (taskIndex >= 0) {
-            // Task is already selected, remove it
-            const newSelectedTasks = [...selectedTasks];
-            newSelectedTasks.splice(taskIndex, 1);
-            setSelectedTasks(newSelectedTasks);
+            setSelectedTasks(selectedTasks.filter(t => t._id !== task._id)); // <-- Dùng _id
         } else {
-            // Task is not selected, add it
-            setSelectedTasks([...selectedTasks, { 
-                ...task,
-                estimatedPomodoros: 1, // Default to 1 pomodoro session
-                completed: false
-            }]);
+            setSelectedTasks([...selectedTasks, { ...task, estimatedPomodoros: 1 }]);
         }
     };
 
     const handleEstimateChange = (taskId, pomodoros) => {
         setSelectedTasks(selectedTasks.map(task => 
-            task.id === taskId ? { ...task, estimatedPomodoros: pomodoros } : task
+            task._id === taskId ? { ...task, estimatedPomodoros: parseInt(pomodoros) } : task // <-- Dùng _id
         ));
-    };
-
-    const addNewTask = () => {
-        if (currentTask.name.trim()) {
-            const newTask = {
-                id: Date.now(), // Simple unique ID
-                name: currentTask.name,
-                priority: currentTask.priority,
-                description: currentTask.description,
-                estimatedPomodoros: currentTask.estimatedPomodoros,
-                completed: false
-            };
-            setSelectedTasks([...selectedTasks, newTask]);
-            setCurrentTask({
-                name: '',
-                estimatedPomodoros: 1,
-                priority: 'Medium',
-                description: ''
-            });
-        }
     };
 
     return (
@@ -150,7 +167,8 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
                                     {workOptions.map(option => (
                                         <label key={option.value} className="po-option">
                                             <input
-                                                type="checkbox"
+                                                type="radio"
+                                                name="workDuration"
                                                 checked={settings.sessionTime === option.value}
                                                 onChange={() => setSettings({ ...settings, sessionTime: option.value })}
                                             />
@@ -167,7 +185,8 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
                                     {shortBreakOptions.map(option => (
                                         <label key={option.value} className="po-option">
                                             <input
-                                                type="checkbox"
+                                                type="radio"
+                                                name="shortBreak"
                                                 checked={settings.shortBreak === option.value}
                                                 onChange={() => setSettings({ ...settings, shortBreak: option.value })}
                                             />
@@ -184,7 +203,8 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
                                     {longBreakOptions.map(option => (
                                         <label key={option.value} className="po-option">
                                             <input
-                                                type="checkbox"
+                                                type="radio"
+                                                name="longBreak"
                                                 checked={settings.longBreak === option.value}
                                                 onChange={() => setSettings({ ...settings, longBreak: option.value })}
                                             />
@@ -201,7 +221,8 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
                                     {pomodorosOptions.map(option => (
                                         <label key={option.value} className="po-option">
                                             <input
-                                                type="checkbox"
+                                                type="radio"
+                                                name="pomodoros"
                                                 checked={settings.numSessions === option.value}
                                                 onChange={() => setSettings({ ...settings, numSessions: option.value })}
                                             />
@@ -220,28 +241,28 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
                                 <h3>Available Tasks</h3>
                                 <div className="po-tasks-list">
                                     {availableTasks.map(task => (
-                                        <div key={task.id} className="po-task-item">
+                                        <div key={task._id} className="po-task-item">
                                             <div className="po-task-left">
                                                 <label className="po-task-option">
                                                     <input
                                                         type="checkbox"
-                                                        checked={selectedTasks.some(t => t.id === task.id)}
+                                                        checked={selectedTasks.some(t => t._id === task._id)}
                                                         onChange={() => handleTaskSelection(task)}
                                                     />
                                                     <span className="po-checkbox"></span>
                                                 </label>
                                                 <div className="po-task-details">
                                                     <span className={`po-priority-tag ${task.priority.toLowerCase()}`}>{task.priority}</span>
-                                                    <span className="po-task-name">{task.name}</span>
+                                                    <span className="po-task-name">{task.title}</span>
                                                     {task.description && <p className="po-task-description">{task.description}</p>}
                                                 </div>
                                             </div>
-                                            {selectedTasks.some(t => t.id === task.id) && (
+                                            {selectedTasks.some(t => t._id === task._id) && (
                                                 <div className="po-task-estimate">
                                                     <label>Pomodoros:</label>
                                                     <select 
-                                                        value={selectedTasks.find(t => t.id === task.id).estimatedPomodoros}
-                                                        onChange={(e) => handleEstimateChange(task.id, parseInt(e.target.value))}
+                                                        value={selectedTasks.find(t => t._id === task._id).estimatedPomodoros}
+                                                        onChange={(e) => handleEstimateChange(task._id, parseInt(e.target.value))}
                                                     >
                                                         {[1, 2, 3, 4, 5].map(num => (
                                                             <option key={num} value={num}>{num}</option>
@@ -252,56 +273,16 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
                                         </div>
                                     ))}
                                 </div>
-                                <div className="po-add-task-form">
-                                    <h3>Add New Task</h3>
-                                    <div className="po-form-group">
-                                        <input
-                                            type="text"
-                                            placeholder="Task name"
-                                            value={currentTask.name}
-                                            onChange={(e) => setCurrentTask({...currentTask, name: e.target.value})}
-                                        />
-                                    </div>
-                                    <div className="po-form-group po-form-row">
-                                        <select
-                                            value={currentTask.priority}
-                                            onChange={(e) => setCurrentTask({...currentTask, priority: e.target.value})}
-                                        >
-                                            <option value="High">High Priority</option>
-                                            <option value="Medium">Medium Priority</option>
-                                            <option value="Low">Low Priority</option>
-                                        </select>
-                                        <select
-                                            value={currentTask.estimatedPomodoros}
-                                            onChange={(e) => setCurrentTask({...currentTask, estimatedPomodoros: parseInt(e.target.value)})}
-                                        >
-                                            {[1, 2, 3, 4, 5].map(num => (
-                                                <option key={num} value={num}>{num} Pomodoros</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="po-form-group">
-                                        <textarea
-                                            placeholder="Task description (optional)"
-                                            value={currentTask.description}
-                                            onChange={(e) => setCurrentTask({...currentTask, description: e.target.value})}
-                                            rows="2"
-                                        />
-                                    </div>
-                                    <button type="button" className="po-add-task-btn" onClick={addNewTask}>
-                                        Add Task
-                                    </button>
-                                </div>
                             </div>
                             <div className="po-selected-tasks">
                                 <h3>Selected Tasks ({selectedTasks.length})</h3>
                                 <div className="po-tasks-list">
                                     {selectedTasks.map((task, index) => (
-                                        <div key={task.id} className="po-selected-task-item">
+                                        <div key={task._id} className="po-selected-task-item">
                                             <div className="po-task-left">
                                                 <div className="po-task-details">
                                                     <span className={`po-priority-tag ${task.priority.toLowerCase()}`}>{task.priority}</span>
-                                                    <span className="po-task-name">{task.name}</span>
+                                                    <span className="po-task-name">{task.title}</span>
                                                 </div>
                                             </div>
                                             <div className="po-task-estimate">
@@ -319,8 +300,8 @@ export default function PomodoroSettingsModal({ isOpen, onClose, onSave, initial
                         </div>
                     )}
                     
-                    <button type="submit" className="po-save-btn">
-                        Save & close
+                    <button type="submit" className="po-save-btn" disabled={isLoading}>
+                        {isLoading ? 'Saving...' : 'Save & close'}
                     </button>
                 </form>
             </div>

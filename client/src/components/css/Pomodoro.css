@@ -756,6 +756,10 @@
     background-color: #5b7c5b;
 }
 
+.progress-dot.overtime.completed {
+  background-color: #ff6347; /* Màu cà chua (cam-đỏ) */
+}
+
 .task-progress-text {
     font-size: 0.8rem;
     color: #5b7c5b;

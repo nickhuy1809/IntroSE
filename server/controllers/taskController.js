@@ -23,9 +23,12 @@ exports.createTask = async (req, res) => {
 exports.getTasks = async (req, res) => {
     try {
         // --- LOGIC LỌC VÀ SẮP XẾP ---
-        const { sortBy } = req.query; // Nhận tham số từ URL, ví dụ: /api/pomodoro/tasks?sortBy=priority
+        const { sortBy , isCompleted} = req.query; // Nhận tham số từ URL, ví dụ: /api/pomodoro/tasks?sortBy=priority
 
         const query = { accountId: req.accountId }; // Luôn lọc theo accountId
+        if (isCompleted !== undefined) {
+            query.isCompleted = isCompleted === 'true'; // Chuyển chuỗi 'true'/'false' thành boolean
+        }
         const sortOptions = {};
 
         // Xây dựng các tùy chọn sắp xếp dựa trên tham số `sortBy`
