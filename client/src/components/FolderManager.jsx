@@ -252,41 +252,12 @@ const StyledFolderButton = styled(FolderButton)({
   height: `35px`,
 });
 
-function FolderManager({ selectedFolderId, onFolderSelect }) {
-  // --- STATE QUẢN LÝ DỮ LIỆU VÀ GIAO DIỆN ---
-  const [folders, setFolders] = useState([]); // Lưu cấu trúc cây thư mục
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+function FolderManager({ folders, selectedFolderId, onFolderSelect, onDataChange, isLoading, error }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('addRoot'); // 'addRoot', 'addSub', 'edit'
   const [currentTarget, setCurrentTarget] = useState(null); // Lưu folder cha (khi thêm con) hoặc folder đang sửa
 
   const accountId = localStorage.getItem('accountId');
-
-  // --- HÀM LẤY DỮ LIỆU TỪ BACKEND ---
-  const fetchFolders = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('http://localhost:5000/api/folders', {
-        headers: { 'x-account-id': accountId },
-      });
-      if (!response.ok) throw new Error('Không thể tải thư mục');
-      const data = await response.json();
-      setFolders(data);
-      // Tự động chọn folder đầu tiên nếu chưa có gì được chọn
-      if (!selectedFolderId && data.length > 0) {
-        onFolderSelect(data[0]._id);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (accountId) fetchFolders();
-  }, [accountId]); // Chạy lại nếu accountId thay đổi (dù hiếm)
 
   // --- HÀM XỬ LÝ SUBMIT TỪ MODAL (GỌI API) ---
   const handleSubmitModal = async (folderName) => {
@@ -319,7 +290,7 @@ function FolderManager({ selectedFolderId, onFolderSelect }) {
         body: JSON.stringify(body),
       });
       if (!response.ok) throw new Error('Thao tác thất bại');
-      fetchFolders(); // Tải lại cây thư mục để cập nhật UI
+      onDataChange(); // Tải lại cây thư mục để cập nhật UI
     } catch (err) {
       alert(`Lỗi: ${err.message}`);
     }
@@ -334,7 +305,7 @@ function FolderManager({ selectedFolderId, onFolderSelect }) {
           headers: { 'x-account-id': accountId },
         });
         if (!response.ok) throw new Error('Không thể xóa thư mục');
-        fetchFolders();
+        onDataChange();
       } catch (err) {
         alert(`Lỗi: ${err.message}`);
       }

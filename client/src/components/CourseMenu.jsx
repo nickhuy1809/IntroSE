@@ -3,17 +3,59 @@ import { styled } from "@mui/material/styles";
 import Button from '@mui/material/Button';
 import Cell from "../components/Cell";
 
+const Overlay = styled("div")({
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100vw",
+  height: "100vh",
+  background: "rgba(0,0,0,0.2)",
+  zIndex: 1000,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+});
+
 const Wrapper = styled("div")({
   padding: "20px",
   backgroundColor: "#f5f6ef",
-  maxWidth: "1000px",
+  maxWidth: "1200px",
+  width: "90vw",
+  maxHeight: "90vh",
   margin: "auto",
+  borderRadius: "16px",
+  overflow: "hidden",
+  display: "flex",
+  flexDirection: "column",
+});
+
+const CourseNameWrapper = styled("div")({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  marginBottom: "10px",
 });
 
 const Table = styled("div")({
   display: "flex",
   flexDirection: "row",
-  gap: "5px",
+  gap: "10px",
+});
+
+const TableScroll = styled("div")({
+    minHeight: 0,
+  overflowY: "auto",
+  overflowX: "hidden",
+  marginBottom: "20px",
+  overflowY: "overlay",
+  "&::-webkit-scrollbar": {
+    width: "8px",
+    background: "transparent",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background: "rgba(88,129,95,0.5)",
+    borderRadius: "4px",
+  },
 });
 
 const Column = styled("div")({
@@ -26,7 +68,8 @@ const Column = styled("div")({
 const BottomControls = styled("div")({
   marginTop: "20px",
   display: "flex",
-  justifyContent: "space-between",
+  gap: "10px",
+  justifyContent: "center",
 });
 
 function DeleteButton({ onClick }) {
@@ -51,6 +94,7 @@ function DeleteButton({ onClick }) {
 }
 
 function CourseMenu({ onClose }) {
+  const [courseName, setCourseName] = useState("Course Name");
   const [grades, setGrades] = useState([
     { name: "Assignment 1", raw: 9, percent: 10 },
     { name: "Assignment 2", raw: 8, percent: 10 },
@@ -80,86 +124,103 @@ function CourseMenu({ onClose }) {
 
   const saveGrades = () => {
     console.log("Saved grades:", grades);
-    // backend or file save logic here
     if (onClose) onClose();
   };
-  
-  const handleDeleteGrade = (e) => {
-    // backend or file save logic here
-  };
+
   const calculateProportional = (raw, percent) => {
     return ((raw * percent) / 100).toFixed(2);
   };
 
-  return (
-    <Wrapper>
-      <h2>Course Name</h2>
-      <Table>
-        <Column>
-          <Cell variant="header" label="Grade name" />
-          {grades.map((g, i) => (
-            <Cell
-              key={i}
-              variant="body"
-              editable
-              label={g.name}
-              onChange={(val) => updateGrade(i, "name", val)}
-            />
-          ))}
-        </Column>
-        <Column>
-          <Cell variant="header" label="Raw grade" />
-          {grades.map((g, i) => (
-            <Cell
-              key={i}
-              variant="body"
-              editable
-              label={g.raw.toString()}
-              onChange={(val) => updateGrade(i, "raw", val)}
-            />
-          ))}
-        </Column>
-        <Column>
-          <Cell variant="header" label="Percentage" />
-          {grades.map((g, i) => (
-            <Cell
-              key={i}
-              variant="body"
-              editable
-              label={g.percent.toString()}
-              onChange={(val) => updateGrade(i, "percent", val)}
-            />
-          ))}
-        </Column>
-        <Column>
-          <Cell variant="header" label="Proportional grade" />
-          {grades.map((g, i) => (
-            <Cell
-              key={i}
-              variant="body"
-              label={calculateProportional(g.raw, g.percent)}
-            />
-          ))}
-        </Column>
-        <Column>
-          <Cell variant="header" label="Delete" />
-          {grades.map((_, i) => (
-            <Cell variant="body" key={i}>
-                <DeleteButton onClick={handleDeleteGrade} />
-            </Cell>
-          ))}
-        </Column>
-      </Table>
+  // Calculate sum of proportional grades
+  const sumProportional = grades.reduce(
+    (sum, g) => sum + parseFloat(calculateProportional(g.raw, g.percent)),
+    0
+  ).toFixed(2);
 
-      <BottomControls>
-        <Button variant="contained" color="success" onClick={saveGrades}>
-          Save & Close
-        </Button>
-        <Button variant="outlined" onClick={addGrade}>
-          + New Grade
-        </Button>
-      </BottomControls>
-    </Wrapper>
+  return (
+    <Overlay>
+      <Wrapper>
+        <CourseNameWrapper>
+          <Cell
+            variant="coursename"
+            editable
+            label={courseName}
+            onChange={setCourseName}
+          />
+        </CourseNameWrapper>
+        <TableScroll>
+          <Table>
+            <Column>
+              <Cell variant="header" label="Grade name" />
+              {grades.map((g, i) => (
+                <Cell
+                  key={i}
+                  variant="body"
+                  editable
+                  label={g.name}
+                  onChange={(val) => updateGrade(i, "name", val)}
+                />
+              ))}
+              <Cell variant="final" label="Total" />
+            </Column>
+            <Column>
+              <Cell variant="header" label="Raw grade" />
+              {grades.map((g, i) => (
+                <Cell
+                  key={i}
+                  variant="body"
+                  editable
+                  label={g.raw.toString()}
+                  onChange={(val) => updateGrade(i, "raw", val)}
+                />
+              ))}
+              <Cell variant="final" label="" />
+            </Column>
+            <Column>
+              <Cell variant="header" label="Percentage" />
+              {grades.map((g, i) => (
+                <Cell
+                  key={i}
+                  variant="body"
+                  editable
+                  label={g.percent.toString()}
+                  onChange={(val) => updateGrade(i, "percent", val)}
+                />
+              ))}
+              <Cell variant="final" label="" />
+            </Column>
+            <Column>
+              <Cell variant="header" label="Proportional grade" />
+              {grades.map((g, i) => (
+                <Cell
+                  key={i}
+                  variant="body"
+                  label={calculateProportional(g.raw, g.percent)}
+                />
+              ))}
+              <Cell variant="final" label={sumProportional} />
+            </Column>
+            <Column>
+              <Cell variant="header" label="Delete" />
+              {grades.map((_, i) => (
+                <Cell variant="body" key={i}>
+                  <DeleteButton onClick={() => deleteGrade(i)} />
+                </Cell>
+              ))}
+              <Cell variant="final" label="" />
+            </Column>
+          </Table>
+        </TableScroll>
+        <BottomControls>
+          <Button variant="contained" color="success" onClick={saveGrades}>
+            Save & Close
+          </Button>
+          <Button variant="outlined" onClick={addGrade}>
+            + New Grade
+          </Button>
+        </BottomControls>
+      </Wrapper>
+    </Overlay>
   );
 }
 

@@ -179,6 +179,7 @@ const Edit = styled("div")({
   left: `926px`,
   top: `102px`,
   cursor: 'pointer',
+  cursor: 'pointer'
 });
 
 const Line7 = styled("img")({

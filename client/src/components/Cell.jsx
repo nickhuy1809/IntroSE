@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
 
-const CellWrapper = styled("div")(({ variant }) => {
+const CellWrapper = styled("div")(({ variant, canEdit }) => {
   const baseStyle = {
     display: "inline-flex",
     justifyContent: "center",
@@ -9,9 +9,9 @@ const CellWrapper = styled("div")(({ variant }) => {
     padding: "10px",
     gap: "10px",
     boxSizing: "border-box",
-    width: "200px",
+    width: variant === "coursename" ? "1000px" : "225px",
     height: "120px",
-    cursor: "pointer",
+    cursor: canEdit ? "pointer" : "default",
   };
 
   const variants = {
@@ -36,7 +36,7 @@ const CellWrapper = styled("div")(({ variant }) => {
   };
 });
 
-const CellText = styled("div")({
+const CellText = styled("div")(({ variant }) => ({
   textAlign: "center",
   whiteSpace: "pre-wrap",
   fontFamily: "EB Garamond",
@@ -46,8 +46,8 @@ const CellText = styled("div")({
   lineHeight: "normal",
   textDecoration: "none",
   textTransform: "none",
-  color: "#000",
-});
+  color: variant === "header" ? "#F8F7E3" : "#000",
+}));
 
 const CellInput = styled("input")({
   width: "100%",
@@ -60,9 +60,11 @@ const CellInput = styled("input")({
   textAlign: "center",
 });
 
-export default function Cell({ variant = "header", label = "Cell", editable = false, onChange }) {
+export default function Cell({ variant = "header", label = "Cell", editable = false, onChange, colIndex }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(label);
+
+  const canEdit = editable;
 
   const handleBlur = () => {
     setEditing(false);
@@ -76,18 +78,18 @@ export default function Cell({ variant = "header", label = "Cell", editable = fa
   };
 
   return (
-    <CellWrapper variant={variant} onClick={() => editable && setEditing(true)}>
-      {editing && editable ? (
-        <CellInput
-          value={value}
-          autoFocus
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-        />
-      ) : (
-        <CellText>{value}</CellText>
-      )}
-    </CellWrapper>
+  <CellWrapper variant={variant} canEdit={canEdit} onClick={() => canEdit && setEditing(true)}>
+    {editing && canEdit ? (
+      <CellInput
+        value={value}
+        autoFocus
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+      />
+    ) : (
+      <CellText variant={variant}>{value}</CellText>
+    )}
+  </CellWrapper>
   );
 }

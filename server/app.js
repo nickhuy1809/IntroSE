@@ -4,12 +4,12 @@ const app = express();
 
 // Import các file routes
 const accountRoutes = require('./Routes/accountRoutes.js');
+const taskRoutes = require('./Routes/taskRoutes.js');
 const folderRoutes = require('./Routes/folderRoutes.js');
 const courseRoutes = require('./Routes/courseRoutes.js');
 const gradeRoutes = require('./Routes/gradeRoutes.js');
 // const analysisRoutes = require('./Routes/analysisRoutes.js');
 const pomodoroRoutes = require('./Routes/pomodoroRoutes.js');
-
 
 // 1. Định nghĩa các tùy chọn cho CORS
 const corsOptions = {
@@ -32,7 +32,6 @@ app.use(cors(corsOptions));
 
 app.use(express.static('public'));
 
-
 // Middleware cơ bản để xử lý JSON body
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -40,13 +39,12 @@ app.use(express.urlencoded({ extended: true }));
 
 // --- ĐỊNH NGHĨA CÁC API ROUTE ---
 app.use('/api/accounts', accountRoutes);
+app.use('/api/tasks', taskRoutes);
 app.use('/api/folders', folderRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/grades', gradeRoutes);
 // app.use('/analysis', analysisRoutes);
 app.use('/api/pomodoro', pomodoroRoutes);
-
-
 
 // Route mặc định để kiểm tra server
 app.get('/', (req, res) => {

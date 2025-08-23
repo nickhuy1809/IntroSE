@@ -7,7 +7,7 @@ const {
     getTasks,
     updateTask,
     deleteTask
-} = require('../Controllers/task.controller.js');
+} = require('../Controllers/taskController.js');
 
 // Áp dụng middleware bảo vệ cho tất cả các route của Task
 router.use(protect);
