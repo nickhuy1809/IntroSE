@@ -65,7 +65,6 @@ const FolderExplorer1 = styled("div")({
   alignItems: `flex-start`,
   padding: `0px`,
   boxSizing: `border-box`,
-  overflow: `hidden`,
 });
 
 const Rectangle27 = styled("div")({
@@ -138,7 +137,7 @@ const StyledButton = styled(Button)({
   display: `flex`,
 });
 
-function FolderExplorer({ folder, courses, grades, isLoading, error, onDataChange }) {
+function FolderExplorer({folder, courses, grades, isLoading, error, onDataChange, onEditClick }) {
   // THÊM STATE ĐỂ QUẢN LÝ COURSE MODAL ---
   const [isCourseModalOpen, setIsCourseModalOpen] = useState(false);
   // editingCourse có thể dùng trong tương lai để sửa tên course
@@ -190,6 +189,7 @@ function FolderExplorer({ folder, courses, grades, isLoading, error, onDataChang
 
   const openEditCourseModal = (course) => {
     setEditingCourse(course);
+    onEditClick(course);
     setIsCourseModalOpen(true);
   };
 
@@ -211,7 +211,7 @@ function FolderExplorer({ folder, courses, grades, isLoading, error, onDataChang
                   key={course._id} 
                   course={course} 
                   grades={gradesForCourse}
-                  onEditClick={openEditCourseModal}
+                  onEditClick={onEditClick}
                   onCourseClick={handleCourseClick}
                 />
               );

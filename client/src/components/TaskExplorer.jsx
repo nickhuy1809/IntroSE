@@ -52,8 +52,6 @@ function TaskModal({ isOpen, onClose, onSubmit, initialTask = null, title }) {
 
   const modalOverlayStyle = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center' };
   const modalContentStyle = { background: 'white', padding: '20px', borderRadius: '8px', width: '300px' };
-  const inputStyle = { width: '100%', padding: '8px', boxSizing: 'border-box' };
-  const buttonContainerStyle = { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' };
 
   return (
     <div style={modalOverlayStyle} onClick={onClose}>
@@ -129,7 +127,6 @@ const SortButton = styled("button")(({ selected }) => ({
   borderRadius: "25px",
   fontSize: "30px",
   fontWeight: "550",
-  cursor: "pointer",
   background: selected ? "#58815F" : "#FFF",
   color: selected ? "#FFF" : "#58815F",
   border: selected ? "none" : "5px solid #58815F",
@@ -179,7 +176,7 @@ function TaskExplorer() {
 
   const fetchTasks = useCallback(async (sortByValue) => {
     if (!accountId) {
-      setError("Không tìm thấy tài khoản. Vui lòng thử tải lại trang.");
+      setError("Can't find account. Please try reloading the page.");
       setIsLoading(false);
       return;
     }
@@ -198,8 +195,8 @@ function TaskExplorer() {
       setError(err.message);
     } finally {
       setIsLoading(false);
-    }
-  }, [accountId]); // Chỉ phụ thuộc vào accountId
+    };
+  }, [accountId]);
 
   useEffect(() => {
     fetchTasks(selectedSort);
@@ -227,27 +224,27 @@ function TaskExplorer() {
         body: JSON.stringify(body),
       });
       if (!response.ok) throw new Error('Thao tác thất bại');
-      fetchTasks(selectedSort); // Tải lại danh sách sau khi lưu
+      fetchTasks(selectedSort);
     } catch (err) {
       alert(`Lỗi: ${err.message}`);
     }
   };
 
   // --- HÀM XỬ LÝ XÓA ---
-  const handleDeleteTask = async (taskId) => {
-      if (window.confirm("Bạn có chắc chắn muốn xóa công việc này?")) {
-          try {
-              const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
-                  method: 'DELETE',
-                  headers: { 'x-account-id': accountId }
-              });
-              if (!response.ok) throw new Error('Không thể xóa công việc');
-              fetchTasks(selectedSort); // Tải lại danh sách
-          } catch (err) {
-              alert(`Lỗi: ${err.message}`);
-          }
-      }
-  };
+  // const handleDeleteTask = async (taskId) => {
+  //     if (window.confirm("Bạn có chắc chắn muốn xóa công việc này?")) {
+  //         try {
+  //             const response = await fetch(`http://localhost:5000/api/tasks/${taskId}`, {
+  //                 method: 'DELETE',
+  //                 headers: { 'x-account-id': accountId }
+  //             });
+  //             if (!response.ok) throw new Error('Không thể xóa công việc');
+  //             fetchTasks(selectedSort); // Tải lại danh sách
+  //         } catch (err) {
+  //             alert(`Lỗi: ${err.message}`);
+  //         }
+  //     }
+  // };
   
   // --- CÁC HÀM ĐIỀU KHIỂN MODAL ---
   const openAddModal = () => {

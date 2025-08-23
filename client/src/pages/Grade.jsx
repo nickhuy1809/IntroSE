@@ -3,20 +3,21 @@ import styled from "@emotion/styled";
 import FolderExplorer from "../components/FolderExplorer";
 import StatisticsBoard from "../components/StatisticsBoard";
 import FolderManager from "../components/FolderManager";
-
+import CourseMenu from "../components/CourseMenu";
 
 const GradeContainer = styled("div")({
   display: "flex",
   flexDirection: "row",
   alignItems: "flex-start",
-  gap: "0px",
+  gap: "15px",
   position: "relative",
 });
 
 export default function Grade() {
   // --- STATE ---
   const [selectedFolderId, setSelectedFolderId] = useState(null);
-  const [folders, setFolders] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+   const [folders, setFolders] = useState([]);
   const [courses, setCourses] = useState([]);
   const [grades, setGrades] = useState([]);
   const [isLoading, setIsLoading] = useState({ folders: true, content: true }); 
@@ -83,8 +84,14 @@ export default function Grade() {
     fetchAllData();
   }, [accountId, selectedFolderId, refreshTrigger]);
 
+  // 2. Hàm để cập nhật state, sẽ được truyền xuống component con
   const handleFolderSelect = (folderId) => {
     setSelectedFolderId(folderId);
+    setSelectedCourse(null);
+  };
+
+  const handleEditCourse = (course) => {
+    setSelectedCourse(course);
   };
 
   // Tìm object folder đầy đủ từ danh sách để truyền tên xuống cho FolderExplorer
@@ -92,25 +99,30 @@ export default function Grade() {
 
   return (
     <GradeContainer>
-      <FolderExplorer 
-        folder={currentFolder}
-        courses={courses}
-        grades={grades}
-        isLoading={isLoading.content}
-        error={error.content}
+    <FolderExplorer 
+      folder={currentFolder}
+      courses={courses}
+      grades={grades}
+      isLoading={isLoading.content}
+      error={error.content}
+      onDataChange={handleDataChange}
+      folderId={selectedFolderId}
+      onEditClick={handleEditCourse}
+    />
+    <div>
+      <FolderManager
+        folders={folders}
+        selectedFolderId={selectedFolderId}
+        onFolderSelect={setSelectedFolderId}
         onDataChange={handleDataChange}
+        isLoading={isLoading.folders}
+        error={error.folders}
       />
-      <div>
-        <FolderManager 
-          folders={folders}
-          selectedFolderId={selectedFolderId}
-          onFolderSelect={setSelectedFolderId}
-          onDataChange={handleDataChange}
-          isLoading={isLoading.folders}
-          error={error.folders}
-        />
-        <StatisticsBoard folderId={selectedFolderId} />
-      </div>
-    </GradeContainer>
+      <StatisticsBoard folderId={selectedFolderId} />
+    </div>
+    {selectedCourse && (
+      <CourseMenu onClose={() => setSelectedCourse(null)} />
+    )}
+  </GradeContainer>
   );
 }

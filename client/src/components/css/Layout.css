@@ -22,8 +22,8 @@
   --sidebar-width-xl: 300px;
   --sidebar-width-lg: 200px;
   --sidebar-width-md: 120px;
-  --reminders-width-xl: 150px;
-  --reminders-width-lg: 140px;
+  --reminders-width-xl: 500px;
+  --reminders-width-lg: 400px;
 
   /* Border radius */
   --border-radius-xs: 2px;

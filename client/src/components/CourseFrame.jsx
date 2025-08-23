@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   styled
 } from '@mui/material/styles';
-
+import CourseMenu from './CourseMenu';
 import ProgressBar from './ProgressBar';
 
 const CourseFrame1 = styled("div")({
@@ -188,7 +188,7 @@ function CourseFrame({ course, grades, onEditClick, onCourseClick }) {
       <TotalScore>
         {`Total score:\n${score}`}
       </TotalScore>
-      <Edit onClick={(e) => { e.stopPropagation(); onEditClick(course); }}>
+      <Edit onClick={() => onEditClick(course)}>
         {`EDIT`}
       </Edit>
       <CourseName>
