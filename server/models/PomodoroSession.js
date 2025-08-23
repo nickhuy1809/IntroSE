@@ -5,7 +5,7 @@ const sessionTaskSchema = new mongoose.Schema({
     estimatedPomodoros: { type: Number, required: true, min: 1 },
     actualPomodoros: { type: Number, default: 0 },
     status: { type: String, enum: ['pending', 'in-progress', 'completed'], default: 'pending' }
-}, { _id: false });
+});
 
 const pomodoroSessionSchema = new mongoose.Schema({
     accountId: { type: String, ref: 'Account', required: true },
