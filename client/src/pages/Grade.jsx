@@ -17,7 +17,8 @@ export default function Grade() {
   // --- STATE ---
   const [selectedFolderId, setSelectedFolderId] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState(null);
-   const [folders, setFolders] = useState([]);
+  const [isCourseMenuOpen, setIsCourseMenuOpen] = useState(false);
+  const [folders, setFolders] = useState([]);
   const [courses, setCourses] = useState([]);
   const [grades, setGrades] = useState([]);
   const [isLoading, setIsLoading] = useState({ folders: true, content: true, analysis: true }); 
@@ -114,6 +115,12 @@ export default function Grade() {
 
   const handleEditCourse = (course) => {
     setSelectedCourse(course);
+    setIsCourseMenuOpen(true); 
+  };
+
+  const handleCloseCourseMenu = () => {
+    setIsCourseMenuOpen(false);
+    setSelectedCourse(null); // Reset course đang chọn
   };
 
   // Tìm object folder đầy đủ từ danh sách để truyền tên xuống cho FolderExplorer
@@ -146,6 +153,13 @@ export default function Grade() {
           error={error.analysis}
         />
       </div>
+      {isCourseMenuOpen && selectedCourse && (
+        <CourseMenu
+          course={selectedCourse}
+          onClose={handleCloseCourseMenu}
+          onDataChange={handleDataChange}
+        />
+      )}
     </GradeContainer>
   );
 }

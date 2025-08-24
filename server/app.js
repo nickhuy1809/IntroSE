@@ -8,7 +8,7 @@ const taskRoutes = require('./Routes/taskRoutes.js');
 const folderRoutes = require('./Routes/folderRoutes.js');
 const courseRoutes = require('./Routes/courseRoutes.js');
 const gradeRoutes = require('./Routes/gradeRoutes.js');
-// const analysisRoutes = require('./Routes/analysisRoutes.js');
+const analysisRoutes = require('./Routes/analysisRoutes.js');
 const pomodoroRoutes = require('./Routes/pomodoroRoutes.js');
 
 // 1. Định nghĩa các tùy chọn cho CORS
@@ -43,7 +43,7 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/folders', folderRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/grades', gradeRoutes);
-// app.use('/analysis', analysisRoutes);
+app.use('/api/analysis', analysisRoutes);
 app.use('/api/pomodoro', pomodoroRoutes);
 
 // Route mặc định để kiểm tra server
