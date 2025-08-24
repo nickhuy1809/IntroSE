@@ -161,7 +161,7 @@ function StatisticsBoard({ analysisResult, isLoading, error }) {
         </svg>
       </div>
       <Frame8>
-        {renderContent()}
+        {/* {renderContent()} */}
       </Frame8>
     </StatisticsBoard1>
   );

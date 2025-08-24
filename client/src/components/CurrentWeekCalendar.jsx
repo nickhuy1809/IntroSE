@@ -7,7 +7,6 @@ const CalendarWrapper = styled.div`
   .react-calendar {
     background-color: #f5f6ef;
     border: none;
-    border-radius: 10px;
     padding: 0.5rem;
     font-family: 'Segoe UI', sans-serif;
     width: fit-content;

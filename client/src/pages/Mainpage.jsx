@@ -8,8 +8,8 @@ const MainContainer = styled("div")({
   flexDirection: "column",
   alignItems: "flex-start",
   gap: "0px",
-  position: "relative",
-  width: "100%",
+  height: "auto",
+  width: "auto",
 });
 
 export default function MainPage() {

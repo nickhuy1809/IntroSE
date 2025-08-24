@@ -213,7 +213,8 @@ export default function ScheduleCalendar({ defaultView = 'week', availableViews 
         border: event.preview ? '4px dashed #4F7942' : 'none',
         display: 'flex',
         flexDirection: 'column',
-        width: '100%',      
+        width: '100%',
+        height: 'auto',  
         boxSizing: 'border-box',
       }
     };
@@ -226,7 +227,7 @@ export default function ScheduleCalendar({ defaultView = 'week', availableViews 
         events={[...events, ...(previewEvent ? [previewEvent] : [])]}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 'calc(100vh - 100px)' }}
+        style={{ minHeight: '500px', height: 'auto', overflowY: 'auto' }}
         selectable
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleEventSelect}

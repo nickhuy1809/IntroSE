@@ -28,7 +28,7 @@ const Rectangle28 = styled("div")({
 });
 
 const Rectangle29 = styled("div")(({ progress }) => ({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+  background: `linear-gradient(90deg, #598b48ff, #f1b24a)`,
   borderRadius: `20px`,
   width: `${Math.max(0, Math.min(100, progress || 0))}%`,
   height: `20px`,

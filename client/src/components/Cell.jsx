@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { styled } from "@mui/material/styles";
+import React, { useState } from 'react';
+import { styled } from '@mui/material/styles';
 
+// Thêm các styled components
 const CellWrapper = styled("div")(({ variant, canEdit }) => {
   const baseStyle = {
     display: "inline-flex",
@@ -18,6 +19,7 @@ const CellWrapper = styled("div")(({ variant, canEdit }) => {
     header: {
       backgroundColor: "rgba(88, 129, 95, 1)",
       position: "relative",
+      borderRadius: "12px",
       isolation: "isolate",
       flexDirection: "row",
       color: "#F8F7E3",
@@ -28,6 +30,13 @@ const CellWrapper = styled("div")(({ variant, canEdit }) => {
     final: {
       borderTop: "5px solid #58815F",
     },
+    coursename: {
+      backgroundColor: "rgba(88, 129, 95, 1)",
+      borderRadius: "10px",
+      color: "#F8F7E3",
+      fontSize: "24px",
+      fontWeight: "bold",
+    },
   };
 
   return {
@@ -35,6 +44,22 @@ const CellWrapper = styled("div")(({ variant, canEdit }) => {
     ...(variants[variant] || {}),
   };
 });
+
+const CellInput = styled("input")(({ variant }) => ({
+  width: "100%",
+  height: "100%",
+  border: "none",
+  outline: "none",
+  textAlign: "center",
+  fontSize: "36px", // Luôn đồng bộ với CellText
+  fontFamily: "EB Garamond",
+  fontWeight: 700, // Đồng bộ với CellText
+  backgroundColor: "transparent",
+  color: variant === "header" || variant === "coursename" ? "#F8F7E3" : "#000",
+  padding: "0",
+  margin: "0",
+  boxSizing: "border-box",
+}));
 
 const CellText = styled("div")(({ variant }) => ({
   textAlign: "center",
@@ -46,21 +71,10 @@ const CellText = styled("div")(({ variant }) => ({
   lineHeight: "normal",
   textDecoration: "none",
   textTransform: "none",
-  color: variant === "header" ? "#F8F7E3" : "#000",
+  color: variant === "header" || variant === "coursename" ? "#F8F7E3" : "#000",
 }));
 
-const CellInput = styled("input")({
-  width: "100%",
-  fontFamily: "EB Garamond",
-  fontSize: "36px",
-  fontWeight: 700,
-  border: "none",
-  outline: "none",
-  background: "transparent",
-  textAlign: "center",
-});
-
-export default function Cell({ variant = "header", label = "Cell", editable = false, onChange, colIndex }) {
+export default function Cell({ variant = "header", label = "Cell", editable = false, onChange, colIndex, children }) {
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(label);
 
@@ -68,7 +82,11 @@ export default function Cell({ variant = "header", label = "Cell", editable = fa
 
   const handleBlur = () => {
     setEditing(false);
-    onChange?.(value);
+    let finalValue = value;
+    if (value.trim() === "") {
+      finalValue = "";
+    }
+    onChange?.(finalValue);
   };
 
   const handleKeyDown = (e) => {
@@ -78,18 +96,24 @@ export default function Cell({ variant = "header", label = "Cell", editable = fa
   };
 
   return (
-  <CellWrapper variant={variant} canEdit={canEdit} onClick={() => canEdit && setEditing(true)}>
-    {editing && canEdit ? (
-      <CellInput
-        value={value}
-        autoFocus
-        onChange={(e) => setValue(e.target.value)}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-      />
-    ) : (
-      <CellText variant={variant}>{value}</CellText>
-    )}
-  </CellWrapper>
+    <CellWrapper variant={variant} canEdit={canEdit} onClick={() => canEdit && setEditing(true)}>
+      {children ? (
+        // Nếu có children (như DeleteButton), hiển thị children
+        children
+      ) : editing && canEdit ? (
+        // Nếu đang edit và có thể edit
+        <CellInput
+          variant={variant}
+          value={value}
+          autoFocus
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+        />
+      ) : (
+        // Hiển thị text bình thường
+        <CellText variant={variant}>{value}</CellText>
+      )}
+    </CellWrapper>
   );
 }
