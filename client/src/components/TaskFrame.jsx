@@ -178,6 +178,7 @@ const Edit = styled("div")({
   position: `absolute`,
   left: `926px`,
   top: `102px`,
+  cursor: 'pointer',
   cursor: 'pointer'
 });
 
