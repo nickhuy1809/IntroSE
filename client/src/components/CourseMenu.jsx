@@ -3,6 +3,32 @@ import { styled } from "@mui/material/styles";
 import Button from '@mui/material/Button';
 import Cell from "../components/Cell";
 
+const ModernButton = styled("button")(({ variant }) => ({
+  padding: "12px 32px",
+  fontSize: "1.15rem",
+  fontWeight: 700,
+  borderRadius: "14px",
+  border: "none",
+  background: variant === "primary"
+    ? "linear-gradient(90deg,#4d774e,#9dc88d)"
+    : "#fff",
+  color: variant === "primary" ? "#fff" : "#4d774e",
+  boxShadow: variant === "primary"
+    ? "0 2px 12px 0 rgba(77,119,78,0.12)"
+    : "none",
+  cursor: "pointer",
+  transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
+  borderBottom: variant === "primary"
+    ? "3px solid #164a41"
+    : "2px solid #4d774e",
+  "&:hover": {
+    background: variant === "primary"
+      ? "linear-gradient(90deg,#9dc88d,#4d774e)"
+      : "#f5f6ef",
+    color: "#164a41"
+  }
+}));
+
 const Overlay = styled("div")({
   position: "fixed",
   top: 0,
@@ -19,7 +45,7 @@ const Overlay = styled("div")({
 const Wrapper = styled("div")({
   padding: "20px",
   backgroundColor: "#f5f6ef",
-  maxWidth: "1400px",
+  maxWidth: "1500px",
   width: "95vw",
   maxHeight: "90vh",
   margin: "auto",
@@ -73,12 +99,16 @@ const BottomControls = styled("div")({
 });
 
 function DeleteButton({ onClick }) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
     <button
       onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       style={{
         all: 'unset',
-        background: '#d9534f',
+        background: isHovered ? '#c9302c' : '#d9534f',
         color: 'white',
         borderRadius: '50%',
         width: '32px',
@@ -87,10 +117,18 @@ function DeleteButton({ onClick }) {
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
+        transition: 'all 0.2s ease',
+        transform: isHovered ? 'scale(1.05)' : 'scale(1)',
       }}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
-        <path d="M9 3.75V14.25M3.75 9H14.25" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 18 18" fill="none">
+        <path 
+          d="M13.5 4.5L4.5 13.5M4.5 4.5L13.5 13.5" 
+          stroke="white" 
+          strokeWidth="2" 
+          strokeLinecap="round" 
+          strokeLinejoin="round"
+        />
       </svg>
     </button>
   );
@@ -237,7 +275,7 @@ function CourseMenu({ course, onClose, onDataChange }) {
 
   const calculateProportional = (raw, percent, maxScore) => {
     if (!maxScore || maxScore === 0) return 0;
-    return (((raw / maxScore) * (percent)/100)).toFixed(2);
+    return (((raw) * (percent)/100)).toFixed(2);
   };
 
   // Calculate sum of proportional grades
@@ -334,7 +372,10 @@ function CourseMenu({ course, onClose, onDataChange }) {
                 <Cell variant="header" label="Delete" />
                 {grades.map((g, i) => (
                   <Cell variant="body" key={g._id || i}>
-                    <DeleteButton onClick={() => deleteGrade(i, g._id)} />
+                    <DeleteButton onClick={(e) => {
+                      e.stopPropagation();
+                      deleteGrade(i, g._id);
+                    }} />
                   </Cell>
                 ))}
                 <Cell variant="final" label="" />
@@ -343,12 +384,12 @@ function CourseMenu({ course, onClose, onDataChange }) {
           </TableScroll>
         )}
         <BottomControls>
-          <Button variant="contained" color="success" onClick={handleSaveAndClose}>
+          <ModernButton variant="primary" onClick={handleSaveAndClose}>
             Save & Close
-          </Button>
-          <Button variant="outlined" onClick={addGrade}>
+          </ModernButton>
+          <ModernButton onClick={addGrade}>
             + New Grade
-          </Button>
+          </ModernButton>
         </BottomControls>
       </Wrapper>
     </Overlay>

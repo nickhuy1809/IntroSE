@@ -20,33 +20,31 @@ const Rectangle28 = styled("div")({
   border: `3px solid rgba(88, 129, 95, 1)`,
   boxSizing: `border-box`,
   borderRadius: `20px`,
-  width: `702px`,
+  width: `100%`,
   height: `20px`,
   position: `absolute`,
   left: `162px`,
   top: `145px`,
 });
 
-const Rectangle29 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+const Rectangle29 = styled("div")(({ progress }) => ({
+  background: `linear-gradient(90deg, #598b48ff, #f1b24a)`,
   borderRadius: `20px`,
-  width: `175.5px`,
+  width: `${Math.max(0, Math.min(100, progress || 0))}%`,
   height: `20px`,
   position: `absolute`,
   left: `162px`,
   top: `145px`,
-});
+  transition: 'width 0.3s ease',
+}));
 
-
-function Property1Quarter() {
+function ProgressBar({ progress = 0 }) {
   return (
     <Property1Quarter1>
-      <Rectangle28>
-      </Rectangle28>
-      <Rectangle29>
-      </Rectangle29>
-    </Property1Quarter1>);
+      <Rectangle28 />
+      <Rectangle29 progress={progress} />
+    </Property1Quarter1>
+  );
+}
 
-  }
-
-export default Property1Quarter;
+export default ProgressBar;

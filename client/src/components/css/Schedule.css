@@ -12,6 +12,7 @@
 .schedule-page .schedule-calendar {
   width: 90%;
   min-height: 700px;
+  max-height: 950px;
   margin: 0 auto 0 40px; /* Add left margin to shift right */
 }
 

@@ -8,16 +8,16 @@ exports.analyzeFolder = async (req, res) => {
     try {
         // LẤY DỮ LIỆU 
         const folder = await Folder.findOne({ _id: req.params.folderId, accountId: req.accountId });
-        if (!folder) return res.status(404).json({ message: "Không tìm thấy thư mục" });
+        if (!folder) return res.status(404).json({ message: "Folder not found" });
 
         const courses = await Course.find({ folderId: req.params.folderId }).select('_id name');
-        if (courses.length === 0) return res.status(200).json({ motivationalMessage: "Thư mục này chưa có khóa học. Hãy tạo một khóa học để bắt đầu nhé!" });
-        
+        if (courses.length === 0) return res.status(200).json({ motivationalMessage: "This folder has no courses. Please create a course to get started!" });
+
         const courseIds = courses.map(c => c._id);
         const grades = await Grade.find({ courseId: { $in: courseIds } });
-        if (grades.length === 0) return res.status(200).json({ motivationalMessage: "Bạn chưa có điểm nào trong thư mục này. Hãy thêm điểm để nhận phân tích từ AI nhé!" });
-        
-        // XÂY DỰNG PROMPT 
+        if (grades.length === 0) return res.status(200).json({ motivationalMessage: "You have no grades in this folder. Please add grades to receive analysis from AI." });
+
+        // XÂY DỰNG PROMPT
         let scoreData = "";
         courses.forEach(course => {
             scoreData += `Môn học: ${course.name}\n`;
@@ -48,7 +48,7 @@ exports.analyzeFolder = async (req, res) => {
             5.  **Đề xuất nhiệm vụ:** Đề xuất 2-3 nhiệm vụ (tasks) cụ thể, có thể hành động được. Mỗi nhiệm vụ cần có tiêu đề và mô tả ngắn.
 
             **YÊU CẦU ĐỊNH DẠNG ĐẦU RA:**
-            Kết quả phải được trả về dưới dạng một đối tượng JSON hợp lệ và chỉ duy nhất JSON, không có bất kỳ văn bản giải thích nào khác bên ngoài đối tượng JSON này. Sử dụng các khóa (keys) sau: "overallSummary", "strengths", "areasForImprovement", "motivationalMessage", "suggestedTasks". Đối với "suggestedTasks", mỗi task phải là một object có hai khóa: "title" và "description". Sử dụng hoàn toàn ngôn ngữ tiếng Việt.
+            Kết quả phải được trả về dưới dạng một đối tượng JSON hợp lệ và chỉ duy nhất JSON, không có bất kỳ văn bản giải thích nào khác bên ngoài đối tượng JSON này. Sử dụng các khóa (keys) sau: "overallSummary", "strengths", "areasForImprovement", "motivationalMessage", "suggestedTasks". Đối với "suggestedTasks", mỗi task phải là một object có hai khóa: "title" và "description". Sử dụng hoàn toàn ngôn ngữ tiếng Anh.
             `;
 
         // GỌI AI VÀ XỬ LÝ KẾT QUẢ
@@ -61,6 +61,6 @@ exports.analyzeFolder = async (req, res) => {
         res.status(200).json(aiResponse);
 
     } catch (error) {
-        res.status(500).json({ message: "Lỗi server khi phân tích", error: error.message });
+        res.status(500).json({ message: "Server error while analysing", error: error.message });
     }
 };

@@ -1,15 +1,93 @@
 import {
   styled
 } from '@mui/material/styles';
-
 import { useState, useEffect } from 'react';
-
 import Button from './Button';
+
+const ModalOverlay = styled("div")({
+  position: 'fixed',
+  top: 0, left: 0, right: 0, bottom: 0,
+  backgroundColor: 'rgba(0,0,0,0.5)',
+  zIndex: 1000,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+});
+
+const ModalContent = styled("div")({
+  background: '#f5f6ef',
+  borderRadius: '20px',
+  border: '4px solid #4d774e',
+  minWidth: '400px',
+  padding: '40px 36px',
+  boxShadow: '0 8px 32px 0 rgba(60,60,60,0.18)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center'
+});
+
+const ModalTitle = styled("h3")({
+  marginTop: 0,
+  marginBottom: 24,
+  fontSize: "2rem",
+  fontWeight: 800,
+  color: "#164a41",
+  textAlign: "center",
+  fontFamily: "EB Garamond, serif"
+});
+
+const StyledInput = styled("input")({
+  fontSize: "1.25rem",
+  padding: "12px 18px",
+  borderRadius: "12px",
+  border: "2px solid #4d774e",
+  outline: "none",
+  width: "100%",
+  fontFamily: "inherit",
+  background: "#fff",
+  marginBottom: 0,
+  transition: "border 0.2s",
+  "&:focus": {
+    border: "2.5px solid #164a41"
+  }
+});
+
+const ButtonRow = styled("div")({
+  display: "flex",
+  justifyContent: "center",
+  gap: "24px",
+  marginTop: "24px"
+});
+
+const ModernButton = styled("button")(({ variant }) => ({
+  padding: "12px 32px",
+  fontSize: "1.15rem",
+  fontWeight: 700,
+  borderRadius: "14px",
+  border: "none",
+  background: variant === "primary"
+    ? "linear-gradient(90deg,#4d774e,#9dc88d)"
+    : "#fff",
+  color: variant === "primary" ? "#fff" : "#4d774e",
+  boxShadow: variant === "primary"
+    ? "0 2px 12px 0 rgba(77,119,78,0.12)"
+    : "none",
+  cursor: "pointer",
+  transition: "background 0.2s, color 0.2s, box-shadow 0.2s",
+  borderBottom: variant === "primary"
+    ? "3px solid #164a41"
+    : "2px solid #4d774e",
+  "&:hover": {
+    background: variant === "primary"
+      ? "linear-gradient(90deg,#9dc88d,#4d774e)"
+      : "#f5f6ef",
+    color: "#164a41"
+  }
+}));
 
 function FolderModal({ isOpen, onClose, onSubmit, initialName = '', title }) {
   const [name, setName] = useState(initialName);
 
-  // Cập nhật tên trong input khi modal được mở cho một folder khác
   useEffect(() => {
     if (isOpen) {
       setName(initialName);
@@ -22,38 +100,31 @@ function FolderModal({ isOpen, onClose, onSubmit, initialName = '', title }) {
     e.preventDefault();
     if (name.trim()) {
       onSubmit(name);
-      onClose(); // Tự động đóng modal sau khi submit
+      onClose();
     } else {
-      alert("Tên thư mục không được để trống!");
+      alert("Folder name is required!");
     }
   };
 
-  // Kiểu dáng tạm thời cho modal, bạn có thể thay thế bằng styled-components
-  const modalOverlayStyle = { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', justifyContent: 'center', alignItems: 'center' };
-  const modalContentStyle = { background: 'white', padding: '20px', borderRadius: '8px', width: '300px' };
-  const inputStyle = { width: '100%', padding: '8px', boxSizing: 'border-box' };
-  const buttonContainerStyle = { display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' };
-
   return (
-    <div style={modalOverlayStyle} onClick={onClose}>
-      <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
-        <h3 style={{ marginTop: 0 }}>{title}</h3>
-        <form onSubmit={handleSubmit}>
-          <input 
-            type="text" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
-            placeholder="Nhập tên thư mục..."
-            style={inputStyle}
+    <ModalOverlay onClick={onClose}>
+      <ModalContent onClick={e => e.stopPropagation()}>
+        <ModalTitle>{title}</ModalTitle>
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          <StyledInput
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter folder name..."
             autoFocus
           />
-          <div style={buttonContainerStyle}>
-            <button type="button" onClick={onClose}>Hủy</button>
-            <button type="submit">Lưu</button>
-          </div>
+          <ButtonRow>
+            <ModernButton type="submit" variant="primary">Save</ModernButton>
+            <ModernButton type="button" onClick={onClose}>Cancel</ModernButton>
+          </ButtonRow>
         </form>
-      </div>
-    </div>
+      </ModalContent>
+    </ModalOverlay>
   );
 }
 
@@ -133,7 +204,7 @@ function EditButtonGroup({ onAddSubfolder, onEdit, onDelete }) {
 }
 
 const FolderButton1 = styled("div")(({ isActive }) => ({
-  backgroundColor: isActive ? `rgba(255, 139, 73, 1)` : `rgba(88, 129, 95, 1)`,
+  backgroundColor: isActive ? `#aead5eff` : `rgba(88, 129, 95, 1)`,
   borderRadius: `20px`,
   display: `flex`,
   position: `relative`,
@@ -204,8 +275,8 @@ const FolderManager1 = styled("div")({
 });
 
 const Rectangle31 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 0.5)`,
-  border: `5px solid rgba(88, 129, 95, 1)`,
+  backgroundColor: `#dbe5d1`,
+  border: `5px solid #164a41`,
   boxSizing: `border-box`,
   width: `623px`,
   height: `360px`,
@@ -219,7 +290,7 @@ const Rectangle31 = styled("div")({
 });
 
 const Rectangle30 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+  backgroundColor: `#164a41`,
   borderRadius: `20px 20px 0px 0px`,
   width: `180px`,
   height: `52px`,
@@ -327,8 +398,8 @@ function FolderManager({ folders, selectedFolderId, onFolderSelect, onDataChange
         </div>
         
         <Rectangle31>
-          {isLoading && <div>Đang tải...</div>}
-          {error && <div>Lỗi: {error}</div>}
+          {isLoading && <div>Loading...</div>}
+          {error && <div>Error: {error}</div>}
           {!isLoading && !error && folders.map((folder) => (
             <div key={folder._id}>
               {/* Render Folder Cha */}
@@ -349,7 +420,7 @@ function FolderManager({ folders, selectedFolderId, onFolderSelect, onDataChange
                       folder={subfolder}
                       isActive={subfolder._id === selectedFolderId}
                       onClick={() => onFolderSelect(subfolder._id)}
-                      onAddSubfolder={() => alert("Không thể tạo thư mục con trong thư mục con.")}
+                      onAddSubfolder={() => alert("Cannot create subfolder in a subfolder.")}
                       onEdit={() => openModal('edit', subfolder)}
                       onDelete={() => handleDeleteFolder(subfolder._id, subfolder.name)}
                     />
@@ -382,9 +453,9 @@ function FolderManager({ folders, selectedFolderId, onFolderSelect, onDataChange
         onSubmit={handleSubmitModal}
         initialName={modalMode === 'edit' && currentTarget ? currentTarget.name : ''}
         title={
-          modalMode === 'addRoot' ? 'Tạo thư mục mới' :
-          modalMode === 'addSub' ? `Tạo thư mục con cho "${currentTarget?.name}"` :
-          'Đổi tên thư mục'
+          modalMode === 'addRoot' ? 'Create New Root Folder' :
+          modalMode === 'addSub' ? `Create Subfolder for "${currentTarget?.name}"` :
+          'Rename Folder'
         }
       />
     </>

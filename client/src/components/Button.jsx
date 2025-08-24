@@ -14,12 +14,12 @@ const ButtonRoot = styled("div")({
   cursor: `pointer`,
   transition: 'transform 0.1s ease-in-out',
   '&:active': {
-    transform: 'scale(0.98)' // Thêm hiệu ứng nhấn nút
+    transform: 'scale(0.8)' // Thêm hiệu ứng nhấn nút
   }
 });
 
 const Rectangle = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+  backgroundColor: `#ffa600`,
   borderRadius: `50px`,
   width: `187.65px`,
   height: `51.07px`,
@@ -35,7 +35,7 @@ const NewTask = styled("div")({
   color: `rgba(255, 255, 255, 1)`,
   fontStyle: `normal`,
   fontFamily: `EB Garamond`,
-  fontWeight: `700`,
+  fontWeight: `1000`,
   fontSize: `24px`,
   letterSpacing: `0px`,
   textDecoration: `none`,

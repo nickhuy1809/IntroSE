@@ -7,7 +7,6 @@ const CalendarWrapper = styled.div`
   .react-calendar {
     background-color: #f5f6ef;
     border: none;
-    border-radius: 10px;
     padding: 0.5rem;
     font-family: 'Segoe UI', sans-serif;
     width: fit-content;
@@ -41,18 +40,33 @@ const CalendarWrapper = styled.div`
     width: 100px;
     text-align: center;
     visibility: visible;
+    border-radius: 8px;
+    padding: 0.4em;
+    margin: 0px;
+    cursor: pointer;
+    /* Override disabled styles */
+    background-color: #ffffff !important;
+    color: #164a41 !important;
+    opacity: 1 !important;
+    border: 1px solid #dbe5d1;
   }
 
   .react-calendar__tile--now {
-    background-color: #dbe5d1;
+    background-color: #dbe5d1 !important;
     font-weight: bold;
+    color: #2d3e2d !important;
   }
 
-  .react-calendar__tile--week-disabled {
-    border-radius: 12px;
-    padding: 0.75em;
-    margin: 0 2px;
-    cursor: pointer;
+  .react-calendar__tile:disabled {
+    background-color: #ffffff !important;
+    color: #2d3e2d !important;
+    opacity: 1 !important;
+  }
+
+  .react-calendar__tile:disabled.react-calendar__tile--week-visible {
+    background-color: #ffffff !important;
+    color: #2d3e2d !important;
+    opacity: 1 !important;
   }
 
   .nav-buttons {
@@ -64,7 +78,7 @@ const CalendarWrapper = styled.div`
 
   .nav-buttons button {
     padding: 0.5rem 1rem;
-    background-color: #5b7c5b;
+    background-color: #164a41;
     color: white;
     border: none;
     border-radius: 8px;

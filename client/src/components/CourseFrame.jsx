@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react';
 import {
   styled
 } from '@mui/material/styles';
-import CourseMenu from './CourseMenu';
 import ProgressBar from './ProgressBar';
 
 const CourseFrame1 = styled("div")({
@@ -19,7 +17,7 @@ const CourseFrame1 = styled("div")({
 });
 
 const Rectangle25 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+  backgroundColor: `#164a41`,
   width: `11px`,
   height: `59px`,
   position: `absolute`,
@@ -28,7 +26,7 @@ const Rectangle25 = styled("div")({
 });
 
 const Rectangle27 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+  backgroundColor: `#164a41`,
   width: `11px`,
   height: `59px`,
   position: `absolute`,
@@ -45,7 +43,7 @@ const Vector = styled("img")({
 });
 
 const Rectangle26 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+  background: `linear-gradient(90deg, #f1ac3bff, #4d774e 60%)`,
   borderRadius: `0px 15px 15px 0px`,
   width: `130px`,
   height: `128px`,
@@ -122,7 +120,7 @@ const StyledProgressBar = styled(ProgressBar)({
 
 const Progress = styled("div")({
   textAlign: `left`,
-  whiteSpace: "nowrap",         // Không cho xuống dòng
+  whiteSpace: "nowrap",
   overflow: "hidden",         
   textOverflow: "clip",    
   fontSynthesis: `none`,
@@ -146,28 +144,25 @@ function CourseFrame({ course, grades, onEditClick, onCourseClick }) {
    // --- LOGIC TÍNH ĐIỂM TỔNG (OVERALL SCORE) ---
   const calculateOverallScore = () => {
     // Nếu không có điểm nào, trả về 0
-    if (!grades || grades.length === 0) return { score: "N/A", totalWeight: 0 };
+    if (!grades|| grades.length === 0) return { score: "N/A", totalWeight: 0 };
 
-    let weightedScoreSum = 0;
+    let total = 0;
     let totalWeight = 0;
-
     grades.forEach(grade => {
       // Bỏ qua các điểm không có trọng số hoặc điểm không hợp lệ
-      if (grade.weight > 0 && grade.maxScore > 0) {
-        // (điểm thực / điểm tối đa) * trọng số
-        weightedScoreSum += (grade.score / grade.maxScore) * grade.weight;
-        totalWeight += grade.weight;
+      if (grade.weight > 0 && grade.maxScore > 0 && grade.score > 0) {
+        total += grade.score * grade.weight/100;
+          totalWeight++;
       }
     });
-
-    // Tránh chia cho 0
+    totalWeight = totalWeight > 0 ? Math.round((totalWeight / grades.length) * 100) : 0;
+    
     if (totalWeight === 0) return { score: "N/A", totalWeight: 0 };
     
     // Điểm tổng cuối cùng là tổng điểm có trọng số chia cho tổng trọng số
     // Sau đó có thể nhân với 10 hoặc 100 để ra thang điểm mong muốn. Ở đây ta giữ thang điểm 100.
-    const finalScore = (weightedScoreSum / totalWeight) * 10;
-    
-    return { score: finalScore.toFixed(1), totalWeight }; // Làm tròn đến 1 chữ số thập phân
+
+    return { score: total.toFixed(1), totalWeight }; // Làm tròn đến 1 chữ số thập phân
   };
 
   const { score, totalWeight } = calculateOverallScore();
@@ -178,9 +173,16 @@ function CourseFrame({ course, grades, onEditClick, onCourseClick }) {
       </Rectangle25>
       <Rectangle27>
       </Rectangle27>
+      
       <Vector as="svg" xmlns="http://www.w3.org/2000/svg" width="1024" height="128" viewBox="0 0 1024 128" fill="none">
-        <path d="M0 15C0 6.71573 6.71573 0 15 0H1009C1017.28 0 1024 6.71573 1024 15V113C1024 121.284 1017.28 128 1009 128H15C6.71573 128 0 121.284 0 113V15Z" fill="#FFF6F6"/>
-        <path d="M0 15C0 6.71573 6.71573 0 15 0H128V128H15C6.71573 128 0 121.284 0 113V15Z" fill="#58815F"/>
+      <defs>
+        <linearGradient id="leftGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#164a41" />
+          <stop offset="100%" stopColor="#4d774e" />
+        </linearGradient>
+      </defs>
+      <path d="M0 15C0 6.71573 6.71573 0 15 0H1009C1017.28 0 1024 6.71573 1024 15V113C1024 121.284 1017.28 128 1009 128H15C6.71573 128 0 121.284 0 113V15Z" fill="#FFF6F6"/>
+        <path d="M0 15C0 6.71573 6.71573 0 15 0H128V128H15C6.71573 128 0 121.284 0 113V15Z" fill="url(#leftGradient)"/>
         <path d="M15 1H127V127H15C7.26801 127 1 120.732 1 113V15C1 7.26801 7.26801 1 15 1ZM1009 1C1016.73 1 1023 7.26801 1023 15V113C1023 120.732 1016.73 127 1009 127H129V1H1009Z" stroke="#58815F" strokeWidth="2"/>
       </Vector>
       <Rectangle26>

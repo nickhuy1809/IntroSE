@@ -16,8 +16,8 @@ const StatisticsBoard1 = styled("div")({
 });
 
 const Rectangle31 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 0.5)`,
-  border: `5px solid rgba(88, 129, 95, 1)`,
+  backgroundColor: `#dbe5d1`,
+  border: `5px solid #164a41`,
   boxSizing: `border-box`,
   width: `623px`,
   height: `669px`,
@@ -27,7 +27,7 @@ const Rectangle31 = styled("div")({
 });
 
 const Rectangle30 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+  backgroundColor: `#164a41`,
   borderRadius: `0px 0px 20px 0px`,
   width: `180px`,
   height: `52px`,
@@ -66,19 +66,28 @@ const Frame8 = styled("div")({
   boxSizing: `border-box`,
   width: `612px`,
   left: `5px`,
-  top: `57px`,
+  top: `56px`,
   overflow: `auto`,
-  height: `300px`,
+  height: `609px`,
+  overflowY: "overlay",
+  "&::-webkit-scrollbar": {
+    width: "8px",
+    background: "transparent",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    background: "rgba(88,129,95,0.5)",
+    borderRadius: "4px",
+  },
 });
 
 const ScoreSummaryAverageS = styled("div")({
   textAlign: `left`,
   whiteSpace: `pre-wrap`,
   fontSynthesis: `none`,
-  color: `rgba(255, 255, 255, 1)`,
+  color: `rgba(88, 129, 95, 1)`,
   fontStyle: `normal`,
-  fontFamily: `EB Garamond`,
-  fontWeight: `800`,
+  fontFamily: `Baskerville`,
+  fontWeight: `1000`,
   fontSize: `24px`,
   letterSpacing: `0px`,
   textDecoration: `none`,
@@ -91,15 +100,15 @@ const ScoreSummaryAverageS = styled("div")({
 function StatisticsBoard({ analysisResult, isLoading, error }) {
   const renderContent = () => {
     if (isLoading) {
-      return <ScoreSummaryAverageS> AI đang phân tích dữ liệu...</ScoreSummaryAverageS>;
+      return <ScoreSummaryAverageS> AI analysing...</ScoreSummaryAverageS>;
     }
 
     if (error) {
-      return <ScoreSummaryAverageS> Đã xảy ra lỗi: {error}</ScoreSummaryAverageS>;
+      return <ScoreSummaryAverageS> Error occurred: {error}</ScoreSummaryAverageS>;
     }
 
     if (!analysisResult) {
-      return <ScoreSummaryAverageS>Hãy chọn một thư mục để xem phân tích học tập từ AI.</ScoreSummaryAverageS>;
+      return <ScoreSummaryAverageS>Please select a folder to view AI learning analysis.</ScoreSummaryAverageS>;
     }
     
     // Xử lý các thông điệp đơn giản từ backend (ví dụ: chưa có khóa học/điểm)
@@ -109,7 +118,7 @@ function StatisticsBoard({ analysisResult, isLoading, error }) {
     
     // Xử lý trường hợp AI trả về lỗi parsing
     if (analysisResult.error) {
-         return <ScoreSummaryAverageS>Lỗi từ AI: {analysisResult.message}</ScoreSummaryAverageS>
+         return <ScoreSummaryAverageS>Error from AI: {analysisResult.message}</ScoreSummaryAverageS>
     }
 
     // Trường hợp thành công, hiển thị đầy đủ kết quả phân tích
@@ -117,10 +126,10 @@ function StatisticsBoard({ analysisResult, isLoading, error }) {
 
     return (
         <ScoreSummaryAverageS>
-            {` Phân tích tổng quan:\n${overallSummary}\n\n` +
-             ` Điểm mạnh:\n- ${strengths.join('\n- ')}\n\n` +
-             ` Lĩnh vực cần cải thiện:\n- ${areasForImprovement.join('\n- ')}\n\n` +
-             ` Lời nhắn từ AI:\n${motivationalMessage}`
+            {` Overview:\n${overallSummary}\n\n` +
+             ` Strengths:\n- ${strengths.join('\n- ')}\n\n` +
+             ` Areas for Improvement:\n- ${areasForImprovement.join('\n- ')}\n\n` +
+             ` Motivational Message:\n${motivationalMessage}`
             }
         </ScoreSummaryAverageS>
     );
@@ -152,7 +161,7 @@ function StatisticsBoard({ analysisResult, isLoading, error }) {
         </svg>
       </div>
       <Frame8>
-        {renderContent()}
+        {/* {renderContent()} */}
       </Frame8>
     </StatisticsBoard1>
   );
