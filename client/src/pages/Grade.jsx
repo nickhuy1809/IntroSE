@@ -20,9 +20,11 @@ export default function Grade() {
    const [folders, setFolders] = useState([]);
   const [courses, setCourses] = useState([]);
   const [grades, setGrades] = useState([]);
-  const [isLoading, setIsLoading] = useState({ folders: true, content: true }); 
-  const [error, setError] = useState({ folders: null, content: null });
+  const [isLoading, setIsLoading] = useState({ folders: true, content: true, analysis: true }); 
+  const [error, setError] = useState({ folders: null, content: null, analysis: null });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  const [analysisResult, setAnalysisResult] = useState(null);
 
   const accountId = localStorage.getItem('accountId');
 
@@ -36,17 +38,18 @@ export default function Grade() {
     const fetchAllData = async () => {
       if (!accountId) return;
 
-      setIsLoading({ folders: true, content: true });
-      setError({ folders: null, content: null });
+      setIsLoading(prev => ({ ...prev, folders: true }));
+      setError(prev => ({ ...prev, folders: null, content: null, analysis: null }));
 
       try {
         // 1. Luôn luôn fetch lại danh sách folder
         const foldersRes = await fetch('http://localhost:5000/api/folders', {
           headers: { 'x-account-id': accountId },
         });
-        if (!foldersRes.ok) throw new Error('Không thể tải danh sách thư mục');
+        if (!foldersRes.ok) throw new Error('Cannot Load Folders');
         const foldersData = await foldersRes.json();
         setFolders(foldersData);
+        setIsLoading(prev => ({ ...prev, folders: false }));
 
         // 2. Xác định folder ID để fetch nội dung
         let folderIdToFetch = selectedFolderId;
@@ -54,30 +57,49 @@ export default function Grade() {
         if (selectedFolderId === null && foldersData.length > 0) {
           folderIdToFetch = foldersData[0]._id;
           // Quan trọng: Không gọi setState ở đây để tránh vòng lặp,
-          // chúng ta sẽ dùng biến `folderIdToFetch` tạm thời
+          setSelectedFolderId(folderIdToFetch);
         }
         
         // 3. Lấy nội dung cho folder được chọn
         if (folderIdToFetch) {
-          const [coursesRes, gradesRes] = await Promise.all([
+          const [coursesRes, gradesRes, analysisRes] = await Promise.allSettled([
             fetch(`http://localhost:5000/api/courses/folder/${folderIdToFetch}`, { headers: { 'x-account-id': accountId } }),
-            fetch(`http://localhost:5000/api/grades/folder/${folderIdToFetch}`, { headers: { 'x-account-id': accountId } })
+            fetch(`http://localhost:5000/api/grades/folder/${folderIdToFetch}`, { headers: { 'x-account-id': accountId } }),
+            fetch(`http://localhost:5000/api/analysis/folder/${folderIdToFetch}`, { headers: { 'x-account-id': accountId } })
           ]);
-          if (!coursesRes.ok || !gradesRes.ok) throw new Error('Không thể tải dữ liệu khóa học');
-          const coursesData = await coursesRes.json();
-          const gradesData = await gradesRes.json();
-          setCourses(coursesData);
-          setGrades(gradesData);
+          // Xử lý kết quả courses và grades
+          if (coursesRes.status === 'fulfilled' && coursesRes.value.ok && gradesRes.status === 'fulfilled' && gradesRes.value.ok) {
+            const coursesData = await coursesRes.value.json();
+            const gradesData = await gradesRes.value.json();
+            setCourses(coursesData);
+            setGrades(gradesData);
+            setError(prev => ({ ...prev, content: null }));
+          } else {
+            setError(prev => ({ ...prev, content: 'Không thể tải dữ liệu khóa học.' }));
+          }
+          setIsLoading(prev => ({ ...prev, content: false }));
+
+          // Xử lý kết quả phân tích AI
+          if (analysisRes.status === 'fulfilled' && analysisRes.value.ok) {
+            const analysisData = await analysisRes.value.json();
+            setAnalysisResult(analysisData);
+            setError(prev => ({ ...prev, analysis: null }));
+          } else {
+            setError(prev => ({ ...prev, analysis: 'Không thể tải phân tích AI.' }));
+            setAnalysisResult(null); // Reset nếu lỗi
+          }
+          setIsLoading(prev => ({ ...prev, analysis: false }));
+
         } else {
-          // Nếu không có folder nào, reset content
           setCourses([]);
           setGrades([]);
+          setAnalysisResult(null); // Reset nếu không có folder
+          setIsLoading(prev => ({ ...prev, content: false, analysis: false }));
         }
 
       } catch (err) {
-        setError({ folders: err.message, content: err.message });
-      } finally {
-        setIsLoading({ folders: false, content: false });
+        setError({ folders: err.message, content: err.message, analysis: err.message });
+        setIsLoading({ folders: false, content: false, analysis: false });
       }
     };
 
@@ -118,11 +140,12 @@ export default function Grade() {
         isLoading={isLoading.folders}
         error={error.folders}
       />
-      <StatisticsBoard folderId={selectedFolderId} />
-    </div>
-    {selectedCourse && (
-      <CourseMenu onClose={() => setSelectedCourse(null)} />
-    )}
-  </GradeContainer>
+        <StatisticsBoard 
+          analysisResult={analysisResult}
+          isLoading={isLoading.analysis}
+          error={error.analysis}
+        />
+      </div>
+    </GradeContainer>
   );
 }

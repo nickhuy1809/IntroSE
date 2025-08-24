@@ -6,6 +6,7 @@ const {
     createTask, 
     getTasks,
     updateTask,
+    toggleCompleteTask,
     deleteTask
 } = require('../Controllers/taskController.js');
 
@@ -19,6 +20,7 @@ router.route('/')
 
 router.route('/:id')
     .put(updateTask)
-    .delete(deleteTask);
+    .delete(deleteTask)
+    .patch(toggleCompleteTask);
 
 module.exports = router;

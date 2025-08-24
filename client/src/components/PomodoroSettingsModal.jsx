@@ -15,10 +15,47 @@ export default function PomodoroSettingsModal({ isOpen, onClose, initialSettings
         navigate('/task'); // Navigate to the task page
     };
 
-    useEffect(() => {
-        setSettings(initialSettings);
-    }, [initialSettings]);
+    // useEffect(() => {
+    //     setSettings(initialSettings);
+    // }, [initialSettings]);
 
+    useEffect(() => {
+        if (isOpen) {
+            setSelectedTasks([]);
+            setIsLoading(true);
+            const fetchData = async () => {
+                try {
+                    // Lấy cài đặt Pomodoro
+                    const settingsResponse = await fetch('http://localhost:5000/api/pomodoro/settings', {
+                        headers: { 'x-account-id': accountId }
+                    });
+                    if (!settingsResponse.ok) throw new Error('Không thể tải cài đặt');
+                    const settingsData = await settingsResponse.json();
+                    const newSettings = {
+                        sessionTime: settingsData.workDuration,
+                        shortBreak: settingsData.shortBreakDuration,
+                        longBreak: settingsData.longBreakDuration,
+                        numSessions: settingsData.pomodorosPerCycle
+                    };
+                    setSettings(newSettings);
+
+                    // Lấy danh sách task có sẵn
+                    const tasksResponse = await fetch('http://localhost:5000/api/tasks?isCompleted=false', {
+                        headers: { 'x-account-id': accountId }
+                    });
+                    if (!tasksResponse.ok) throw new Error('Không thể tải danh sách công việc');
+                    const tasksData = await tasksResponse.json();
+                    setAvailableTasks(tasksData);
+                } catch (error) {
+                    console.error("Lỗi khi tải dữ liệu:", error);
+                    alert(`Lỗi khi tải dữ liệu: ${error.message}`);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+            fetchData();
+        }
+    }, [isOpen, accountId]);
     
 
     // Fetch available tasks when modal opens
@@ -117,9 +154,9 @@ export default function PomodoroSettingsModal({ isOpen, onClose, initialSettings
     ];
 
     const handleTaskSelection = (task) => {
-        const taskIndex = selectedTasks.findIndex(t => t._id === task._id); // <-- Dùng _id
-        if (taskIndex >= 0) {
-            setSelectedTasks(selectedTasks.filter(t => t._id !== task._id)); // <-- Dùng _id
+        const isSelected = selectedTasks.some(t => t._id === task._id);
+        if (isSelected) {
+            setSelectedTasks(selectedTasks.filter(t => t._id !== task._id));
         } else {
             setSelectedTasks([...selectedTasks, { ...task, estimatedPomodoros: 1 }]);
         }

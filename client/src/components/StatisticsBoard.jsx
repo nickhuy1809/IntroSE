@@ -67,8 +67,8 @@ const Frame8 = styled("div")({
   width: `612px`,
   left: `5px`,
   top: `57px`,
-  overflow: `hidden`,
-  height: `144px`,
+  overflow: `auto`,
+  height: `300px`,
 });
 
 const ScoreSummaryAverageS = styled("div")({
@@ -84,10 +84,48 @@ const ScoreSummaryAverageS = styled("div")({
   textDecoration: `none`,
   textTransform: `none`,
   margin: `0px`,
+  width: '100%',
 });
 
 
-function StatisticsBoard() {
+function StatisticsBoard({ analysisResult, isLoading, error }) {
+  const renderContent = () => {
+    if (isLoading) {
+      return <ScoreSummaryAverageS> AI đang phân tích dữ liệu...</ScoreSummaryAverageS>;
+    }
+
+    if (error) {
+      return <ScoreSummaryAverageS> Đã xảy ra lỗi: {error}</ScoreSummaryAverageS>;
+    }
+
+    if (!analysisResult) {
+      return <ScoreSummaryAverageS>Hãy chọn một thư mục để xem phân tích học tập từ AI.</ScoreSummaryAverageS>;
+    }
+    
+    // Xử lý các thông điệp đơn giản từ backend (ví dụ: chưa có khóa học/điểm)
+    if (analysisResult.motivationalMessage && !analysisResult.overallSummary) {
+        return <ScoreSummaryAverageS>{analysisResult.motivationalMessage}</ScoreSummaryAverageS>;
+    }
+    
+    // Xử lý trường hợp AI trả về lỗi parsing
+    if (analysisResult.error) {
+         return <ScoreSummaryAverageS>Lỗi từ AI: {analysisResult.message}</ScoreSummaryAverageS>
+    }
+
+    // Trường hợp thành công, hiển thị đầy đủ kết quả phân tích
+    const { overallSummary, strengths, areasForImprovement, motivationalMessage } = analysisResult;
+
+    return (
+        <ScoreSummaryAverageS>
+            {` Phân tích tổng quan:\n${overallSummary}\n\n` +
+             ` Điểm mạnh:\n- ${strengths.join('\n- ')}\n\n` +
+             ` Lĩnh vực cần cải thiện:\n- ${areasForImprovement.join('\n- ')}\n\n` +
+             ` Lời nhắn từ AI:\n${motivationalMessage}`
+            }
+        </ScoreSummaryAverageS>
+    );
+  };
+
   return (
     <StatisticsBoard1>
       <Rectangle31 />
@@ -114,12 +152,7 @@ function StatisticsBoard() {
         </svg>
       </div>
       <Frame8>
-        <ScoreSummaryAverageS>
-          {`📊 Score Summary:
-        Average Score: 8.0
-        Top Course: Statistics (94)
-        Lowest Score: Algorithms (72)`}
-        </ScoreSummaryAverageS>
+        {renderContent()}
       </Frame8>
     </StatisticsBoard1>
   );

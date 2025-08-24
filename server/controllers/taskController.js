@@ -6,6 +6,18 @@ exports.createTask = async (req, res) => {
         const { title, description, priority, dueDate } = req.body;
         if (!title) return res.status(400).json({ message: 'Tiêu đề là bắt buộc' });
 
+        const existingTask = await Task.findOne({
+            accountId: req.accountId,
+            title: title.trim(),
+            priority,
+            dueDate: dueDate ? new Date(dueDate) : null,
+            isCompleted: false  // chỉ check task chưa hoàn thành
+        });
+
+        if (existingTask) {
+            return res.status(400).json({ message: 'Công việc đã tồn tại (trùng tên, ưu tiên và deadline).' });
+        }
+
         const task = await Task.create({ 
             title, 
             description, 
@@ -74,6 +86,22 @@ exports.updateTask = async (req, res) => {
         res.status(200).json(task);
     } catch (error) {
         res.status(400).json({ message: 'Lỗi cập nhật công việc', error: error.message });
+    }
+};
+
+// Chỉ toggle trạng thái hoàn thành
+exports.toggleCompleteTask = async (req, res) => {
+    try {
+        const { isCompleted } = req.body;
+        const task = await Task.findOneAndUpdate(
+            { _id: req.params.id, accountId: req.accountId },
+            { isCompleted },
+            { new: true, runValidators: true }
+        );
+        if (!task) return res.status(404).json({ message: 'Không tìm thấy công việc' });
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(400).json({ message: 'Lỗi cập nhật trạng thái công việc', error: error.message });
     }
 };
 
