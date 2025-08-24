@@ -52,24 +52,13 @@ exports.analyzeFolder = async (req, res) => {
             `;
 
         // GỌI AI VÀ XỬ LÝ KẾT QUẢ
-        const aiResponseString = await call_Your_AI_API(prompt);
+        const aiResponse = await call_Your_AI_API(prompt);
 
-        // Chuyển chuỗi JSON từ AI thành object JavaScript
-        let analysisData;
-        try {
-            analysisData = JSON.parse(aiResponseString);
-        } catch (parseError) {
-            console.error("Lỗi parse JSON từ AI:", parseError);
-            // Nếu AI không trả về JSON hợp lệ, trả về toàn bộ text để debug
-            return res.status(200).json({ 
-                error: true,
-                message: "AI đã trả về định dạng không hợp lệ. Đây là dữ liệu thô:", 
-                raw: aiResponseString 
-            }); 
+        if (aiResponse.error) {
+            return res.status(200).json(aiResponse); // Trả về lỗi chi tiết cho frontend
         }
         
-        // Trả về object JSON đã được parse cho frontend
-        res.status(200).json(analysisData);
+        res.status(200).json(aiResponse);
 
     } catch (error) {
         res.status(500).json({ message: "Lỗi server khi phân tích", error: error.message });
