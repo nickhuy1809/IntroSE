@@ -18,7 +18,7 @@ const corsOptions = {
   origin: /localhost:\d+$/,
   
   // Cho phép các phương thức HTTP này
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   
   // Cho phép các header này trong request. Cần phải có 'x-account-id' của chúng ta.
   allowedHeaders: ['Content-Type', 'x-account-id'],
