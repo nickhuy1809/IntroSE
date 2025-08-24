@@ -199,9 +199,9 @@ export default function ScheduleCalendar({ defaultView = 'week', availableViews 
 
   const eventStyleGetter = (event) => {
     const colors = {
-      event: '#4F7942',
-      task: '#ff6b35',
-      focus: '#5b7c5b'
+      event: '#4d774e',
+      task: '#f1b24a',
+      focus: '#aead5eff'
     };
 
     return {

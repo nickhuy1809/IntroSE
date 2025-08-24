@@ -122,7 +122,7 @@ export default function PomodoroSettingsModal({ isOpen, onClose, initialSettings
             }
             onClose();
         } catch (err) {
-            alert(`Lỗi: ${err.message}`);
+            alert(`Error: ${err.message}`);
         } finally {
             setIsLoading(false);
         }

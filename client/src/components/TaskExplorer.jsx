@@ -127,10 +127,13 @@ const SortButton = styled("button")(({ selected }) => ({
   borderRadius: "25px",
   fontSize: "30px",
   fontWeight: "550",
-  background: selected ? "#58815F" : "#FFF",
-  color: selected ? "#FFF" : "#58815F",
-  border: selected ? "none" : "5px solid #58815F",
+  background: selected ? "#164a41" : "#FFF",
+  color: selected ? "#ffffffff" : "#164a41",
+  border: selected ? "none" : "5px solid #164a41",
   transition: "background 0.2s, border 0.4s",
+  '&:active': {
+    transform: 'scale(0.98)' // Thêm hiệu ứng nhấn nút
+  }
 }));
 
 const TaskManagerContainer = styled("div")({
@@ -158,7 +161,6 @@ const TaskMenu = styled("img")({
   left: `0px`,
   top: `125px`,
 });
-
 
 function TaskExplorer() {
   const [tasks, setTasks] = useState([]);
@@ -279,7 +281,7 @@ function TaskExplorer() {
         </div>
 
         <TaskMenu as='svg'xmlns="http://www.w3.org/2000/svg" width="1076" height="283" viewBox="0 0 1076 283" fill="none">
-        <path d="M1023 1.5C1051.44 1.5 1074.5 24.5573 1074.5 53V230C1074.5 258.443 1051.44 281.5 1023 281.5H53C24.5573 281.5 1.5 258.443 1.5 230V53C1.5 24.5573 24.5573 1.5 53 1.5H1023Z" fill="#FFF6F6" stroke="#58815F" stroke-width="3"/>
+        <path d="M1023 1.5C1051.44 1.5 1074.5 24.5573 1074.5 53V230C1074.5 258.443 1051.44 281.5 1023 281.5H53C24.5573 281.5 1.5 258.443 1.5 230V53C1.5 24.5573 24.5573 1.5 53 1.5H1023Z" fill="#FFF6F6" stroke="#164a41" stroke-width="3"/>
         </TaskMenu> 
       <TaskManagerContainer>
         {isLoading && <div>Đang tải công việc...</div>}

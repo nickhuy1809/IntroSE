@@ -68,8 +68,8 @@ const FolderExplorer1 = styled("div")({
 });
 
 const Rectangle27 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 0.5)`,
-  border: `5px solid rgba(88, 129, 95, 1)`,
+  backgroundColor: `#dbe5d1`,
+  border: `5px solid #164a41`,
   borderRadius: `15px 15px 0px 0px`,
   boxSizing: `border-box`,
   width: `1042px`,
@@ -80,7 +80,7 @@ const Rectangle27 = styled("div")({
 });
 
 const Frame6 = styled("div")({
-  backgroundColor: `rgba(251, 155, 110, 1)`,
+  backgroundColor: `#164a41`,
   borderRadius: `20px`,
   display: `flex`,
   position: `relative`,

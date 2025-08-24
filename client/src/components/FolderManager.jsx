@@ -133,7 +133,7 @@ function EditButtonGroup({ onAddSubfolder, onEdit, onDelete }) {
 }
 
 const FolderButton1 = styled("div")(({ isActive }) => ({
-  backgroundColor: isActive ? `rgba(255, 139, 73, 1)` : `rgba(88, 129, 95, 1)`,
+  backgroundColor: isActive ? `#aead5eff` : `rgba(88, 129, 95, 1)`,
   borderRadius: `20px`,
   display: `flex`,
   position: `relative`,
@@ -204,8 +204,8 @@ const FolderManager1 = styled("div")({
 });
 
 const Rectangle31 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 0.5)`,
-  border: `5px solid rgba(88, 129, 95, 1)`,
+  backgroundColor: `#dbe5d1`,
+  border: `5px solid #164a41`,
   boxSizing: `border-box`,
   width: `623px`,
   height: `360px`,
@@ -219,7 +219,7 @@ const Rectangle31 = styled("div")({
 });
 
 const Rectangle30 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+  backgroundColor: `#164a41`,
   borderRadius: `20px 20px 0px 0px`,
   width: `180px`,
   height: `52px`,

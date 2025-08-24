@@ -15,8 +15,8 @@ const TaskFrame1 = styled("div")({
   boxSizing: `border-box`,
 });
 
-const Rectangle24 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+const BackBarRight = styled("div")({
+  backgroundColor: `#164a41`,
   width: `11px`,
   height: `59px`,
   position: `absolute`,
@@ -24,8 +24,8 @@ const Rectangle24 = styled("div")({
   top: `0px`,
 });
 
-const Rectangle25 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+const BackBarLeft = styled("div")({
+  backgroundColor: `#164a41`,
   width: `11px`,
   height: `59px`,
   position: `absolute`,
@@ -33,7 +33,7 @@ const Rectangle25 = styled("div")({
   top: `0px`,
 });
 
-const Vector = styled("img")({
+const LeftEndRectangle = styled("img")({
   height: `128px`,
   width: `1024px`,
   position: `absolute`,
@@ -121,7 +121,7 @@ const TaskName = styled("div")({
   textAlign: `left`,
   whiteSpace: `pre-wrap`,
   fontSynthesis: `none`,
-  color: `rgba(255, 139, 73, 1)`,
+  color: `#164a41`,
   fontStyle: `normal`,
   fontFamily: `EB Garamond`,
   fontWeight: `700`,
@@ -151,8 +151,8 @@ const TaskDescription = styled("div")({
   top: `127px`,
 });
 
-const Rectangle26 = styled("div")({
-  backgroundColor: `rgba(88, 129, 95, 1)`,
+const RightEndRectangle = styled("div")({
+  background: `linear-gradient(90deg, #598b48ff, #4d774e)`,
   borderRadius: `0px 15px 15px 0px`,
   width: `130px`,
   height: `128px`,
@@ -218,15 +218,21 @@ function TaskFrame({ task, onEdit }) {
 
   return (
     <TaskFrame1>
-      <Rectangle24>
-      </Rectangle24>
-      <Rectangle25>
-      </Rectangle25>
-      <Vector as='svg' xmlns="http://www.w3.org/2000/svg" width="1024" height="128" viewBox="0 0 1024 128" fill="none">
+      <BackBarRight>
+      </BackBarRight>
+      <BackBarLeft>
+      </BackBarLeft>
+      <LeftEndRectangle as='svg' xmlns="http://www.w3.org/2000/svg" width="1024" height="128" viewBox="0 0 1024 128" fill="none">
+        <defs>
+          <linearGradient id="leftGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#4d774e" />
+            <stop offset="100%" stopColor="#598b48ff" />
+          </linearGradient>
+        </defs>
         <path d="M0 15C0 6.71573 6.71573 0 15 0H1009C1017.28 0 1024 6.71573 1024 15V113C1024 121.284 1017.28 128 1009 128H15C6.71573 128 0 121.284 0 113V15Z" fill="#FFF6F6"/>
-        <path d="M0 15C0 6.71573 6.71573 0 15 0H128V128H15C6.71573 128 0 121.284 0 113V15Z" fill="#58815F"/>
+        <path d="M0 15C0 6.71573 6.71573 0 15 0H128V128H15C6.71573 128 0 121.284 0 113V15Z" fill="url(#leftGradient)"/>
         <path d="M15 1H127V127H15C7.26801 127 1 120.732 1 113V15C1 7.26801 7.26801 1 15 1ZM1009 1C1016.73 1 1023 7.26801 1023 15V113C1023 120.732 1016.73 127 1009 127H129V1H1009Z" stroke="#58815F" stroke-width="2"/>
-      </Vector>
+      </LeftEndRectangle>
       <PriorityHigh>
         {`Priority\n${task.priority ? task.priority.toUpperCase() : 'N/A'}`}
       </PriorityHigh>
@@ -245,8 +251,8 @@ function TaskFrame({ task, onEdit }) {
       <TaskDescription>
         {task.description}
       </TaskDescription>
-      <Rectangle26>
-      </Rectangle26>
+      <RightEndRectangle>
+      </RightEndRectangle>
       <Edit onClick={() => onEdit(task)}>
         {`EDIT`}
       </Edit>
