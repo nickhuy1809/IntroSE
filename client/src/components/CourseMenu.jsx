@@ -146,7 +146,7 @@ function CourseMenu({ course, onClose, onDataChange }) {
       });
       if (!response.ok) throw new Error('Cập nhật tên khóa học thất bại');
       setCourseName(newName);
-      onDataChange(); // Thông báo cho component cha để cập nhật UI
+      // onDataChange(); // Thông báo cho component cha để cập nhật UI
     } catch (err) {
       alert(err.message);
     }
@@ -180,7 +180,7 @@ function CourseMenu({ course, onClose, onDataChange }) {
             body: JSON.stringify(payload)
         });
         if(!response.ok) throw new Error('Cập nhật thất bại');
-        onDataChange(); // Tải lại frame để cập nhật total score
+        // onDataChange(); // Tải lại frame để cập nhật total score
     } catch (err) {
         alert(err.message);
         setGrades(originalGrades); // Nếu lỗi, hoàn lại state cũ
@@ -209,7 +209,7 @@ function CourseMenu({ course, onClose, onDataChange }) {
              _id: createdGrade._id, name: createdGrade.description, raw: createdGrade.score, percent: createdGrade.weight, maxScore: createdGrade.maxScore
         };
         setGrades([...grades, formattedGrade]);
-        onDataChange();
+        // onDataChange();
     } catch (err) {
         alert(err.message);
     }
@@ -224,7 +224,7 @@ function CourseMenu({ course, onClose, onDataChange }) {
         });
         if(!response.ok) throw new Error('Xóa thất bại');
         setGrades(grades.filter((_, i) => i !== index));
-        onDataChange();
+        // onDataChange();
     } catch (err) {
         alert(err.message);
     }
