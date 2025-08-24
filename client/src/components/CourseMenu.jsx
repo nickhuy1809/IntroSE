@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Button from '@mui/material/Button';
 import Cell from "../components/Cell";
@@ -19,8 +19,8 @@ const Overlay = styled("div")({
 const Wrapper = styled("div")({
   padding: "20px",
   backgroundColor: "#f5f6ef",
-  maxWidth: "1200px",
-  width: "90vw",
+  maxWidth: "1400px",
+  width: "95vw",
   maxHeight: "90vh",
   margin: "auto",
   borderRadius: "16px",
@@ -75,9 +75,12 @@ const BottomControls = styled("div")({
 function DeleteButton({ onClick }) {
   return (
     <button
-      onClick={(e) => {}}
+      onClick={onClick}
       style={{
         all: 'unset',
+        background: '#d9534f',
+        color: 'white',
+        borderRadius: '50%',
         width: '32px',
         height: '32px',
         display: 'flex',
@@ -93,126 +96,254 @@ function DeleteButton({ onClick }) {
   );
 }
 
-function CourseMenu({ onClose }) {
-  const [courseName, setCourseName] = useState("Course Name");
-  const [grades, setGrades] = useState([
-    { name: "Assignment 1", raw: 9, percent: 10 },
-    { name: "Assignment 2", raw: 8, percent: 10 },
-    { name: "Midterm", raw: 7.5, percent: 30 },
-    { name: "Final", raw: 8, percent: 50 },
-  ]);
+function CourseMenu({ course, onClose, onDataChange }) {
+  const [courseName, setCourseName] = useState(course.name);
+  const [grades, setGrades] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const accountId = localStorage.getItem('accountId');
 
-  const updateGrade = (index, field, value) => {
+  useEffect(() => {
+    const fetchGrades = async () => {
+      if (!course || !course._id) {
+        setError("Không có thông tin khóa học.");
+        setIsLoading(false);
+        return;
+      }
+      try {
+        setIsLoading(true);
+        const response = await fetch(`http://localhost:5000/api/grades/course/${course._id}`, {
+          headers: { 'x-account-id': accountId },
+        });
+        if (!response.ok) throw new Error('Không thể tải dữ liệu điểm.');
+        const data = await response.json();
+        // Map dữ liệu từ backend sang state của frontend
+        const formattedGrades = data.map(g => ({
+          _id: g._id,
+          name: g.description,
+          raw: g.score,
+          percent: g.weight,
+          maxScore: g.maxScore || 10
+        }));
+        setGrades(formattedGrades);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchGrades();
+  }, [course, accountId]);
+
+  // Hàm cập nhật tên khóa học
+  const updateCourseName = async (newName) => {
+    if (newName === course.name) return;
+    try {
+      const response = await fetch(`http://localhost:5000/api/courses/${course._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'x-account-id': accountId },
+        body: JSON.stringify({ name: newName }),
+      });
+      if (!response.ok) throw new Error('Cập nhật tên khóa học thất bại');
+      setCourseName(newName);
+      onDataChange(); // Thông báo cho component cha để cập nhật UI
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
+  const updateGrade = async (index, field, value) => {
+    const originalGrades = [...grades];
     const newGrades = [...grades];
-    if (field === "raw" || field === "percent") {
+    // Chuyển đổi giá trị sang số nếu cần
+    if (field === "raw" || field === "percent" || field === "maxScore") {
       value = parseFloat(value) || 0;
     }
-    newGrades[index][field] = value;
-    setGrades(newGrades);
+
+    const updatedGrade = { ...newGrades[index], [field]: value };
+    newGrades[index] = updatedGrade;
+    setGrades(newGrades); // Cập nhật UI ngay lập tức để người dùng thấy
+
+    try {
+        // Map tên trường của frontend sang backend
+        const backendFieldMap = { name: 'description', raw: 'score', percent: 'weight' };
+        const payload = {
+            description: updatedGrade.name,
+            score: updatedGrade.raw,
+            weight: updatedGrade.percent,
+            maxScore: updatedGrade.maxScore
+        };
+        
+        const response = await fetch(`http://localhost:5000/api/grades/${updatedGrade._id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'x-account-id': accountId },
+            body: JSON.stringify(payload)
+        });
+        if(!response.ok) throw new Error('Cập nhật thất bại');
+        onDataChange(); // Tải lại frame để cập nhật total score
+    } catch (err) {
+        alert(err.message);
+        setGrades(originalGrades); // Nếu lỗi, hoàn lại state cũ
+    }
   };
 
-  const addGrade = () => {
-    setGrades([
-      ...grades,
-      { name: `Grade ${grades.length + 1}`, raw: 0, percent: 0 },
-    ]);
+  const addGrade = async () => {
+    const newGradeData = {
+      description: `Grade ${grades.length + 1}`,
+      score: 0,
+      weight: 0,
+      maxScore: 10, // Giả sử điểm tối đa mặc định là 10
+      courseId: course._id,
+    };
+
+    try {
+        const response = await fetch(`http://localhost:5000/api/grades`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-account-id': accountId },
+            body: JSON.stringify(newGradeData)
+        });
+        if(!response.ok) throw new Error('Thêm điểm mới thất bại');
+        const createdGrade = await response.json();
+        // Cập nhật state với dữ liệu từ backend
+        const formattedGrade = {
+             _id: createdGrade._id, name: createdGrade.description, raw: createdGrade.score, percent: createdGrade.weight, maxScore: createdGrade.maxScore
+        };
+        setGrades([...grades, formattedGrade]);
+        onDataChange();
+    } catch (err) {
+        alert(err.message);
+    }
   };
 
-  const deleteGrade = (index) => {
-    setGrades(grades.filter((_, i) => i !== index));
+  const deleteGrade = async (index, gradeId) => {
+    if(!window.confirm("Bạn có chắc chắn muốn xóa mục điểm này?")) return;
+    try {
+        const response = await fetch(`http://localhost:5000/api/grades/${gradeId}`, {
+            method: 'DELETE',
+            headers: { 'x-account-id': accountId }
+        });
+        if(!response.ok) throw new Error('Xóa thất bại');
+        setGrades(grades.filter((_, i) => i !== index));
+        onDataChange();
+    } catch (err) {
+        alert(err.message);
+    }
   };
 
-  const saveGrades = () => {
-    console.log("Saved grades:", grades);
-    if (onClose) onClose();
+  const handleSaveAndClose = () => {
+    onDataChange();
+    onClose();
   };
 
-  const calculateProportional = (raw, percent) => {
-    return ((raw * percent) / 100).toFixed(2);
+  const calculateProportional = (raw, percent, maxScore) => {
+    if (!maxScore || maxScore === 0) return 0;
+    return (((raw / maxScore) * (percent)/100)).toFixed(2);
   };
 
   // Calculate sum of proportional grades
   const sumProportional = grades.reduce(
-    (sum, g) => sum + parseFloat(calculateProportional(g.raw, g.percent)),
-    0
+    (sum, g) => sum + parseFloat(calculateProportional(g.raw, g.percent, g.maxScore)), 0
   ).toFixed(2);
 
+  const totalPercentage = grades.reduce((sum, g) => sum + g.percent, 0);
+
+  if (!course) return null;
+
   return (
-    <Overlay>
-      <Wrapper>
+    <Overlay onClick={onClose}>
+      <Wrapper onClick={e => e.stopPropagation()}>
         <CourseNameWrapper>
           <Cell
             variant="coursename"
             editable
             label={courseName}
-            onChange={setCourseName}
+            onChange={updateCourseName}
           />
         </CourseNameWrapper>
-        <TableScroll>
-          <Table>
-            <Column>
-              <Cell variant="header" label="Grade name" />
-              {grades.map((g, i) => (
-                <Cell
-                  key={i}
-                  variant="body"
-                  editable
-                  label={g.name}
-                  onChange={(val) => updateGrade(i, "name", val)}
-                />
-              ))}
-              <Cell variant="final" label="Total" />
-            </Column>
-            <Column>
-              <Cell variant="header" label="Raw grade" />
-              {grades.map((g, i) => (
-                <Cell
-                  key={i}
-                  variant="body"
-                  editable
-                  label={g.raw.toString()}
-                  onChange={(val) => updateGrade(i, "raw", val)}
-                />
-              ))}
-              <Cell variant="final" label="" />
-            </Column>
-            <Column>
-              <Cell variant="header" label="Percentage" />
-              {grades.map((g, i) => (
-                <Cell
-                  key={i}
-                  variant="body"
-                  editable
-                  label={g.percent.toString()}
-                  onChange={(val) => updateGrade(i, "percent", val)}
-                />
-              ))}
-              <Cell variant="final" label="" />
-            </Column>
-            <Column>
-              <Cell variant="header" label="Proportional grade" />
-              {grades.map((g, i) => (
-                <Cell
-                  key={i}
-                  variant="body"
-                  label={calculateProportional(g.raw, g.percent)}
-                />
-              ))}
-              <Cell variant="final" label={sumProportional} />
-            </Column>
-            <Column>
-              <Cell variant="header" label="Delete" />
-              {grades.map((_, i) => (
-                <Cell variant="body" key={i}>
-                  <DeleteButton onClick={() => deleteGrade(i)} />
-                </Cell>
-              ))}
-              <Cell variant="final" label="" />
-            </Column>
-          </Table>
-        </TableScroll>
+        {isLoading ? (
+          <div>Đang tải...</div>
+        ) : error ? (
+          <div style={{color: 'red'}}>{error}</div>
+        ) : (
+          <TableScroll>
+            <Table>
+              <Column>
+                <Cell variant="header" label="Grade name" />
+                {grades.map((g, i) => (
+                  <Cell
+                    key={g._id || i}
+                    variant="body"
+                    editable
+                    label={g.name}
+                    onChange={(val) => updateGrade(i, "name", val)}
+                  />
+                ))}
+                <Cell variant="final" label="Total" />
+              </Column>
+              <Column>
+                <Cell variant="header" label="Raw grade" />
+                {grades.map((g, i) => (
+                  <Cell
+                    key={g._id || i}
+                    variant="body"
+                    editable
+                    label={g.raw.toString()}
+                    onChange={(val) => updateGrade(i, "raw", val)}
+                  />
+                ))}
+                <Cell variant="final" label="" />
+              </Column>
+              <Column>
+                <Cell variant="header" label="Max Score" />
+                {grades.map((g, i) => (
+                  <Cell
+                    key={g._id || i}
+                    variant="body"
+                    editable
+                    label={g.maxScore.toString()}
+                    onChange={(val) => updateGrade(i, "maxScore", val)}
+                  />
+                ))}
+                <Cell variant="final" label="" />
+              </Column>
+              <Column>
+                <Cell variant="header" label="Percentage" />
+                {grades.map((g, i) => (
+                  <Cell
+                    key={g._id || i}
+                    variant="body"
+                    editable
+                    label={g.percent.toString()}
+                    onChange={(val) => updateGrade(i, "percent", val)}
+                  />
+                ))}
+                <Cell variant="final" label={`${totalPercentage}%`} />
+              </Column>
+              <Column>
+                <Cell variant="header" label="Proportional grade" />
+                {grades.map((g, i) => (
+                  <Cell
+                    key={g._id || i}
+                    variant="body"
+                    label={calculateProportional(g.raw, g.percent, g.maxScore)}
+                  />
+                ))}
+                <Cell variant="final" label={sumProportional} />
+              </Column>
+              <Column>
+                <Cell variant="header" label="Delete" />
+                {grades.map((g, i) => (
+                  <Cell variant="body" key={g._id || i}>
+                    <DeleteButton onClick={() => deleteGrade(i, g._id)} />
+                  </Cell>
+                ))}
+                <Cell variant="final" label="" />
+              </Column>
+            </Table>
+          </TableScroll>
+        )}
         <BottomControls>
-          <Button variant="contained" color="success" onClick={saveGrades}>
+          <Button variant="contained" color="success" onClick={handleSaveAndClose}>
             Save & Close
           </Button>
           <Button variant="outlined" onClick={addGrade}>

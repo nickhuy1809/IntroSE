@@ -61,7 +61,7 @@ const Frame8 = styled("div")({
   isolation: `isolate`,
   flexDirection: `row`,
   justifyContent: `flex-start`,
-  alignItems: `center`,
+  alignItems: `flex-start`,
   padding: `10px`,
   boxSizing: `border-box`,
   width: `612px`,

@@ -17,20 +17,34 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const call_Your_AI_API = async (prompt) => {
   try {
     // Chọn model bạn muốn sử dụng (gemini-pro là một lựa chọn tốt)
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Gọi API để tạo nội dung
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    const text = response.text();
+    let text = response.text();
+    text = text.replace(/```json\s*|\s*```/g, "").trim();
     
-    return text; // Trả về chuỗi văn bản do AI tạo ra (dự kiến là một chuỗi JSON)
+    let parsed;
+    try {
+      parsed = JSON.parse(text);
+    } catch (parseErr) {
+      console.error("❌ Lỗi parse JSON:", parseErr);
+      return {
+        error: true,
+        message: "AI trả về dữ liệu không hợp lệ",
+        raw: text   // để debug khi cần
+      };
+    }
+
+    return parsed; // Trả về chuỗi văn bản do AI tạo ra (dự kiến là một chuỗi JSON)
   } catch (error) {
     console.error("Lỗi khi gọi API của AI:", error);
     // Trả về một chuỗi JSON chứa thông báo lỗi để frontend có thể xử lý
     return JSON.stringify({
       error: true,
-      message: "Rất tiếc, dịch vụ phân tích AI đang tạm thời gián đoạn."
+      message: "Rất tiếc, dịch vụ phân tích AI đang tạm thời gián đoạn.",
+      details: error.message
     });
   }
 };
