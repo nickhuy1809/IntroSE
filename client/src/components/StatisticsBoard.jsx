@@ -91,15 +91,15 @@ const ScoreSummaryAverageS = styled("div")({
 function StatisticsBoard({ analysisResult, isLoading, error }) {
   const renderContent = () => {
     if (isLoading) {
-      return <ScoreSummaryAverageS> AI đang phân tích dữ liệu...</ScoreSummaryAverageS>;
+      return <ScoreSummaryAverageS> AI is analysing...</ScoreSummaryAverageS>;
     }
 
     if (error) {
-      return <ScoreSummaryAverageS> Đã xảy ra lỗi: {error}</ScoreSummaryAverageS>;
+      return <ScoreSummaryAverageS> An error occurred: {error}</ScoreSummaryAverageS>;
     }
 
     if (!analysisResult) {
-      return <ScoreSummaryAverageS>Hãy chọn một thư mục để xem phân tích học tập từ AI.</ScoreSummaryAverageS>;
+      return <ScoreSummaryAverageS>Select a folder to receive AI analysis of the grades.</ScoreSummaryAverageS>;
     }
     
     // Xử lý các thông điệp đơn giản từ backend (ví dụ: chưa có khóa học/điểm)
@@ -117,10 +117,10 @@ function StatisticsBoard({ analysisResult, isLoading, error }) {
 
     return (
         <ScoreSummaryAverageS>
-            {` Phân tích tổng quan:\n${overallSummary}\n\n` +
-             ` Điểm mạnh:\n- ${strengths.join('\n- ')}\n\n` +
-             ` Lĩnh vực cần cải thiện:\n- ${areasForImprovement.join('\n- ')}\n\n` +
-             ` Lời nhắn từ AI:\n${motivationalMessage}`
+            {` Overview:\n${overallSummary}\n\n` +
+             ` Strengths:\n- ${strengths.join('\n- ')}\n\n` +
+             ` Areas for Improvement:\n- ${areasForImprovement.join('\n- ')}\n\n` +
+             ` Motivational Message:\n${motivationalMessage}`
             }
         </ScoreSummaryAverageS>
     );
